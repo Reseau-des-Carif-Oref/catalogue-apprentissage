@@ -171,9 +171,9 @@ export interface Formation {
    */
   last_update_at?: Date;
   /**
-   * Latitude et longitude de l'établissement recherchable dans Idea
+   * Qui a réalisé la dernière modification
    */
-  idea_geo_coordonnees_etablissement?: string;
+  last_update_who?: string;
   /**
    * Latitude et longitude du lieu de formation
    */

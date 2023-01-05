@@ -316,9 +316,10 @@ module.exports = {
         description: "Date de dernières mise à jour",
         format: "date-time",
       },
-      idea_geo_coordonnees_etablissement: {
+      last_update_who: {
         type: "string",
-        description: "Latitude et longitude de l'établissement recherchable dans Idea",
+        default: "null",
+        description: "Qui a réalisé la dernière modification",
       },
       lieu_formation_geo_coordonnees: {
         type: "string",
