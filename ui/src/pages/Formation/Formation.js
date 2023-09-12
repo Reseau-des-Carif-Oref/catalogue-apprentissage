@@ -54,6 +54,14 @@ const Formation = ({ formation }) => {
   //   ? (args) => <WarningBox data-testid={"adress-warning"} {...args} />
   //   : React.Fragment;
 
+  const now = new Date();
+  // si date du jour < septembre : nous afficherons les formations ayant des tag sur année -1, année en cours et année + 1
+  // si date du jour >= septembre : année en cours et année + 1, année +2
+  const tagsForLBA =
+    now.getMonth() >= 8
+      ? [now.getFullYear(), now.getFullYear() + 1, now.getFullYear() + 2]
+      : [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1];
+
   return (
     <Box borderRadius={4}>
       <Grid templateColumns="repeat(12, 1fr)">
@@ -69,7 +77,7 @@ const Formation = ({ formation }) => {
               Lieu de la formation
             </Heading>
             <Box mt={2} mb={4} ml={[-2, -2, -3]}>
-              {formation.catalogue_published && (
+              {formation.catalogue_published && formation.tags.some((tag) => tagsForLBA.includes(+tag)) && (
                 <Link href={getLBAUrl(formation)} textStyle="rf-text" variant="pill" isExternal>
                   voir sur labonnealternance <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
                 </Link>
