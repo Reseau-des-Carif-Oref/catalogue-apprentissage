@@ -14,7 +14,7 @@ const DureeAnnee = ({ value }) => {
     return "N/A";
   }
 
-  const tmpValue = value === "X" ? "Information non collectée" : value;
+  const tmpValue = ["D", "X", "Y"].includes(value) ? "Information non collectée" : value;
   return tmpValue === "9" ? "Sans objet (code BCN: 9)" : tmpValue;
 };
 
@@ -23,7 +23,7 @@ export const DescriptionBlock = ({ formation }) => {
     [formation.etablissement_gestionnaire_siret, formation.etablissement_formateur_siret].includes(Siret_Partenaire)
   );
 
-  const isTitreRNCP = formation.etablissement_reference_habilite_rncp !== null;
+  const isTitreRNCP = ["Titre", "TP", null].includes(formation.rncp_details?.code_type_certif); // formation.etablissement_reference_habilite_rncp !== null;
 
   const showPartenaires =
     isTitreRNCP &&
@@ -34,29 +34,27 @@ export const DescriptionBlock = ({ formation }) => {
       ? (args) => <DangerBox data-testid={"mef-warning"} {...args} />
       : React.Fragment;
 
-  const DureeContainer = formation.duree_incoherente
+  const displayDureeWarning = formation.duree_incoherente || ["D"].includes(formation.duree);
+  const DureeContainer = displayDureeWarning
     ? (args) => <DangerBox data-testid={"duree-warning"} {...args} />
     : React.Fragment;
 
-  const AnneeContainer = formation.annee_incoherente
+  const displayAnneeWarning = formation.annee_incoherente || ["X", "Y"].includes(formation.annee);
+  const AnneeContainer = displayAnneeWarning
     ? (args) => <DangerBox data-testid={"annee-warning"} {...args} />
     : React.Fragment;
 
   const isCfdExpired =
     formation.cfd_outdated ||
-    (formation.cfd_date_fermeture && new Date(formation.cfd_date_fermeture) <= getExpirationDate());
+    (formation.cfd_date_fermeture && new Date(formation.cfd_date_fermeture).getTime() <= getExpirationDate().getTime());
 
   const CfdContainer =
-    !isTitreRNCP &&
-    (formation.cfd_outdated ||
-      (formation.cfd_date_fermeture && new Date(formation.cfd_date_fermeture) <= getExpirationDate()))
-      ? (args) => <DangerBox data-testid={"cfd-warning"} {...args} />
-      : React.Fragment;
+    !isTitreRNCP && isCfdExpired ? (args) => <DangerBox data-testid={"cfd-warning"} {...args} /> : React.Fragment;
 
   const isRncpExpired =
     formation.rncp_details?.rncp_outdated ||
     (formation.rncp_details?.date_fin_validite_enregistrement &&
-      new Date(formation.rncp_details?.date_fin_validite_enregistrement) <= getExpirationDate());
+      new Date(formation.rncp_details?.date_fin_validite_enregistrement).getTime() <= getExpirationDate().getTime());
 
   const RncpContainer =
     isTitreRNCP && isRncpExpired ? (args) => <DangerBox data-testid={"rncp-warning"} {...args} /> : React.Fragment;
@@ -69,6 +67,8 @@ export const DescriptionBlock = ({ formation }) => {
     siretCertificateurs.includes(formation.etablissement_formateur_siret) ||
     siretCertificateurs.includes(formation.etablissement_gestionnaire_siret)
   );
+
+  const rncpCode = formation?.rncp_code?.split("RNCP")[1];
 
   return (
     <>
@@ -124,7 +124,10 @@ export const DescriptionBlock = ({ formation }) => {
             <Text mb={!isTitreRNCP && isCfdExpired ? 0 : 4}>
               Code diplôme (Éducation Nationale) :{" "}
               <Text as="span" variant="highlight">
-                {formation.cfd}
+                {formation.cfd}{" "}
+                {formation.cfd_date_fermeture
+                  ? `(expire le ${new Date(formation.cfd_date_fermeture).toLocaleDateString("fr-FR")})`
+                  : "(expiration : non renseigné)"}
               </Text>{" "}
               <InfoTooltip description={helpText.formation.cfd} />
             </Text>
@@ -132,12 +135,32 @@ export const DescriptionBlock = ({ formation }) => {
               <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} color={"grey.600"}>
                 {formation?.cfd_date_fermeture ? (
                   <>
-                    Ce code formation diplôme expire le{" "}
+                    Ce code formation diplôme{" "}
+                    {new Date().getTime() > new Date(formation?.cfd_date_fermeture).getTime()
+                      ? "est expiré depuis le"
+                      : "expire le "}{" "}
                     {new Date(formation?.cfd_date_fermeture).toLocaleDateString("fr-FR")}
                   </>
                 ) : (
                   <>Ce code formation diplôme est expiré</>
-                )}
+                )}{" "}
+                (source BCN,{" "}
+                <Link
+                  href="http://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  N_formation_diplome
+                </Link>{" "}
+                ou{" "}
+                <Link
+                  href="http://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  V_formation_diplome
+                </Link>
+                ).
               </Text>
             )}
           </CfdContainer>
@@ -145,13 +168,24 @@ export const DescriptionBlock = ({ formation }) => {
             <Text mb={formation.duree_incoherente || formation.annee_incoherente ? 0 : 4}>
               Codes MEF 10 caractères :{" "}
               <Text as="span" variant="highlight">
-                {formation?.bcn_mefs_10?.map(({ mef10 }) => mef10).join(", ")}
+                {formation?.bcn_mefs_10
+                  ?.map(
+                    ({ mef10, date_fermeture }) =>
+                      `${mef10} ${
+                        date_fermeture
+                          ? `(expire le ${new Date(date_fermeture).toLocaleDateString("fr-FR")})`
+                          : "(expiration : non renseigné)"
+                      }`
+                  )
+                  .join(", ")}
               </Text>{" "}
               <InfoTooltip description={helpText.formation.mef} />
             </Text>
             <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} color={"grey.600"}>
               {(formation.duree_incoherente || formation.annee_incoherente) &&
                 "Aucun code MEF ne correspond à la durée et à l'année de formation enregistrées auprès du Carif-Oref."}
+              {!!formation.bcn_mefs_10.filter((mef) => mef?.mef10?.endsWith("99")).length &&
+                "Le code MEF se termine par 99. Ce code MEF ne porte pas d'informations liées à la durée et à l'année."}
             </Text>
           </MefContainer>
           {/* <Text mb={4}>
@@ -170,7 +204,7 @@ export const DescriptionBlock = ({ formation }) => {
             <InfoTooltip ml="10px" description={helpText.formation.capacite} />
           </Text>
           <DureeContainer>
-            <Text mb={formation.duree_incoherente ? 0 : 4}>
+            <Text mb={displayDureeWarning ? 0 : 4}>
               Durée de la formation :{" "}
               <Text as="span" variant="highlight">
                 <DureeAnnee value={formation.duree} />
@@ -183,39 +217,19 @@ export const DescriptionBlock = ({ formation }) => {
             </Text>
           </DureeContainer>
 
-          {formation.annee === "X" && (
-            <Box
-              bg={"orangesoft.200"}
-              p={4}
-              mb={formation.annee_incoherente ? 0 : 4}
-              borderLeft={"4px solid"}
-              borderColor={"orangesoft.500"}
-              w={"full"}
-            >
-              <Text>
-                Année d'entrée en apprentissage :{" "}
-                <Text as="span" variant="highlight" bg={"transparent"}>
-                  <DureeAnnee value={formation.annee} />
-                </Text>{" "}
-                <InfoTooltip description={helpText.formation.annee} />
-              </Text>
-            </Box>
-          )}
-          {formation.annee !== "X" && (
-            <AnneeContainer>
-              <Text mb={formation.annee_incoherente ? 0 : 4}>
-                Année d'entrée en apprentissage :{" "}
-                <Text as="span" variant="highlight">
-                  <DureeAnnee value={formation.annee} />
-                </Text>{" "}
-                <InfoTooltip description={helpText.formation.annee} />
-              </Text>
-              <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} color={"grey.600"}>
-                {formation.annee_incoherente &&
-                  "L'année de formation enregistrée auprès du Carif-Oref ne correspond pas à celle qui est déduite du code MEF correspondant à cette formation."}
-              </Text>
-            </AnneeContainer>
-          )}
+          <AnneeContainer>
+            <Text mb={displayAnneeWarning ? 0 : 4}>
+              Année d'entrée en apprentissage :{" "}
+              <Text as="span" variant="highlight">
+                <DureeAnnee value={formation.annee} />
+              </Text>{" "}
+              <InfoTooltip description={helpText.formation.annee} />
+            </Text>
+            <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} color={"grey.600"}>
+              {formation.annee_incoherente &&
+                "L'année de formation enregistrée auprès du Carif-Oref ne correspond pas à celle qui est déduite du code MEF correspondant à cette formation."}
+            </Text>
+          </AnneeContainer>
           <Text mb={4}>
             Clé ministères éducatifs :{" "}
             <Text as="span" variant="highlight">
@@ -251,7 +265,12 @@ export const DescriptionBlock = ({ formation }) => {
             <Text mb={isTitreRNCP && isRncpExpired ? 0 : 4}>
               Code RNCP :{" "}
               <Text as="span" variant="highlight">
-                {formation.rncp_code}
+                {formation.rncp_code}{" "}
+                {formation?.rncp_details?.date_fin_validite_enregistrement
+                  ? `(expire le ${new Date(
+                      formation?.rncp_details?.date_fin_validite_enregistrement
+                    ).toLocaleDateString("fr-FR")})`
+                  : "(expiration : non renseigné)"}
               </Text>{" "}
               <InfoTooltip description={helpText.formation.rncp_code} />
             </Text>
@@ -259,12 +278,25 @@ export const DescriptionBlock = ({ formation }) => {
               <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} color={"grey.600"}>
                 {formation?.rncp_details?.date_fin_validite_enregistrement ? (
                   <>
-                    Ce RNCP expire le{" "}
+                    Ce RNCP{" "}
+                    {new Date().getTime() >
+                    new Date(formation?.rncp_details?.date_fin_validite_enregistrement).getTime()
+                      ? "est expiré depuis le"
+                      : "expire le "}{" "}
                     {new Date(formation?.rncp_details?.date_fin_validite_enregistrement).toLocaleDateString("fr-FR")}
                   </>
                 ) : (
                   <>Ce RNCP est expiré</>
-                )}
+                )}{" "}
+                (source{" "}
+                <Link
+                  href={`https://www.francecompetences.fr/recherche/rncp/${rncpCode}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  https://www.francecompetences.fr/recherche/rncp/{rncpCode}
+                </Link>
+                ).
               </Text>
             )}
           </RncpContainer>

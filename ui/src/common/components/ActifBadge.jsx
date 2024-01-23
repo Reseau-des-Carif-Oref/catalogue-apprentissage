@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge, Flex, Text } from "@chakra-ui/react";
-import { CheckLine, Question } from "../../theme/components/icons";
+import { CheckLine } from "../../theme/components/icons";
 
 export const ActifBadge = ({ value, ...props }) => {
   let text;
@@ -18,6 +18,9 @@ export const ActifBadge = ({ value, ...props }) => {
       text = "SIRET inactif";
       variant = "notOk";
       Icon = null;
+      break;
+
+    default:
       break;
   }
 

@@ -1,14 +1,13 @@
 import React from "react";
 import { Badge, Flex, Text } from "@chakra-ui/react";
-import { CheckLine, Question } from "../../theme/components/icons";
 
 export const AnneeBadge = ({ value, ...props }) => {
   if (value !== "Y") {
     return null;
   }
 
-  const text = "Année non renseignée";
-  const variant = "ok";
+  const text = "Année d'entrée non renseignée";
+  const variant = "default";
   const Icon = null;
 
   return (
