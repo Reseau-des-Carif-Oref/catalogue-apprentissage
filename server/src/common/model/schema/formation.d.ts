@@ -34,6 +34,14 @@ export interface Formation {
    */
   cfd_entree?: string;
   /**
+   * Code formacode
+   */
+  code_formacode?: string[];
+  /**
+   * Libelle formacode
+   */
+  libelle_formacode?: string[];
+  /**
    * Nom de l'académie
    */
   nom_academie?: string;
@@ -155,6 +163,10 @@ export interface Formation {
    */
   annee_incoherente?: boolean | null;
   /**
+   * Email du contact pour cette formation
+   */
+  email?: string;
+  /**
    * Est publiée, la formation est éligible pour le catalogue
    */
   published?: boolean;
@@ -268,6 +280,30 @@ export interface Formation {
    */
   id_RCO?: string;
   /**
+   * Objectif de la formation
+   */
+  objectif?: string;
+  /**
+   * Identifiant de la formation
+   */
+  contenu?: string;
+  /**
+   * SIRET actif ou inactif pour l'établissement gestionnaire
+   */
+  etablissement_gestionnaire_actif?: string;
+  /**
+   * SIRET actif ou inactif pour l'établissement formateur
+   */
+  etablissement_formateur_actif?: string;
+  /**
+   * Badge siret actif/inactif
+   */
+  siret_actif?: string;
+  /**
+   * Numéros de téléphone
+   */
+  num_tel?: string;
+  /**
    * Identifiant établissement gestionnaire
    */
   etablissement_gestionnaire_id?: string;
@@ -360,6 +396,10 @@ export interface Formation {
    */
   etablissement_gestionnaire_date_creation?: Date;
   /**
+   * Adresse email de contact de l'établissement gestionnaire
+   */
+  etablissement_gestionnaire_courriel?: string;
+  /**
    * Identifiant établissement formateur
    */
   etablissement_formateur_id?: string;
@@ -451,6 +491,10 @@ export interface Formation {
    * Date de création de l'établissement
    */
   etablissement_formateur_date_creation?: Date;
+  /**
+   * Adresse email de contact de l'établissement formateur
+   */
+  etablissement_formateur_courriel?: string;
   /**
    * Etablissement reference est soit formateur soit le gestionnaire
    */

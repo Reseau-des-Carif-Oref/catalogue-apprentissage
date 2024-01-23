@@ -311,6 +311,11 @@ module.exports = {
         default: "null",
         description: "Année incohérente avec les codes mefs",
       },
+      email: {
+        type: "string",
+        default: "null",
+        description: "Email du contact pour cette formation",
+      },
       published: {
         type: "boolean",
         default: false,
@@ -513,6 +518,36 @@ module.exports = {
         default: "null",
         description: "Identifiant RCO",
       },
+      objectif: {
+        type: "string",
+        default: "null",
+        description: "Objectif de la formation",
+      },
+      contenu: {
+        type: "string",
+        default: "null",
+        description: "Identifiant de la formation",
+      },
+      etablissement_gestionnaire_actif: {
+        type: "string",
+        default: "null",
+        description: "SIRET actif ou inactif pour l'établissement gestionnaire",
+      },
+      etablissement_formateur_actif: {
+        type: "string",
+        default: "null",
+        description: "SIRET actif ou inactif pour l'établissement formateur",
+      },
+      siret_actif: {
+        type: "string",
+        default: "null",
+        description: "Badge siret actif/inactif",
+      },
+      num_tel: {
+        type: "string",
+        default: "null",
+        description: "Numéros de téléphone",
+      },
       etablissement_gestionnaire_id: {
         type: "string",
         default: "null",
@@ -627,6 +662,11 @@ module.exports = {
         default: "null",
         description: "Date de création de l'établissement",
         format: "date-time",
+      },
+      etablissement_gestionnaire_courriel: {
+        type: "string",
+        default: "null",
+        description: "Adresse email de contact de l'établissement gestionnaire",
       },
       etablissement_formateur_id: {
         type: "string",
@@ -743,6 +783,11 @@ module.exports = {
         description: "Date de création de l'établissement",
         format: "date-time",
       },
+      etablissement_formateur_courriel: {
+        type: "string",
+        default: "null",
+        description: "Adresse email de contact de l'établissement formateur",
+      },
       etablissement_reference: {
         type: "string",
         default: "null",
@@ -768,36 +813,6 @@ module.exports = {
         default: "null",
         description: "Date de création de l'établissement",
         format: "date-time",
-      },
-      objectif: {
-        type: "string",
-        default: "null",
-        description: "Objectif de la formation",
-      },
-      contenu: {
-        type: "string",
-        default: "null",
-        description: "Contenu de la formation",
-      },
-      etablissement_gestionnaire_actif: {
-        type: "string",
-        default: null,
-        description: "SIRET actif ou inactif",
-      },
-      etablissement_formateur_actif: {
-        type: "string",
-        default: null,
-        description: "SIRET actif ou inactif",
-      },
-      siret_actif: {
-        type: "string",
-        default: null,
-        description: "Badge siret actif/inactif",
-      },
-      num_tel: {
-        type: "string",
-        default: null,
-        description: "Numéros de téléphone",
       },
       _id: {
         type: "string",

@@ -30,6 +30,14 @@ export interface DualControlFormation {
    */
   cfd_date_fermeture?: Date;
   /**
+   * Code formacode
+   */
+  code_formacode?: unknown[];
+  /**
+   * Libelle formacode
+   */
+  libelle_formacode?: unknown[];
+  /**
    * Nom de l'académie
    */
   nom_academie?: string;
@@ -101,6 +109,10 @@ export interface DualControlFormation {
    * Année de la formation (cursus)
    */
   annee?: string;
+  /**
+   * Email du contact pour cette formation
+   */
+  email?: string;
   /**
    * Url de redirection vers le site de l'ONISEP
    */
@@ -236,6 +248,30 @@ export interface DualControlFormation {
    */
   id_RCO?: string;
   /**
+   * Objectif (LBA)
+   */
+  objectif?: string;
+  /**
+   * Identifiant (LBA)
+   */
+  contenu?: string;
+  /**
+   * SIRET actif ou inactif pour l'établissement gestionnaire
+   */
+  etablissement_gestionnaire_actif?: string;
+  /**
+   * SIRET actif ou inactif pour l'établissement formateur
+   */
+  etablissement_formateur_actif?: string;
+  /**
+   * Badge siret actif/inactif
+   */
+  siret_actif?: string;
+  /**
+   * Numéros de téléphone
+   */
+  num_tel?: string;
+  /**
    * Numéro siret gestionnaire
    */
   etablissement_gestionnaire_siret?: string;
@@ -320,6 +356,10 @@ export interface DualControlFormation {
    */
   etablissement_gestionnaire_date_creation?: Date;
   /**
+   * Adresse email de contact de l'établissement gestionnaire
+   */
+  etablissement_gestionnaire_courriel?: string;
+  /**
    * Numéro siret formateur
    */
   etablissement_formateur_siret?: string;
@@ -403,6 +443,10 @@ export interface DualControlFormation {
    * Date de création de l'établissement
    */
   etablissement_formateur_date_creation?: Date;
+  /**
+   * Adresse email de contact de l'établissement formateur
+   */
+  etablissement_formateur_courriel?: string;
   /**
    * Etablissement reference est soit formateur soit le gestionnaire
    */
