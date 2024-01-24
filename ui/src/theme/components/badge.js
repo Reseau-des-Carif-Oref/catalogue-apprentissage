@@ -94,12 +94,16 @@ const Badge = {
     },
     ok: {
       ...commonStatusBadgeStyle,
+      border: "1px solid ",
       bg: "#E3E3FD50",
+      borderColor: "#E3E3FD50",
       color: "#000091",
     },
     notOk: {
       ...commonStatusBadgeStyle,
-      bg: "#EEEEEE",
+      border: "1px solid ",
+      bg: "orangesoft.200",
+      borderColor: "orangesoft.200",
       color: "#161616",
     },
     default: {

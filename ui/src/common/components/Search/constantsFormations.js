@@ -8,7 +8,10 @@ const FILTERS = () => [
   "QUERYBUILDER",
   "SEARCH",
   "etablissement_formateur_siret",
+  "etablissement_formateur_actif",
   "etablissement_gestionnaire_siret",
+  "etablissement_gestionnaire_actif",
+  "siret_actif",
   "num_academie",
   "niveau",
   "etablissement_gestionnaire_siren",
@@ -33,7 +36,6 @@ const FILTERS = () => [
   "diplome",
   "tags",
   "annee",
-  "etablissement_gestionnaire_actif",
   "qualite",
   "habilite",
   "duree",
@@ -430,6 +432,12 @@ const columnsDefinition = [
     exportable: true,
   },
   {
+    Header: "Etablissement formateur_actif",
+    accessor: "etablissement_formateur_actif",
+    width: 200,
+    exportable: true,
+  },
+  {
     Header: "Region",
     accessor: "region",
     width: 200,
@@ -463,7 +471,7 @@ const queryBuilderField = [
   { text: "MEF 10", value: "bcn_mefs_10.mef10.keyword" },
   { text: "Groupe Spécialité", value: "rncp_details.nsf_code.keyword" },
   { text: "Certificateur", value: "rncp_details.certificateurs.certificateur.keyword" },
-  { text: "Statut du SIRET", value: "etablissement_gestionnaire_actif.keyword" },
+  { text: "Statut du SIRET", value: "siret_actif.keyword" },
   { text: "Région", value: "region.keyword" },
 ];
 
@@ -511,8 +519,8 @@ const facetDefinition = () => [
     sortBy: "asc",
   },
   {
-    componentId: `etablissement_gestionnaire_actif`,
-    dataField: "etablissement_gestionnaire_actif.keyword",
+    componentId: `siret_actif`,
+    dataField: "siret_actif.keyword",
     title: "Statut du SIRET",
     filterLabel: "Statut du SIRET",
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],

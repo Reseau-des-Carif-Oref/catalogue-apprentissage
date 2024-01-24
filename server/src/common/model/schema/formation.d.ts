@@ -288,14 +288,6 @@ export interface Formation {
    */
   contenu?: string;
   /**
-   * SIRET actif ou inactif pour l'établissement gestionnaire
-   */
-  etablissement_gestionnaire_actif?: string;
-  /**
-   * SIRET actif ou inactif pour l'établissement formateur
-   */
-  etablissement_formateur_actif?: string;
-  /**
    * Badge siret actif/inactif
    */
   siret_actif?: string;
@@ -400,6 +392,10 @@ export interface Formation {
    */
   etablissement_gestionnaire_courriel?: string;
   /**
+   * SIRET actif ou inactif pour l'établissement gestionnaire
+   */
+  etablissement_gestionnaire_actif?: string;
+  /**
    * Identifiant établissement formateur
    */
   etablissement_formateur_id?: string;
@@ -495,6 +491,10 @@ export interface Formation {
    * Adresse email de contact de l'établissement formateur
    */
   etablissement_formateur_courriel?: string;
+  /**
+   * SIRET actif ou inactif pour l'établissement formateur
+   */
+  etablissement_formateur_actif?: string;
   /**
    * Etablissement reference est soit formateur soit le gestionnaire
    */

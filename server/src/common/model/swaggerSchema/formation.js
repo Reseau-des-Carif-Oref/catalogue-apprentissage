@@ -528,16 +528,6 @@ module.exports = {
         default: "null",
         description: "Identifiant de la formation",
       },
-      etablissement_gestionnaire_actif: {
-        type: "string",
-        default: "null",
-        description: "SIRET actif ou inactif pour l'établissement gestionnaire",
-      },
-      etablissement_formateur_actif: {
-        type: "string",
-        default: "null",
-        description: "SIRET actif ou inactif pour l'établissement formateur",
-      },
       siret_actif: {
         type: "string",
         default: "null",
@@ -668,6 +658,11 @@ module.exports = {
         default: "null",
         description: "Adresse email de contact de l'établissement gestionnaire",
       },
+      etablissement_gestionnaire_actif: {
+        type: "string",
+        default: "null",
+        description: "SIRET actif ou inactif pour l'établissement gestionnaire",
+      },
       etablissement_formateur_id: {
         type: "string",
         default: "null",
@@ -787,6 +782,11 @@ module.exports = {
         type: "string",
         default: "null",
         description: "Adresse email de contact de l'établissement formateur",
+      },
+      etablissement_formateur_actif: {
+        type: "string",
+        default: "null",
+        description: "SIRET actif ou inactif pour l'établissement formateur",
       },
       etablissement_reference: {
         type: "string",
