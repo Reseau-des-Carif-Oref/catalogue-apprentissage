@@ -523,18 +523,6 @@ const formationSchema = {
     description: "Identifiant de la formation",
   },
 
-  etablissement_gestionnaire_actif: {
-    type: String,
-    default: null,
-    description: "SIRET actif ou inactif",
-  },
-
-  etablissement_formateur_actif: {
-    type: String,
-    default: null,
-    description: "SIRET actif ou inactif",
-  },
-
   siret_actif: {
     type: String,
     default: null,
