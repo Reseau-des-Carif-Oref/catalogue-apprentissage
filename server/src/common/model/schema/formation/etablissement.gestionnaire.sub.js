@@ -123,6 +123,11 @@ const etablissementGestionnaireInfo = {
     default: null,
     description: "Adresse email de contact de l'établissement gestionnaire",
   },
+  etablissement_gestionnaire_actif: {
+    type: String,
+    default: null,
+    description: "SIRET actif ou inactif pour l'établissement gestionnaire",
+  },
 };
 
 module.exports = etablissementGestionnaireInfo;

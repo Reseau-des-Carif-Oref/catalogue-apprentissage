@@ -1,14 +1,13 @@
 import React from "react";
 import { Badge, Flex, Text } from "@chakra-ui/react";
-import { CheckLine, Question } from "../../theme/components/icons";
 
 export const DureeBadge = ({ value, ...props }) => {
-  if (value !== "D") {
+  if (!["D", null].includes(value)) {
     return null;
   }
 
   const text = "Durée non renseignée";
-  const variant = "ok";
+  const variant = "notOk";
   const Icon = null;
 
   return (
