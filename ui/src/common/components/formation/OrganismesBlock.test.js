@@ -168,7 +168,6 @@ test("should render the organismes block in one establishment mode", async () =>
 
   const { queryByText, getByText } = renderWithRouter(<OrganismesBlock formation={formation} />);
 
-
   await waitFor(() => getByText("2021"));
   const tag1 = queryByText("2021");
   const tag2 = queryByText("my_test_tag");
@@ -183,7 +182,7 @@ test("should render the organismes block in 2 establishments mode", async () => 
   }));
 
   const form = { ...formation, etablissement_gestionnaire_siret: "test", etablissement_gestionnaire_id: "test" };
-  const { queryByText, getByText, getAllByTestId } = renderWithRouter(<OrganismesBlock formation={form} />);
+  const { getByText, getAllByTestId } = renderWithRouter(<OrganismesBlock formation={form} />);
 
   await waitFor(() => getByText("2023"));
 
