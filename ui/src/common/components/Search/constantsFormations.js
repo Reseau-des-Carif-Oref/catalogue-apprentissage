@@ -639,7 +639,7 @@ const facetDefinition = () => [
     filterLabel: "Région",
     selectAllLabel: "Toutes les régions",
     sortBy: "asc",
-  },c
+  },
   {
     componentId: `num_departement`,
     dataField: "num_departement.keyword",
