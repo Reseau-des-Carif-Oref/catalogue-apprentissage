@@ -7,7 +7,7 @@ const BunyanMongodbStream = require("bunyan-mongodb-stream");
 const { Log } = require("./model/index");
 
 const createStreams = () => {
-  const { type, level } = config.log;
+  const { type = "stdout", level = "info" } = config?.log ?? {};
   const envName = config.env;
 
   const jsonStream = () => {
@@ -18,9 +18,9 @@ const createStreams = () => {
     };
   };
 
-  const consoleStream = () => {
+  const consoleStream = (type) => {
     const pretty = new PrettyStream();
-    pretty.pipe(process.stdout);
+    pretty.pipe(process[type]);
     return {
       name: "console",
       level,
@@ -40,8 +40,12 @@ const createStreams = () => {
     const stream = new BunyanSlack(
       {
         webhook_url: config.slackWebhookUrl,
+        iconUrl: "https://catalogue-apprentissage.intercariforef.org/favicon.ico",
         customFormatter: (record, levelName) => {
-          if (record.type === "http") {
+          let type = record.type;
+          let ip;
+          if (type === "http") {
+            ip = record.request?.headers?.["x-forwarded-for"];
             record = {
               url: record.request.url.relative,
               statusCode: record.response.statusCode,
@@ -49,23 +53,29 @@ const createStreams = () => {
             };
           }
           return {
-            text: util.format(`[%s][${envName}] %O`, levelName.toUpperCase(), record),
+            text: util.format(
+              `[${envName}] [%s]${type ? " (" + type + ")" : ""}${type === "http" ? ` [${ip}]` : ""} _%s_\
+              ${`\`\`\`${record.msg ?? util.format(record)}\`\`\``}
+              `,
+              levelName.toUpperCase(),
+              new Date().toLocaleString("fr-FR")
+            ),
           };
         },
       },
       (error) => {
-        console.log("Unable to send log to slack", error);
+        console.error("Unable to send log to slack", error);
       }
     );
 
     return {
       name: "slack",
-      level: "error",
+      level: "info",
       stream,
     };
   };
 
-  const streams = [type === "console" ? consoleStream() : jsonStream(), mongoDBStream()];
+  const streams = [type === "json" ? jsonStream() : consoleStream(type), mongoDBStream()];
   if (config.slackWebhookUrl) {
     streams.push(slackStream());
   }
