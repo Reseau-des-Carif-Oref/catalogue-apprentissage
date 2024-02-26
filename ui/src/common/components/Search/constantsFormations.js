@@ -475,7 +475,7 @@ const facetDefinition = () => [
     filterLabel: "Région",
     selectAllLabel: "Toutes les régions",
     sortBy: "asc",
-  },
+  },c
   {
     componentId: `num_departement`,
     dataField: "num_departement.keyword",
@@ -483,6 +483,7 @@ const facetDefinition = () => [
     filterLabel: "Département",
     selectAllLabel: "Tous",
     sortBy: "asc",
+    size: 150,
     transformData: (data) => data.map((d) => ({ ...d, key: `${d.key} - ${departements[d.key]}` })),
     customQuery: (values) => ({
       query: values?.length && {
