@@ -551,6 +551,20 @@ const formationSchema = {
     description: "Numéros de téléphone",
   },
 
+  cle_me_remplace: {
+    index: true,
+    type: [String],
+    default: [],
+    description: "Clé ME remplace",
+  },
+
+  cle_me_remplace_par: {
+    index: true,
+    type: [String],
+    default: [],
+    description: "Clé ME remplacé par",
+  },
+
   ...etablissementGestionnaireInfo,
   ...etablissementFormateurInfo,
   ...etablissementReferenceInfo,
