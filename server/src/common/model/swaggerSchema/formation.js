@@ -819,6 +819,22 @@ module.exports = {
         description: "Date de création de l'établissement",
         format: "date-time",
       },
+      cle_me_remplace: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+        default: [],
+        description: "Clé ministère éducatif remplace",
+      },
+      cle_me_remplace_par: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+        default: [],
+        description: "Clé ministère éducatif remplacé par",
+      },
       _id: {
         type: "string",
         pattern: "^[0-9a-fA-F]{24}$",
