@@ -214,6 +214,16 @@ export const columnsDefinition = [
     accessor: "etablissement_formateur_code_postal",
     width: 200,
     exportable: true,
+    formatter: (value) => {
+      switch (value) {
+        case true:
+          return "OUI";
+        case false:
+          return "NON";
+        default:
+          return "";
+      }
+    },
   },
   {
     Header: "Formateur: ville",
