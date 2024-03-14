@@ -100,5 +100,5 @@ export const departements = {
   973: "Guyane",
   974: "La réunion",
   976: "Mayotte",
-  978: "Saint-Martin"
+  978: "Saint-Martin",
 };

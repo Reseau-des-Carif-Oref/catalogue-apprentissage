@@ -527,6 +527,24 @@ const formationSchema = {
     description: "Numéros de téléphone",
   },
 
+  cle_me_remplace: {
+    type: "array",
+    items: {
+      type: "string",
+    },
+    default: [],
+    description: "Clé me remplace",
+  },
+
+  cle_me_remplace_par: {
+    type: "array",
+    items: {
+      type: "string",
+    },
+    default: [],
+    description: "Clé me remplacé par",
+  },
+
   // Etablissements
   ...etablissementGestionnaireInfo,
   ...etablissementFormateurInfo,

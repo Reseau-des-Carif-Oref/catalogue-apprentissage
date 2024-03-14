@@ -1,5 +1,6 @@
 import { escapeDiacritics } from "../../utils/downloadUtils";
 import helpText from "../../../locales/helpText.json";
+import { departements } from "../../../constants/departements";
 
 const FILTERS = () => [`QUERYBUILDER`, `SEARCH`, `num_departement`, `nom_academie`, `tags`, "published", "qualite"];
 
@@ -201,6 +202,16 @@ const facetDefinition = () => [
     filterLabel: "Département",
     selectAllLabel: "Tous",
     sortBy: "asc",
+    transformData: (data) => data.map((d) => ({ ...d, key: `${d.key} - ${departements[d.key]}` })),
+    customQuery: (values) => ({
+      query: values?.length && {
+        terms: {
+          "num_departement.keyword": values?.map((value) =>
+            typeof value === "string" ? value?.split(" - ")[0] : value
+          ),
+        },
+      },
+    }),
   },
   {
     componentId: `tags`,

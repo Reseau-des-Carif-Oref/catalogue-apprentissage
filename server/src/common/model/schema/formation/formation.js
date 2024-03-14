@@ -20,6 +20,10 @@ const mefSchema = new mongoose.Schema(
     modalite: {
       type: modaliteSchema,
     },
+    date_fermeture: {
+      type: Date,
+      default: null,
+    },
   },
   { _id: false }
 );
@@ -545,6 +549,20 @@ const formationSchema = {
     type: String,
     default: null,
     description: "Numéros de téléphone",
+  },
+
+  cle_me_remplace: {
+    index: true,
+    type: [String],
+    default: [],
+    description: "Clé ME remplace",
+  },
+
+  cle_me_remplace_par: {
+    index: true,
+    type: [String],
+    default: [],
+    description: "Clé ME remplacé par",
   },
 
   ...etablissementGestionnaireInfo,
