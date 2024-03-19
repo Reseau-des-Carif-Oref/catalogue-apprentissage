@@ -553,6 +553,22 @@ module.exports = {
         default: "null",
         description: "Numéros de téléphone",
       },
+      cle_me_remplace: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+        default: [],
+        description: "Clé ME remplace",
+      },
+      cle_me_remplace_par: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+        default: [],
+        description: "Clé ME remplacé par",
+      },
       etablissement_gestionnaire_id: {
         type: "string",
         default: "null",
@@ -818,22 +834,6 @@ module.exports = {
         default: "null",
         description: "Date de création de l'établissement",
         format: "date-time",
-      },
-      cle_me_remplace: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-        default: [],
-        description: "Clé ministère éducatif remplace",
-      },
-      cle_me_remplace_par: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-        default: [],
-        description: "Clé ministère éducatif remplacé par",
       },
       _id: {
         type: "string",

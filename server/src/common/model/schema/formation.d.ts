@@ -304,6 +304,14 @@ export interface Formation {
    */
   num_tel?: string;
   /**
+   * Clé ME remplace
+   */
+  cle_me_remplace?: string[];
+  /**
+   * Clé ME remplacé par
+   */
+  cle_me_remplace_par?: string[];
+  /**
    * Identifiant établissement gestionnaire
    */
   etablissement_gestionnaire_id?: string;
