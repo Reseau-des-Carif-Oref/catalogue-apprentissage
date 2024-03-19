@@ -247,43 +247,6 @@ export const columnsDefinition = [
     width: 200,
     exportable: true,
   },
-  {
-    Header: "Lieu: UAI",
-    accessor: "uai_formation",
-    width: 200,
-    exportable: true,
-  },
-  {
-    Header: "Lieu: UAI édité ?",
-    accessor: "editedFields.uai_formation",
-    width: 200,
-    exportable: true,
-    formatter: (value) => (value ? "Oui" : "Non"),
-  },
-  {
-    Header: "Lieu: UAI date d'édition",
-    accessor: "updates_history",
-    width: 200,
-    exportable: true,
-    formatter: (value) => {
-      const uai_updated_history = value?.filter((value) => !!value.to?.uai_formation)?.sort(sortDescending);
-
-      return uai_updated_history?.length
-        ? new Date(uai_updated_history[0]?.updated_at).toLocaleDateString("fr-FR")
-        : "";
-    },
-  },
-  {
-    Header: "Lieu: UAI édité par",
-    accessor: "updates_history",
-    width: 200,
-    exportable: true,
-    formatter: (value) => {
-      const uai_updated_history = value?.filter((value) => !!value.to?.uai_formation)?.sort(sortDescending);
-
-      return uai_updated_history?.length ? uai_updated_history[0]?.to.last_update_who : "";
-    },
-  },
 
   {
     Header: "Lieu: adresse",
@@ -542,14 +505,6 @@ export const columnsDefinition = [
   /**
    * Offre détail
    */
-
-  {
-    Header: "Offre: Nouvelle fiche",
-    accessor: "nouvelle_fiche",
-    width: 200,
-    exportable: true,
-    formatter: booleanFormatter,
-  },
 
   {
     Header: "Offre: Dates de formation",
