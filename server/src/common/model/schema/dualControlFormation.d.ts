@@ -272,6 +272,14 @@ export interface DualControlFormation {
    */
   num_tel?: string;
   /**
+   * Clé me remplace
+   */
+  cle_me_remplace?: unknown[];
+  /**
+   * Clé me remplacé par
+   */
+  cle_me_remplace_par?: unknown[];
+  /**
    * Numéro siret gestionnaire
    */
   etablissement_gestionnaire_siret?: string;
