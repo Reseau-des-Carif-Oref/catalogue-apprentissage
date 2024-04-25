@@ -215,7 +215,7 @@ export default ({ match }) => {
         setLoading(true);
         const apiURL = `/api/v1/entity/formation/`;
         // FIXME select={"__v" :0} hack to get updates_history
-        const form = await _get(`${apiURL}${match.params.id}?select={"__v":0}`, false);
+        const form = await _get(`${apiURL}${match.params.cle_ministere_educatif}?select={"__v":0}`, false);
 
         if (!mountedRef.current) return null;
         // don't display archived formations
