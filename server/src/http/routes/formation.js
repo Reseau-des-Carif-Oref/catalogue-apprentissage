@@ -164,11 +164,11 @@ module.exports = () => {
     return res.status(404).send({ message: `Item doesn't exist` });
   });
 
-  const getFormationById = tryCatch(async (req, res) => {
+  const getFormationByCleMe = tryCatch(async (req, res) => {
     const qs = sanitize(req.query);
     const sanitizedParams = sanitize(req.params);
 
-    const itemId = sanitizedParams.id;
+    const itemId = sanitizedParams.cle_ministere_educatif;
     const select =
       qs && qs.select
         ? JSON.parse(qs.select)
@@ -332,7 +332,7 @@ module.exports = () => {
   /**
    * @swagger
    *
-   * /entity/formation/{id}:
+   * /entity/formation/{cle_ministere_educatif}:
    *   get:
    *     summary: Permet de récupérer une formation spécifique
    *     tags:
@@ -343,7 +343,7 @@ module.exports = () => {
    *       **Pour definir vos critères de recherche veuillez regarder le schéma formation (en bas de cette page)**
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: cle_ministere_educatif
    *         required: true
    *         schema:
    *           type: string
@@ -354,8 +354,8 @@ module.exports = () => {
    *       404:
    *         description: KO
    */
-  router.get("/formation/:id", getFormationById);
-  router.get("/formation2021/:id", getFormationById);
+  router.get("/formation/:cle_ministere_educatif", getFormationByCleMe);
+  router.get("/formation2021/:cle_ministere_educatif", getFormationByCleMe);
 
   /**
    * Stream formations as json array
