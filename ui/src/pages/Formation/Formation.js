@@ -208,8 +208,6 @@ export default ({ match }) => {
   const history = useHistory();
   const [user] = useAuth();
   const mountedRef = useRef(true);
-  const { cle_ministere_educatif } = useParams(); // Utiliser useParams pour récupérer la clé
-
 
   useEffect(() => {
     (async () => {
