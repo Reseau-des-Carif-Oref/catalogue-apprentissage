@@ -238,9 +238,6 @@ export default ({ match }) => {
     };
   }, [match]);
 
-  /* The above code is written in JavaScript and it seems to be a multiline comment block using the `/*
-  */` syntax. It does not contain any executable code, but it is used for providing comments or
-  documentation about the code. */
   const title = loading ? "" : `${formation?.intitule_long ?? "Formation inconnue"}`;
   setTitle(title);
 
