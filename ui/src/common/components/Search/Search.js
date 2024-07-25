@@ -261,21 +261,18 @@ export default React.memo(({ location, searchState, context, extraButtons = null
                                 "fr-FR"
                               )} organismes affichés sur ${countEtablissement.toLocaleString("fr-FR")} organismes`}
                           </span>
-                          {(hasAccessTo(auth, "page_catalogue/export_btn") ||
-                            hasAccessTo(auth, "page_organismes/export_btn")) && (
-                            <ExportButton
-                              index={base}
-                              filters={filters}
-                              columns={columnsDefinition
-                                .filter((def) => def.exportable)
-                                .map((def) => ({
-                                  header: def.Header,
-                                  fieldName: def.accessor,
-                                  formatter: def.formatter,
-                                }))}
-                              context={context}
-                            />
-                          )}
+                          <ExportButton
+                            index={base}
+                            filters={filters}
+                            columns={columnsDefinition
+                              .filter((def) => def.exportable)
+                              .map((def) => ({
+                                header: def.Header,
+                                fieldName: def.accessor,
+                                formatter: def.formatter,
+                              }))}
+                            context={context}
+                          />
                           {extraButtons}
                         </div>
                       );
