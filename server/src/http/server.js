@@ -37,14 +37,24 @@ const options = {
     openapi: "3.0.0",
     info: {
       title: "Catalogue apprentissage",
-      version: "1.0.0",
+      version: "1.0.1",
       description: `Vous trouverez ici la définition de l'api catalogue apprentissage<br/><br/>
+      <img src="https://www.intercariforef.org/sites/default/files/logo-rco.png" />
       <h3><strong>${config.publicUrl}/api/v1</strong></h3><br/>
+      Bienvenue sur l'API du <strong>Catalogue national des offres de formation en apprentissage</strong>, géré par le <a href="https://www.intercariforef.org/">Réseau des Carif-Oref</a>.<br />
+La collecte de l'offre de formation en apprentissage est une mission confiée par décret au <a href="https://www.intercariforef.org/referencer-son-offre-de-formation">Carif-Oref</a> de chaque territoire. La présente API met à disposition l'ensemble des offres collectées en France métropolitaine et dans les Outre-Mer.<br />
+L'API est composée de deux catalogues :
+<ul>
+<li>celui des formations;</li>
+<li>celui des établissements de formation en apprentissage ayant déclaré une formation en apprentissage auprès d'un Carif-Oref.</li>
+</ul>
+La documentation de chaque appel est disponible en bas de la page dans la partie « Schéma ».<br />
+
       Contact:
       `,
       contact: {
-        name: "Mission Nationale Apprentissage",
-        url: "https://mission-apprentissage.gitbook.io/general/",
+        name: "RCO",
+        url: "https://www.intercariforef.org",
         email: "pole-apprentissage@intercariforef.org",
       },
     },

@@ -237,8 +237,9 @@ module.exports = () => {
     })
   );
 
-  /**
-   * @swagger
+  /*
+   * Si on veut remettre l'appel siret-uai, décommenter la ligne ci-dessous.
+   * //@swagger
    *
    * /entity/etablissements/siret-uai:
    *   get:
@@ -283,6 +284,7 @@ module.exports = () => {
    *                    items:
    *                      $ref: '#/components/schemas/etablissement'
    */
+  /*
   router.get(
     "/etablissements/siret-uai",
     tryCatch(async (req, res) => {
@@ -306,6 +308,7 @@ module.exports = () => {
       });
     })
   );
+  */
 
   return router;
 };
