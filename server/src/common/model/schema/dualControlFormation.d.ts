@@ -177,7 +177,7 @@ export interface DualControlFormation {
   /**
    * Siret du lieu de formation
    */
-  lieu_formation_siret?: string;
+  etablissement_lieu_formation_siret?: string;
   /**
    * **[DEPRECATED]** Id de formation RCO (id_formation + id_action + id_certifinfo)
    */

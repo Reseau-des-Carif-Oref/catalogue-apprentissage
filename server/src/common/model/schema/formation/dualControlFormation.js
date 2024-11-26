@@ -373,7 +373,7 @@ const formationSchema = {
     default: null,
     description: "Adresse du lieu de formation",
   },
-  lieu_formation_siret: {
+  etablissement_lieu_formation_siret: {
     type: String,
     default: null,
     description: "Siret du lieu de formation",

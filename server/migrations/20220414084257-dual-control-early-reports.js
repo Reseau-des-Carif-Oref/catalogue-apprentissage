@@ -67,7 +67,7 @@ module.exports = {
         code_postal: 1298,
         lieu_formation_geo_coordonnees: 1246,
         code_commune_insee: 752,
-        lieu_formation_siret: 0,
+        etablissement_lieu_formation_siret: 0,
         lieu_formation_adresse_computed: 51228,
         lieu_formation_geo_coordonnees_computed: 51269,
         distance: 51100,
