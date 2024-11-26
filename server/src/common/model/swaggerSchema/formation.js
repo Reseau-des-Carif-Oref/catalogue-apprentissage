@@ -569,6 +569,16 @@ module.exports = {
         default: [],
         description: "Clé ME remplacé par",
       },
+      etablissement_lieu_siret_actif: {
+        type: "string",
+        default: "null",
+        description: "Etablissement lieu actif",
+      },
+      etablissement_lieu_formation_uai: {
+        type: "string",
+        default: "null",
+        description: "Etablissement uai actif",
+      },
       etablissement_gestionnaire_id: {
         type: "string",
         default: "null",

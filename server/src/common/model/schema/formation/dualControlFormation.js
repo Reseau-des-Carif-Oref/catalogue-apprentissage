@@ -545,6 +545,18 @@ const formationSchema = {
     description: "Clé me remplacé par",
   },
 
+  etablissement_lieu_siret_actif: {
+    type: String,
+    default: null,
+    description: "Lieu siret actif (catalogue etablissement)",
+  },
+
+  etablissement_lieu_formation_uai: {
+    type: String,
+    default: null,
+    description: "Lieu formation uai (catalogue etablissement)",
+  },  
+
   // Etablissements
   ...etablissementGestionnaireInfo,
   ...etablissementFormateurInfo,
