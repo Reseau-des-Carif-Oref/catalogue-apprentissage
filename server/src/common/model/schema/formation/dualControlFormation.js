@@ -555,7 +555,7 @@ const formationSchema = {
     type: String,
     default: null,
     description: "Lieu formation uai (catalogue etablissement)",
-  },  
+  },
 
   // Etablissements
   ...etablissementGestionnaireInfo,
