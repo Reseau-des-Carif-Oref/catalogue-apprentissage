@@ -599,6 +599,34 @@ const queryBuilderField = [
 
 const facetDefinition = () => [
   {
+    componentId: `formation_distance`,
+    dataField: "cle_ministere_educatif.keyword",
+    title: "Formation 100% à distance",
+    filterLabel: "Formation 100% à distance",
+    selectAllLabel: "Tous",
+    sortBy: "asc",
+    transformData: (data) => [
+      { key: "Oui", doc_count: data.filter(d => d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0) },
+      { key: "Non", doc_count: data.filter(d => !d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0) },
+    ],
+    customQuery: (values) => {
+      if (values.length === 1) {
+        return {
+          query: {
+            bool: {
+              [values[0] === "Oui" ? "must" : "must_not"]: {
+                wildcard: {
+                  "cle_ministere_educatif.keyword": "*99999#LAD"
+                }
+              }
+            }
+          }
+        };
+      }
+      return {};
+    },
+  },
+  {
     componentId: `region`,
     dataField: "region.keyword",
     title: "Région",
