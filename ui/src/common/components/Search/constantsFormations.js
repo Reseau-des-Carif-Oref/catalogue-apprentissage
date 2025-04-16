@@ -606,8 +606,14 @@ const facetDefinition = () => [
     selectAllLabel: "Tous",
     sortBy: "asc",
     transformData: (data) => [
-      { key: "Oui", doc_count: data.filter(d => d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0) },
-      { key: "Non", doc_count: data.filter(d => !d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0) },
+      {
+        key: "Oui",
+        doc_count: data.filter((d) => d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0),
+      },
+      {
+        key: "Non",
+        doc_count: data.filter((d) => !d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0),
+      },
     ],
     customQuery: (values) => {
       if (values.length === 1) {
@@ -616,11 +622,11 @@ const facetDefinition = () => [
             bool: {
               [values[0] === "Oui" ? "must" : "must_not"]: {
                 wildcard: {
-                  "cle_ministere_educatif.keyword": "*99999#LAD"
-                }
-              }
-            }
-          }
+                  "cle_ministere_educatif.keyword": "*99999#LAD",
+                },
+              },
+            },
+          },
         };
       }
       return {};
