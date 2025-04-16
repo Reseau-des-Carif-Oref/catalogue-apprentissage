@@ -605,16 +605,23 @@ const facetDefinition = () => [
     filterLabel: "Formation 100% à distance",
     selectAllLabel: "Tous",
     sortBy: "asc",
-    transformData: (data) => [
-      {
-        key: "Oui",
-        doc_count: data.filter((d) => d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0),
-      },
-      {
-        key: "Non",
-        doc_count: data.filter((d) => !d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0),
-      },
-    ],
+    size: 1000,
+    transformData: (data) => {
+      const total = data.reduce((acc, curr) => acc + curr.doc_count, 0);
+      const ouiCount = data.filter((d) => d.key && d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0);
+      const nonCount = total - ouiCount;
+      
+      return [
+        {
+          key: "Oui",
+          doc_count: ouiCount,
+        },
+        {
+          key: "Non",
+          doc_count: nonCount,
+        }
+      ];
+    },
     customQuery: (values) => {
       if (values.length === 1) {
         return {
