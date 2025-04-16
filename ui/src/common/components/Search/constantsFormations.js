@@ -605,21 +605,25 @@ const facetDefinition = () => [
     filterLabel: "Formation 100% à distance",
     selectAllLabel: "Tous",
     sortBy: "asc",
-    size: 1000,
+    defaultQuery: () => ({
+      aggs: {
+        "formation_distance": {
+          terms: {
+            field: "cle_ministere_educatif.keyword",
+            size: 10000,
+          }
+        }
+      }
+    }),
     transformData: (data) => {
-      const total = data.reduce((acc, curr) => acc + curr.doc_count, 0);
-      const ouiCount = data.filter((d) => d.key && d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0);
-      const nonCount = total - ouiCount;
+      const all = data.reduce((acc, curr) => acc + curr.doc_count, 0);
+      const oui = data
+        .filter(d => d.key && typeof d.key === "string" && d.key.endsWith("99999#LAD"))
+        .reduce((acc, curr) => acc + curr.doc_count, 0);
       
       return [
-        {
-          key: "Oui",
-          doc_count: ouiCount,
-        },
-        {
-          key: "Non",
-          doc_count: nonCount,
-        }
+        { key: "Oui", doc_count: oui },
+        { key: "Non", doc_count: all - oui }
       ];
     },
     customQuery: (values) => {
