@@ -605,6 +605,7 @@ const facetDefinition = () => [
     filterLabel: "Type de clé ministère",
     sortBy: "desc",
     showSearch: false,
+    size: 70000,
     transformData: (data) => {
       const oui = [];
       const non = [];
