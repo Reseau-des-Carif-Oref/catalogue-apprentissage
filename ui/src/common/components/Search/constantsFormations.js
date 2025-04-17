@@ -632,12 +632,12 @@ const facetDefinition = () => [
                 must: [
                   {
                     wildcard: {
-                      "cle_ministere_educatif.keyword": "*LAD*"
-                    }
-                  }
-                ]
-              }
-            }
+                      "cle_ministere_educatif.keyword": "*LAD*",
+                    },
+                  },
+                ],
+              },
+            },
           };
         } else {
           return {
@@ -646,12 +646,12 @@ const facetDefinition = () => [
                 must_not: [
                   {
                     wildcard: {
-                      "cle_ministere_educatif.keyword": "*LAD*"
-                    }
-                  }
-                ]
-              }
-            }
+                      "cle_ministere_educatif.keyword": "*LAD*",
+                    },
+                  },
+                ],
+              },
+            },
           };
         }
       }
@@ -679,7 +679,7 @@ const facetDefinition = () => [
       query: values?.length && {
         terms: {
           "num_departement.keyword": values?.map((value) =>
-            typeof value === "string" ? value?.split(" - ")[0] : value
+            typeof value === "string" ? value?.split(" - ")[0] : value,
           ),
         },
       },
@@ -722,7 +722,7 @@ const facetDefinition = () => [
     customQuery: (values) => ({
       query: values?.length && {
         terms: {
-          "annee.keyword": values?.map((value) => Object.keys(annees).find((annee) => annees[annee] === value)),
+          "annee.keyword": values?.map((value) => Object.keys(annees).find((annee) => annees[annee] === value),),
         },
       },
     }),
@@ -739,7 +739,7 @@ const facetDefinition = () => [
     customQuery: (values) => ({
       query: values?.length && {
         terms: {
-          "duree.keyword": values?.map((value) => (typeof value === "string" ? value?.split(" ")[0] : value)),
+          "duree.keyword": values?.map((value) => (typeof value === "string" ? value?.split(" ")[0] : value),),
         },
       },
     }),
