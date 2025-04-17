@@ -599,42 +599,30 @@ const queryBuilderField = [
 
 const facetDefinition = () => [
   {
-    componentId: "formation_distance",
+    componentId: "cle_ministere_educatif_lad",
     dataField: "cle_ministere_educatif.keyword",
-    title: "Formation 100% à distance",
-    filterLabel: "Formation 100% à distance",
-    selectAllLabel: "Tous",
-    sortBy: "asc",
-    size: 10000,
-    defaultQuery: () => ({
-      aggs: {
-        formation_distance_count: {
-          filter: {
-            wildcard: {
-              "cle_ministere_educatif.keyword": "*99999#LAD",
-            },
-          },
-        },
-        all_documents_count: {
-          value_count: {
-            field: "cle_ministere_educatif.keyword",
-          },
-        },
-      },
-    }),
-    renderItem: (label) => label,
-    transformData: (data, rawData) => {
-      const aggregations = rawData?.aggregations || {};
-
-      const total = aggregations.all_documents_count?.value || 0;
-
-      const oui = aggregations.formation_distance_count?.doc_count || 0;
-
-      const non = total - oui;
-
+    title: "Type de clé ministère",
+    filterLabel: "Type de clé ministère",
+    sortBy: "desc",
+    showSearch: false,
+    transformData: (data) => {
+      const oui = [];
+      const non = [];
+      
+      data.forEach((d) => {
+        if (d.key && d.key.includes("LAD")) {
+          oui.push({ ...d, key: "Oui" });
+        } else {
+          non.push({ ...d, key: "Non" });
+        }
+      });
+      
+      const ouiCount = oui.reduce((acc, curr) => acc + curr.doc_count, 0);
+      const nonCount = non.reduce((acc, curr) => acc + curr.doc_count, 0);
+      
       return [
-        { key: "Oui", doc_count: oui },
-        { key: "Non", doc_count: non },
+        { key: "Oui", doc_count: ouiCount },
+        { key: "Non", doc_count: nonCount }
       ];
     },
     customQuery: (values) => {
@@ -644,11 +632,11 @@ const facetDefinition = () => [
             bool: {
               [values[0] === "Oui" ? "must" : "must_not"]: {
                 wildcard: {
-                  "cle_ministere_educatif.keyword": "*99999#LAD",
-                },
-              },
-            },
-          },
+                  "cle_ministere_educatif.keyword": "*LAD*"
+                }
+              }
+            }
+          }
         };
       }
       return {};
