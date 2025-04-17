@@ -628,14 +628,10 @@ const facetDefinition = () => [
         if (values[0] === "Oui") {
           return {
             query: {
-              bool: {
-                must: [
-                  {
-                    wildcard: {
-                      "cle_ministere_educatif.keyword": "*LAD*",
-                    },
-                  },
-                ],
+              multi_match: {
+                query: "LAD",
+                fields: ["cle_ministere_educatif", "cle_ministere_educatif.keyword"],
+                type: "phrase_prefix",
               },
             },
           };
@@ -643,13 +639,13 @@ const facetDefinition = () => [
           return {
             query: {
               bool: {
-                must_not: [
-                  {
-                    wildcard: {
-                      "cle_ministere_educatif.keyword": "*LAD*",
-                    },
+                must_not: {
+                  multi_match: {
+                    query: "LAD",
+                    fields: ["cle_ministere_educatif", "cle_ministere_educatif.keyword"],
+                    type: "phrase_prefix",
                   },
-                ],
+                },
               },
             },
           };
