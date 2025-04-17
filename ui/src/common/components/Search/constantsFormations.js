@@ -625,7 +625,7 @@ const facetDefinition = () => [
     },
     renderItem: (label) => label,
     customQuery: (values) => {
-      if (values.length === 1) {
+      if (values?.length === 1) {
         return {
           query: {
             bool: {
