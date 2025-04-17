@@ -599,7 +599,7 @@ const queryBuilderField = [
 
 const facetDefinition = () => [
   {
-    componentId: "cle_ministere_educatif_lad",
+    componentId: "formation_distance",
     dataField: "cle_ministere_educatif.keyword",
     title: "Formation 100% à distance",
     filterLabel: "Formation 100% à distance",
@@ -623,33 +623,20 @@ const facetDefinition = () => [
         { key: "Non", doc_count: nonCount },
       ];
     },
+    renderItem: (label) => label,
     customQuery: (values) => {
       if (values.length === 1) {
-        if (values[0] === "Oui") {
-          return {
-            query: {
-              multi_match: {
-                query: "LAD",
-                fields: ["cle_ministere_educatif", "cle_ministere_educatif.keyword"],
-                type: "phrase_prefix",
-              },
-            },
-          };
-        } else {
-          return {
-            query: {
-              bool: {
-                must_not: {
-                  multi_match: {
-                    query: "LAD",
-                    fields: ["cle_ministere_educatif", "cle_ministere_educatif.keyword"],
-                    type: "phrase_prefix",
-                  },
+        return {
+          query: {
+            bool: {
+              [values[0] === "Oui" ? "must" : "must_not"]: {
+                wildcard: {
+                  "cle_ministere_educatif.keyword": "*LAD*",
                 },
               },
             },
-          };
-        }
+          }
+        };
       }
       return {};
     },
