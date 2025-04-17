@@ -608,7 +608,11 @@ const facetDefinition = () => [
     transformData: (data) => {
       // Calcul simple sans indentation problématique
       const total = data.reduce((acc, curr) => acc + curr.doc_count, 0);
-      const oui = data.filter((d) => d.key && d.key.endsWith && d.key.endsWith("99999#LAD")).reduce((acc, curr) => acc + curr.doc_count, 0);
+      const oui = data
+        .filter(
+          (d) => d.key && d.key.endsWith && d.key.endsWith("99999#LAD")
+        )
+        .reduce((acc, curr) => acc + curr.doc_count, 0);
       const non = total - oui;
       return [
         { key: "Oui", doc_count: oui },
