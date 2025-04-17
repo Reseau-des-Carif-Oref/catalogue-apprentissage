@@ -607,23 +607,23 @@ const facetDefinition = () => [
     sortBy: "asc",
     defaultQuery: () => ({
       aggs: {
-        "formation_distance": {
+        formation_distance: {
           terms: {
             field: "cle_ministere_educatif.keyword",
             size: 10000,
-          }
-        }
-      }
+          },
+        },
+      },
     }),
     transformData: (data) => {
       const all = data.reduce((acc, curr) => acc + curr.doc_count, 0);
       const oui = data
-        .filter(d => d.key && typeof d.key === "string" && d.key.endsWith("99999#LAD"))
+        .filter((d) => d.key && typeof d.key === "string" && d.key.endsWith("99999#LAD"))
         .reduce((acc, curr) => acc + curr.doc_count, 0);
       
       return [
         { key: "Oui", doc_count: oui },
-        { key: "Non", doc_count: all - oui }
+        { key: "Non", doc_count: all - oui },
       ];
     },
     customQuery: (values) => {
