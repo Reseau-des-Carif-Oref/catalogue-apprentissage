@@ -605,13 +605,33 @@ const facetDefinition = () => [
     filterLabel: "Formation 100% à distance",
     selectAllLabel: "Tous",
     sortBy: "asc",
-    transformData: (data) => {
-      // Calcul simple sans indentation problématique
-      const total = data.reduce((acc, curr) => acc + curr.doc_count, 0);
-      const oui = data
-        .filter((d) => d.key && d.key.endsWith && d.key.endsWith("99999#LAD"))
-        .reduce((acc, curr) => acc + curr.doc_count, 0);
+    size: 10000,
+    defaultQuery: () => ({
+      aggs: {
+        formation_distance_count: {
+          filter: {
+            wildcard: {
+              "cle_ministere_educatif.keyword": "*99999#LAD",
+            },
+          },
+        },
+        all_documents_count: {
+          value_count: {
+            field: "cle_ministere_educatif.keyword",
+          },
+        },
+      },
+    }),
+    renderItem: (label) => label,
+    transformData: (data, rawData) => {
+      const aggregations = rawData?.aggregations || {};
+
+      const total = aggregations.all_documents_count?.value || 0;
+
+      const oui = aggregations.formation_distance_count?.doc_count || 0;
+
       const non = total - oui;
+
       return [
         { key: "Oui", doc_count: oui },
         { key: "Non", doc_count: non },
