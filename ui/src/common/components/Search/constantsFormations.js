@@ -8,6 +8,7 @@ import { sortDescending } from "../../utils/historyUtils";
 const FILTERS = () => [
   "QUERYBUILDER",
   "SEARCH",
+  "formation_distance",
   "etablissement_formateur_siret",
   "etablissement_gestionnaire_siret",
   "num_academie",
@@ -626,10 +627,11 @@ const facetDefinition = () => [
     renderItem: (label) => label,
     customQuery: (values) => {
       if (values?.length === 1) {
+        const isOui = values[0] === "Oui";
         return {
           query: {
             bool: {
-              [values[0] === "Oui" ? "must" : "must_not"]: {
+              [isOui ? "must" : "must_not"]: {
                 wildcard: {
                   "cle_ministere_educatif.keyword": "*LAD*",
                 },
