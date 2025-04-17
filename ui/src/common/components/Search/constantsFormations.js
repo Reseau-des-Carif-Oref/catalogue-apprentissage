@@ -601,11 +601,11 @@ const facetDefinition = () => [
   {
     componentId: "cle_ministere_educatif_lad",
     dataField: "cle_ministere_educatif.keyword",
-    title: "Type de clé ministère",
-    filterLabel: "Type de clé ministère",
+    title: "Formation 100% à distance",
+    filterLabel: "Formation 100% à distance",
     sortBy: "desc",
     showSearch: false,
-    size: 70000,
+    size: 100000,
     transformData: (data) => {
       const oui = [];
       const non = [];
