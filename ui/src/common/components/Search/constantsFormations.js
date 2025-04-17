@@ -599,33 +599,16 @@ const queryBuilderField = [
 
 const facetDefinition = () => [
   {
-    componentId: `formation_distance`,
+    componentId: "formation_distance",
     dataField: "cle_ministere_educatif.keyword",
     title: "Formation 100% à distance",
     filterLabel: "Formation 100% à distance",
     selectAllLabel: "Tous",
     sortBy: "asc",
-    defaultQuery: () => ({
-      aggs: {
-        formation_distance: {
-          terms: {
-            field: "cle_ministere_educatif.keyword",
-            size: 10000,
-          },
-        },
-      },
-    }),
-    transformData: (data) => {
-      const all = data.reduce((acc, curr) => acc + curr.doc_count, 0);
-      const oui = data
-        .filter((d) => d.key && typeof d.key === "string" && d.key.endsWith("99999#LAD"))
-        .reduce((acc, curr) => acc + curr.doc_count, 0);
-      
-      return [
-        { key: "Oui", doc_count: oui },
-        { key: "Non", doc_count: all - oui },
-      ];
-    },
+    transformData: () => [
+      { key: "Oui", doc_count: 0 },
+      { key: "Non", doc_count: 0 },
+    ],
     customQuery: (values) => {
       if (values.length === 1) {
         return {
