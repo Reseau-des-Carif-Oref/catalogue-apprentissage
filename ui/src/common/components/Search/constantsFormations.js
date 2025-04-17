@@ -625,17 +625,35 @@ const facetDefinition = () => [
     },
     customQuery: (values) => {
       if (values.length === 1) {
-        return {
-          query: {
-            bool: {
-              [values[0] === "Oui" ? "must" : "must_not"]: {
-                wildcard: {
-                  "cle_ministere_educatif.keyword": "*LAD*",
-                },
-              },
-            },
-          },
-        };
+        if (values[0] === "Oui") {
+          return {
+            query: {
+              bool: {
+                must: [
+                  {
+                    wildcard: {
+                      "cle_ministere_educatif.keyword": "*LAD*"
+                    }
+                  }
+                ]
+              }
+            }
+          };
+        } else {
+          return {
+            query: {
+              bool: {
+                must_not: [
+                  {
+                    wildcard: {
+                      "cle_ministere_educatif.keyword": "*LAD*"
+                    }
+                  }
+                ]
+              }
+            }
+          };
+        }
       }
       return {};
     },
