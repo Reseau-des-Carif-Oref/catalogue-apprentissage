@@ -635,7 +635,7 @@ const facetDefinition = () => [
                 },
               },
             },
-          }
+          },
         };
       }
       return {};
