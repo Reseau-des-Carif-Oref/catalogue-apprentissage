@@ -608,7 +608,6 @@ const facetDefinition = () => [
     transformData: (data) => {
       const oui = [];
       const non = [];
-      
       data.forEach((d) => {
         if (d.key && d.key.includes("LAD")) {
           oui.push({ ...d, key: "Oui" });
@@ -616,10 +615,8 @@ const facetDefinition = () => [
           non.push({ ...d, key: "Non" });
         }
       });
-      
       const ouiCount = oui.reduce((acc, curr) => acc + curr.doc_count, 0);
       const nonCount = non.reduce((acc, curr) => acc + curr.doc_count, 0);
-      
       return [
         { key: "Oui", doc_count: ouiCount },
         { key: "Non", doc_count: nonCount },
@@ -663,7 +660,7 @@ const facetDefinition = () => [
       query: values?.length && {
         terms: {
           "num_departement.keyword": values?.map((value) =>
-            typeof value === "string" ? value?.split(" - ")[0] : value,
+            typeof value === "string" ? value?.split(" - ")[0] : value
           ),
         },
       },
