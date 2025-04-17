@@ -622,7 +622,7 @@ const facetDefinition = () => [
       
       return [
         { key: "Oui", doc_count: ouiCount },
-        { key: "Non", doc_count: nonCount }
+        { key: "Non", doc_count: nonCount },
       ];
     },
     customQuery: (values) => {
@@ -632,18 +632,18 @@ const facetDefinition = () => [
             bool: {
               [values[0] === "Oui" ? "must" : "must_not"]: {
                 wildcard: {
-                  "cle_ministere_educatif.keyword": "*LAD*"
-                }
-              }
-            }
-          }
+                  "cle_ministere_educatif.keyword": "*LAD*",
+                },
+              },
+            },
+          },
         };
       }
       return {};
     },
   },
   {
-    componentId: `region`,
+    componentId: "region",
     dataField: "region.keyword",
     title: "Région",
     filterLabel: "Région",
@@ -651,7 +651,7 @@ const facetDefinition = () => [
     sortBy: "asc",
   },
   {
-    componentId: `num_departement`,
+    componentId: "num_departement",
     dataField: "num_departement.keyword",
     title: "Département",
     filterLabel: "Département",
@@ -663,14 +663,14 @@ const facetDefinition = () => [
       query: values?.length && {
         terms: {
           "num_departement.keyword": values?.map((value) =>
-            typeof value === "string" ? value?.split(" - ")[0] : value
+            typeof value === "string" ? value?.split(" - ")[0] : value,
           ),
         },
       },
     }),
   },
   {
-    componentId: `niveau`,
+    componentId: "niveau",
     dataField: "niveau.keyword",
     title: "Niveau visé",
     filterLabel: "Niveau visé",
@@ -678,7 +678,7 @@ const facetDefinition = () => [
     sortBy: "asc",
   },
   {
-    componentId: `tags`,
+    componentId: "tags",
     dataField: "tags.keyword",
     title: "Début de formation (année)",
     filterLabel: "Début de formation (année)",
@@ -686,7 +686,7 @@ const facetDefinition = () => [
     sortBy: "asc",
   },
   {
-    componentId: `etablissement_gestionnaire_actif`,
+    componentId: "etablissement_gestionnaire_actif",
     dataField: "etablissement_gestionnaire_actif.keyword",
     title: "Statut du SIRET",
     filterLabel: "Statut du SIRET",
@@ -695,7 +695,7 @@ const facetDefinition = () => [
     sortBy: "asc",
   },
   {
-    componentId: `annee`,
+    componentId: "annee",
     dataField: "annee.keyword",
     title: "Année d'entrée en apprentissage",
     filterLabel: "Année d'entrée en apprentissage",
@@ -712,7 +712,7 @@ const facetDefinition = () => [
     }),
   },
   {
-    componentId: `duree`,
+    componentId: "duree",
     dataField: "duree.keyword",
     title: "Durée de la formation",
     filterLabel: "Durée de la formation",
@@ -729,7 +729,7 @@ const facetDefinition = () => [
     }),
   },
   {
-    componentId: `qualite`,
+    componentId: "qualite",
     dataField: "etablissement_gestionnaire_certifie_qualite",
     title: "Certifié Qualité",
     filterLabel: "Certifié Qualité",
@@ -752,7 +752,7 @@ const facetDefinition = () => [
     },
   },
   {
-    componentId: `habilite`,
+    componentId: "habilite",
     dataField: "etablissement_reference_habilite_rncp",
     title: "Habilité RNCP",
     filterLabel: "Habilité RNCP",
