@@ -605,10 +605,24 @@ const facetDefinition = () => [
     filterLabel: "Formation 100% à distance",
     selectAllLabel: "Tous",
     sortBy: "asc",
-    transformData: () => [
-      { key: "Oui", doc_count: 0 },
-      { key: "Non", doc_count: 0 },
-    ],
+    size: 10000,
+    transformData: (data) => {
+      // Calcul du total de tous les documents
+      const total = data.reduce((acc, curr) => acc + curr.doc_count, 0);
+      
+      // Filtrage des documents avec des clés se terminant par "99999#LAD"
+      const oui = data
+        .filter((d) => d.key && d.key.endsWith && d.key.endsWith("99999#LAD"))
+        .reduce((acc, curr) => acc + curr.doc_count, 0);
+      
+      // Le reste représente les documents "Non"
+      const non = total - oui;
+      
+      return [
+        { key: "Oui", doc_count: oui },
+        { key: "Non", doc_count: non },
+      ];
+    },
     customQuery: (values) => {
       if (values.length === 1) {
         return {
