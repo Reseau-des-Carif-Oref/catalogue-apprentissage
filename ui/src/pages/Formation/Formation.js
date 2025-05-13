@@ -33,9 +33,7 @@ import { CATALOGUE_GENERAL_LABEL, CATALOGUE_NON_ELIGIBLE_LABEL } from "../../con
 const endpointLBA = process.env.REACT_APP_ENDPOINT_LBA || "https://labonnealternance.apprentissage.beta.gouv.fr";
 
 const getLBAUrl = ({ cle_ministere_educatif = "" }) => {
-  return `${endpointLBA}/formation/${encodeURIComponent(
-    cle_ministere_educatif
-  )}/formation`;
+  return `${endpointLBA}/formation/${encodeURIComponent(cle_ministere_educatif)}/formation`;
 };
 
 const Formation = ({ formation }) => {
