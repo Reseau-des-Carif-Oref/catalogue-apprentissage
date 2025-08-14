@@ -577,6 +577,38 @@ const formationSchema = {
     description: "Etablissement uai actif",
   },
 
+  conditions_specifiques: {
+    type: String,
+    default: null,
+    maxlength: 3000,
+    description: "Conditions spécifiques d'accès à la formation",
+  },
+
+  effectif_minimal: {
+    type: [String],
+    default: [],
+    description: "Effectif minimal requis pour la formation",
+  },
+
+  capacite_simultanee: {
+    type: [String],
+    default: [],
+    description: "Capacité d'accueil simultanée",
+  },
+
+  capacite_cumulee: {
+    type: [String],
+    default: [],
+    description: "Capacité d'accueil cumulée",
+  },
+
+  referent_handicap: {
+    type: String,
+    default: null,
+    maxlength: 100,
+    description: "Référent handicap pour la formation",
+  },
+
   ...etablissementGestionnaireInfo,
   ...etablissementFormateurInfo,
   ...etablissementReferenceInfo,
