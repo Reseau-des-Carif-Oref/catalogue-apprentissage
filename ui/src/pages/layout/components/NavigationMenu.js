@@ -69,9 +69,7 @@ const NavLinks = ({ isOpen }) => {
         <NavItem to="/">Accueil</NavItem>
         <NavItem to="/recherche/formations">Catalogue des formations en apprentissage</NavItem>
         <NavItem to="/recherche/etablissements">Liste des organismes</NavItem>
-        {auth && hasAccessTo(auth, "page_import_status") && (
-          <NavItem to="/import-status">Statut des imports</NavItem>
-        )}
+        {auth && hasAccessTo(auth, "page_import_status") && <NavItem to="/import-status">Statut des imports</NavItem>}
         <NavItem to="/changelog">Journal des modifications</NavItem>
       </Flex>
     </Box>

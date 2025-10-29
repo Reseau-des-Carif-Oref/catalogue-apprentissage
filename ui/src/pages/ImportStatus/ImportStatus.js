@@ -110,12 +110,7 @@ const ImportStatus = () => {
   return (
     <Layout>
       <Container maxW="container.xl" py={8}>
-        <Breadcrumb
-          pages={[
-            { title: "Accueil", to: "/" },
-            { title: "Statut des imports MNA" },
-          ]}
-        />
+        <Breadcrumb pages={[{ title: "Accueil", to: "/" }, { title: "Statut des imports MNA" }]} />
 
         <VStack spacing={6} align="stretch">
           <Box>
@@ -195,9 +190,7 @@ const ImportStatus = () => {
               <CardBody>
                 <Stat>
                   <StatLabel>Formations dans le rapport</StatLabel>
-                  <StatNumber>
-                    {importData?.totalDualControlFormations?.toLocaleString("fr-FR") || 0}
-                  </StatNumber>
+                  <StatNumber>{importData?.totalDualControlFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
                   <StatHelpText>Dernier rapport d'import</StatHelpText>
                 </Stat>
               </CardBody>
@@ -264,8 +257,8 @@ const ImportStatus = () => {
             <Box>
               <AlertTitle>Information!</AlertTitle>
               <AlertDescription>
-                Le nom du fichier est reconstitué à partir des tags présents dans les données importées.
-                La date d'import correspond au moment où les données ont été insérées dans la base MongoDB.
+                Le nom du fichier est reconstitué à partir des tags présents dans les données importées. La date
+                d'import correspond au moment où les données ont été insérées dans la base MongoDB.
               </AlertDescription>
             </Box>
           </Alert>
