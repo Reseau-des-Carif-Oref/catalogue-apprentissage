@@ -83,4 +83,8 @@ export default [
     feature: "Message de maintenance",
     ref: "page_message_maintenance",
   },
+  {
+    feature: "Statut des imports MNA",
+    ref: "page_import_status",
+  },
 ];

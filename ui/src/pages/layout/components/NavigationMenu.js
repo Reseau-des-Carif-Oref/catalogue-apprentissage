@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Box, Container, Flex, Link, Text } from "@chakra-ui/react";
 import { MenuFill, Close } from "../../../theme/components/icons";
+import useAuth from "../../../common/hooks/useAuth";
+import { hasAccessTo } from "../../../common/utils/rolesUtils";
 
 const NavigationMenu = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,6 +54,8 @@ const NavItem = ({ children, to = "/", ...rest }) => {
 };
 
 const NavLinks = ({ isOpen }) => {
+  const [auth] = useAuth();
+
   return (
     <Box display={{ base: isOpen ? "block" : "none", md: "block" }} flexBasis={{ base: "100%", md: "auto" }}>
       <Flex
@@ -65,6 +69,9 @@ const NavLinks = ({ isOpen }) => {
         <NavItem to="/">Accueil</NavItem>
         <NavItem to="/recherche/formations">Catalogue des formations en apprentissage</NavItem>
         <NavItem to="/recherche/etablissements">Liste des organismes</NavItem>
+        {auth && hasAccessTo(auth, "page_import_status") && (
+          <NavItem to="/import-status">Statut des imports</NavItem>
+        )}
         <NavItem to="/changelog">Journal des modifications</NavItem>
       </Flex>
     </Box>
