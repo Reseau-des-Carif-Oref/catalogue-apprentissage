@@ -46,15 +46,31 @@ const ImportStatus = () => {
   const fetchImportStatus = async () => {
     try {
       setLoading(true);
+      setError(null);
+      console.log("Fetching import status...");
+      
       const response = await _get("/api/v1/stats/last-mna-import");
-      if (response.success) {
+      console.log("API Response:", response);
+      
+      if (response && response.success) {
         setImportData(response.data);
+        console.log("Import data set:", response.data);
       } else {
-        setError(response.error || "Erreur lors de la récupération des données");
+        const errorMsg = response?.error || "Erreur lors de la récupération des données";
+        console.error("API Error:", errorMsg);
+        setError(errorMsg);
       }
     } catch (err) {
-      console.error("Erreur API:", err);
-      setError("Impossible de récupérer les informations d'import");
+      console.error("Erreur API complète:", err);
+      
+      // Gestion spécifique des erreurs d'autorisation
+      if (err.response?.status === 401) {
+        setError("Accès non autorisé. Vous devez avoir les permissions administrateur.");
+      } else if (err.response?.status === 403) {
+        setError("Accès interdit. Permissions insuffisantes.");
+      } else {
+        setError(`Impossible de récupérer les informations d'import: ${err.message || err}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -62,21 +78,31 @@ const ImportStatus = () => {
 
   const formatDate = (date) => {
     if (!date) return "Non disponible";
-    return new Date(date).toLocaleString("fr-FR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    try {
+      return new Date(date).toLocaleString("fr-FR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      console.error("Erreur formatage date:", error);
+      return "Format invalide";
+    }
   };
 
   const formatDateTag = (dateTag) => {
-    if (!dateTag || dateTag.length !== 8) return dateTag;
-    const year = dateTag.substring(0, 4);
-    const month = dateTag.substring(4, 6);
-    const day = dateTag.substring(6, 8);
-    return `${day}/${month}/${year}`;
+    if (!dateTag || typeof dateTag !== 'string' || dateTag.length !== 8) return dateTag || "Non disponible";
+    try {
+      const year = dateTag.substring(0, 4);
+      const month = dateTag.substring(4, 6);
+      const day = dateTag.substring(6, 8);
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      console.error("Erreur formatage date tag:", error);
+      return dateTag;
+    }
   };
 
   if (loading) {
@@ -136,12 +162,12 @@ const ImportStatus = () => {
                     Nom du fichier:
                   </Text>
                   <Badge
-                    colorScheme={importData?.probableFileName ? "green" : "gray"}
+                    colorScheme={(importData?.probableFileName) ? "green" : "gray"}
                     fontSize="md"
                     p={2}
                     borderRadius="md"
                   >
-                    {importData?.probableFileName || "Nom non déterminé"}
+                    {(importData?.probableFileName) || "Nom non déterminé"}
                   </Badge>
                 </Box>
 
