@@ -48,10 +48,10 @@ const ImportStatus = () => {
       setLoading(true);
       setError(null);
       console.log("Fetching import status...");
-      
+
       const response = await _get("/api/v1/stats/last-mna-import");
       console.log("API Response:", response);
-      
+
       if (response && response.success) {
         setImportData(response.data);
         console.log("Import data set:", response.data);
@@ -62,7 +62,7 @@ const ImportStatus = () => {
       }
     } catch (err) {
       console.error("Erreur API complète:", err);
-      
+
       // Gestion spécifique des erreurs d'autorisation
       if (err.response?.status === 401) {
         setError("Accès non autorisé. Vous devez avoir les permissions administrateur.");
@@ -93,7 +93,7 @@ const ImportStatus = () => {
   };
 
   const formatDateTag = (dateTag) => {
-    if (!dateTag || typeof dateTag !== 'string' || dateTag.length !== 8) return dateTag || "Non disponible";
+    if (!dateTag || typeof dateTag !== "string" || dateTag.length !== 8) return dateTag || "Non disponible";
     try {
       const year = dateTag.substring(0, 4);
       const month = dateTag.substring(4, 6);
@@ -162,12 +162,12 @@ const ImportStatus = () => {
                     Nom du fichier:
                   </Text>
                   <Badge
-                    colorScheme={(importData?.probableFileName) ? "green" : "gray"}
+                    colorScheme={importData?.probableFileName ? "green" : "gray"}
                     fontSize="md"
                     p={2}
                     borderRadius="md"
                   >
-                    {(importData?.probableFileName) || "Nom non déterminé"}
+                    {importData?.probableFileName || "Nom non déterminé"}
                   </Badge>
                 </Box>
 
