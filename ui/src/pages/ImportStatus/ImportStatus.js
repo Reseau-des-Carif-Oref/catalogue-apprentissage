@@ -151,41 +151,41 @@ const ImportStatus = () => {
               <Heading size="md">Dernier fichier importé</Heading>
             </HStack>
             <VStack align="start" spacing={4}>
+              <Box>
+                <Text fontWeight="bold" mb={2}>
+                  Nom du fichier:
+                </Text>
+                <Badge
+                  colorScheme={importData?.probableFileName ? "green" : "gray"}
+                  fontSize="md"
+                  p={2}
+                  borderRadius="md"
+                >
+                  {importData?.probableFileName || "Nom non déterminé"}
+                </Badge>
+              </Box>
+
+              {importData?.lastDateTag && (
                 <Box>
                   <Text fontWeight="bold" mb={2}>
-                    Nom du fichier:
-                  </Text>
-                  <Badge
-                    colorScheme={importData?.probableFileName ? "green" : "gray"}
-                    fontSize="md"
-                    p={2}
-                    borderRadius="md"
-                  >
-                    {importData?.probableFileName || "Nom non déterminé"}
-                  </Badge>
-                </Box>
-
-                {importData?.lastDateTag && (
-                  <Box>
-                    <Text fontWeight="bold" mb={2}>
-                      Date du fichier (extraite du nom):
-                    </Text>
-                    <HStack>
-                      <Icon as={CalendarIcon} color="blue.500" />
-                      <Text fontSize="lg">{formatDateTag(importData.lastDateTag)}</Text>
-                    </HStack>
-                  </Box>
-                )}
-
-                <Box>
-                  <Text fontWeight="bold" mb={2}>
-                    Date d'import dans le système:
+                    Date du fichier (extraite du nom):
                   </Text>
                   <HStack>
-                    <Icon as={CalendarIcon} color="green.500" />
-                    <Text fontSize="lg">{formatDate(importData?.lastImportDate)}</Text>
+                    <Icon as={CalendarIcon} color="blue.500" />
+                    <Text fontSize="lg">{formatDateTag(importData.lastDateTag)}</Text>
                   </HStack>
                 </Box>
+              )}
+
+              <Box>
+                <Text fontWeight="bold" mb={2}>
+                  Date d'import dans le système:
+                </Text>
+                <HStack>
+                  <Icon as={CalendarIcon} color="green.500" />
+                  <Text fontSize="lg">{formatDate(importData?.lastImportDate)}</Text>
+                </HStack>
+              </Box>
             </VStack>
           </Box>
 
@@ -213,9 +213,7 @@ const ImportStatus = () => {
             <Box bg={statBg} p={4} borderRadius="md">
               <Stat>
                 <StatLabel>Dernier rapport</StatLabel>
-                <StatNumber fontSize="md">
-                  {formatDate(importData?.lastReportDate)?.split(" ")[0] || "N/A"}
-                </StatNumber>
+                <StatNumber fontSize="md">{formatDate(importData?.lastReportDate)?.split(" ")[0] || "N/A"}</StatNumber>
                 <StatHelpText>{formatDate(importData?.lastReportDate)?.split(" ")[1] || ""}</StatHelpText>
               </Stat>
             </Box>
@@ -228,34 +226,34 @@ const ImportStatus = () => {
               <Heading size="md">Informations techniques</Heading>
             </HStack>
             <VStack align="start" spacing={3}>
+              <Box>
+                <Text fontWeight="bold">ID de la dernière formation:</Text>
+                <Text fontFamily="mono" fontSize="sm" color="gray.600">
+                  {importData?.lastFormationId || "Non disponible"}
+                </Text>
+              </Box>
+
+              {importData?.metadata?.lastFormationTags?.length > 0 && (
                 <Box>
-                  <Text fontWeight="bold">ID de la dernière formation:</Text>
-                  <Text fontFamily="mono" fontSize="sm" color="gray.600">
-                    {importData?.lastFormationId || "Non disponible"}
+                  <Text fontWeight="bold" mb={2}>
+                    Tags de la dernière formation:
                   </Text>
+                  <HStack wrap="wrap">
+                    {importData.metadata.lastFormationTags.map((tag, index) => (
+                      <Badge key={index} colorScheme="blue" variant="outline">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </HStack>
                 </Box>
+              )}
 
-                {importData?.metadata?.lastFormationTags?.length > 0 && (
-                  <Box>
-                    <Text fontWeight="bold" mb={2}>
-                      Tags de la dernière formation:
-                    </Text>
-                    <HStack wrap="wrap">
-                      {importData.metadata.lastFormationTags.map((tag, index) => (
-                        <Badge key={index} colorScheme="blue" variant="outline">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </HStack>
-                  </Box>
-                )}
-
-                {importData?.metadata?.reportDiscriminator && (
-                  <Box>
-                    <Text fontWeight="bold">Discriminateur du rapport:</Text>
-                    <Badge colorScheme="purple">{importData.metadata.reportDiscriminator}</Badge>
-                  </Box>
-                )}
+              {importData?.metadata?.reportDiscriminator && (
+                <Box>
+                  <Text fontWeight="bold">Discriminateur du rapport:</Text>
+                  <Badge colorScheme="purple">{importData.metadata.reportDiscriminator}</Badge>
+                </Box>
+              )}
             </VStack>
           </Box>
 
