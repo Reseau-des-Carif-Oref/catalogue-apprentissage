@@ -7,9 +7,6 @@ import {
   VStack,
   HStack,
   Badge,
-  Card,
-  CardBody,
-  CardHeader,
   Spinner,
   Alert,
   AlertIcon,
@@ -148,15 +145,12 @@ const ImportStatus = () => {
           </Box>
 
           {/* Fichier principal */}
-          <Card bg={cardBg} shadow="md">
-            <CardHeader>
-              <HStack>
-                <Icon as={DownloadIcon} color="blue.500" />
-                <Heading size="md">Dernier fichier importé</Heading>
-              </HStack>
-            </CardHeader>
-            <CardBody>
-              <VStack align="start" spacing={4}>
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={DownloadIcon} color="blue.500" />
+              <Heading size="md">Dernier fichier importé</Heading>
+            </HStack>
+            <VStack align="start" spacing={4}>
                 <Box>
                   <Text fontWeight="bold" mb={2}>
                     Nom du fichier:
@@ -192,58 +186,48 @@ const ImportStatus = () => {
                     <Text fontSize="lg">{formatDate(importData?.lastImportDate)}</Text>
                   </HStack>
                 </Box>
-              </VStack>
-            </CardBody>
-          </Card>
+            </VStack>
+          </Box>
 
           {/* Statistiques */}
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-            <Card bg={statBg}>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Total formations importées</StatLabel>
-                  <StatNumber>{importData?.totalFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
-                  <StatHelpText>
-                    <StatArrow type="increase" />
-                    Formations dans DualControl
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Total formations importées</StatLabel>
+                <StatNumber>{importData?.totalFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  Formations dans DualControl
+                </StatHelpText>
+              </Stat>
+            </Box>
 
-            <Card bg={statBg}>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Formations dans le rapport</StatLabel>
-                  <StatNumber>{importData?.totalDualControlFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
-                  <StatHelpText>Dernier rapport d'import</StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Formations dans le rapport</StatLabel>
+                <StatNumber>{importData?.totalDualControlFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
+                <StatHelpText>Dernier rapport d'import</StatHelpText>
+              </Stat>
+            </Box>
 
-            <Card bg={statBg}>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Dernier rapport</StatLabel>
-                  <StatNumber fontSize="md">
-                    {formatDate(importData?.lastReportDate)?.split(" ")[0] || "N/A"}
-                  </StatNumber>
-                  <StatHelpText>{formatDate(importData?.lastReportDate)?.split(" ")[1] || ""}</StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Dernier rapport</StatLabel>
+                <StatNumber fontSize="md">
+                  {formatDate(importData?.lastReportDate)?.split(" ")[0] || "N/A"}
+                </StatNumber>
+                <StatHelpText>{formatDate(importData?.lastReportDate)?.split(" ")[1] || ""}</StatHelpText>
+              </Stat>
+            </Box>
           </SimpleGrid>
 
           {/* Métadonnées techniques */}
-          <Card bg={cardBg} shadow="md">
-            <CardHeader>
-              <HStack>
-                <Icon as={InfoIcon} color="blue.500" />
-                <Heading size="md">Informations techniques</Heading>
-              </HStack>
-            </CardHeader>
-            <CardBody>
-              <VStack align="start" spacing={3}>
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={InfoIcon} color="blue.500" />
+              <Heading size="md">Informations techniques</Heading>
+            </HStack>
+            <VStack align="start" spacing={3}>
                 <Box>
                   <Text fontWeight="bold">ID de la dernière formation:</Text>
                   <Text fontFamily="mono" fontSize="sm" color="gray.600">
@@ -272,9 +256,8 @@ const ImportStatus = () => {
                     <Badge colorScheme="purple">{importData.metadata.reportDiscriminator}</Badge>
                   </Box>
                 )}
-              </VStack>
-            </CardBody>
-          </Card>
+            </VStack>
+          </Box>
 
           {/* Note d'information */}
           <Alert status="info">
