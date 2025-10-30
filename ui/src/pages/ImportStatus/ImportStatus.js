@@ -189,8 +189,8 @@ const ImportStatus = () => {
             </VStack>
           </Box>
 
-          {/* Statistiques */}
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+          {/* Statistiques principales */}
+          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6}>
             <Box bg={statBg} p={4} borderRadius="md">
               <Stat>
                 <StatLabel>Total formations importées</StatLabel>
@@ -212,12 +212,84 @@ const ImportStatus = () => {
 
             <Box bg={statBg} p={4} borderRadius="md">
               <Stat>
-                <StatLabel>Dernier rapport</StatLabel>
-                <StatNumber fontSize="md">{formatDate(importData?.lastReportDate)?.split(" ")[0] || "N/A"}</StatNumber>
-                <StatHelpText>{formatDate(importData?.lastReportDate)?.split(" ")[1] || ""}</StatHelpText>
+                <StatLabel>Taille du fichier</StatLabel>
+                <StatNumber fontSize="lg">{importData?.fileSize || "N/A"}</StatNumber>
+                <StatHelpText>Estimation basée sur le nombre d'entrées</StatHelpText>
+              </Stat>
+            </Box>
+
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Âge des données</StatLabel>
+                <StatNumber fontSize="lg" color={importData?.dataAge?.color || "gray.500"}>
+                  {importData?.dataAge?.text || "N/A"}
+                </StatNumber>
+                <StatHelpText>Depuis le dernier import</StatHelpText>
               </Stat>
             </Box>
           </SimpleGrid>
+
+          {/* Indicateurs de qualité des données */}
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={InfoIcon} color="green.500" />
+              <Heading size="md">Qualité des données</Heading>
+            </HStack>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="green.500">
+                  {importData?.dataQuality?.completeness || "N/A"}%
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Complétude des données
+                </Text>
+              </Box>
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="blue.500">
+                  {importData?.dataQuality?.uniqueEstablishments || "N/A"}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Établissements uniques
+                </Text>
+              </Box>
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="purple.500">
+                  {importData?.dataQuality?.averageFormationsPerEstablishment || "N/A"}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Formations/établissement (moy.)
+                </Text>
+              </Box>
+            </SimpleGrid>
+          </Box>
+
+          {/* Historique des imports */}
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={CalendarIcon} color="orange.500" />
+              <Heading size="md">Historique des imports</Heading>
+            </HStack>
+            <VStack align="start" spacing={3}>
+              <HStack justify="space-between" w="full">
+                <Text fontWeight="bold">Fréquence d'import:</Text>
+                <Badge colorScheme="blue">{importData?.importFrequency || "Non déterminée"}</Badge>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text fontWeight="bold">Dernier import réussi:</Text>
+                <Text>{formatDate(importData?.lastSuccessfulImport)}</Text>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text fontWeight="bold">Nombre d'imports ce mois:</Text>
+                <Badge colorScheme="green">{importData?.importsThisMonth || 0}</Badge>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text fontWeight="bold">Statut du système:</Text>
+                <Badge colorScheme={importData?.systemStatus?.color || "gray"}>
+                  {importData?.systemStatus?.text || "Inconnu"}
+                </Badge>
+              </HStack>
+            </VStack>
+          </Box>
 
           {/* Métadonnées techniques */}
           <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
