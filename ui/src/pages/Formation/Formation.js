@@ -61,7 +61,7 @@ const Formation = ({ formation }) => {
           </Box>
         </GridItem>
         <GridItem colSpan={[12, 12, 5]} py={8} px={[4, 4, 8]}>
-          {!formation.entierement_a_distance && (
+          {!formation.entierement_a_distance && !formation.cle_ministere_educatif?.includes("LAD") && (
             <Box mb={16}>
               <Heading textStyle="h4" color="grey.800">
                 <MapPin2Fill w="12px" h="15px" mr="5px" mb="5px" />
