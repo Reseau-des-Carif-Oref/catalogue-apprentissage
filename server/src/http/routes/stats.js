@@ -168,37 +168,54 @@ module.exports = () => {
           systemStatus = { text: "Attention", color: "yellow" };
         }
         
-        // Récupérer le nom du fichier depuis les logs
+        // Récupérer le nom du fichier depuis les logs système (comme la commande grep)
         let actualFileName = null;
         let extractedDate = null;
 
         try {
-          // Chercher dans les logs le message qui contient le nom du fichier
-          const fileNameLog = await Log.findOne(
-            { 
-              msg: { $regex: /Fichier dans l'archive:/ },
-              time: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Dans les 7 derniers jours
-            },
-            {},
-            { sort: { time: -1 } }
-          );
-
-          if (fileNameLog && fileNameLog.msg) {
-            // Extraire le nom du fichier du message de log
-            // Format: "Fichier dans l'archive: nom_du_fichier.json (XX.XX Mo)"
-            const fileNameMatch = fileNameLog.msg.match(/Fichier dans l'archive:\s*([^\s]+)/);
-            if (fileNameMatch) {
-              actualFileName = fileNameMatch[1];
-              
-              // Essayer d'extraire une date du nom de fichier
-              const dateMatch = actualFileName.match(/(\d{8})/); // YYYYMMDD ou DDMMYYYY
-              if (dateMatch) {
-                extractedDate = dateMatch[1];
-              }
+          const { exec } = require('child_process');
+          const { promisify } = require('util');
+          const execAsync = promisify(exec);
+          
+          // Exécuter la même commande grep que celle qui fonctionne
+          const { stdout } = await execAsync('grep -r "Fichier dans l\'archive:" /var/log/ | tail -1 | sed \'s/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/\'');
+          
+          if (stdout && stdout.trim()) {
+            actualFileName = stdout.trim();
+            
+            // Essayer d'extraire une date du nom de fichier
+            const dateMatch = actualFileName.match(/(\d{8})/); // YYYYMMDD ou DDMMYYYY
+            if (dateMatch) {
+              extractedDate = dateMatch[1];
             }
           }
         } catch (logError) {
-          console.error("Erreur lors de la récupération du nom de fichier depuis les logs:", logError);
+          console.error("Erreur lors de la récupération du nom de fichier depuis les logs système:", logError);
+          
+          // Fallback: essayer avec les logs MongoDB
+          try {
+            const fileNameLog = await Log.findOne(
+              { 
+                msg: { $regex: /Fichier dans l'archive:/ },
+                time: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+              },
+              {},
+              { sort: { time: -1 } }
+            );
+
+            if (fileNameLog && fileNameLog.msg) {
+              const fileNameMatch = fileNameLog.msg.match(/Fichier dans l'archive:\s*([^\s]+)/);
+              if (fileNameMatch) {
+                actualFileName = fileNameMatch[1];
+                const dateMatch = actualFileName.match(/(\d{8})/);
+                if (dateMatch) {
+                  extractedDate = dateMatch[1];
+                }
+              }
+            }
+          } catch (mongoError) {
+            console.error("Erreur fallback MongoDB:", mongoError);
+          }
         }
 
         // Fallback: si on n'a pas trouvé le nom dans les logs, utiliser l'ancienne méthode
