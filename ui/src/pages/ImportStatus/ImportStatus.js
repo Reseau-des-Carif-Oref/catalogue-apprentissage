@@ -152,17 +152,31 @@ const ImportStatus = () => {
             </HStack>
             <VStack align="start" spacing={4}>
               <Box>
-                <Text fontWeight="bold" mb={2}>
-                  Nom du fichier:
+                <Text fontWeight="bold" mb={3}>
+                  Nom du fichier indexé:
                 </Text>
-                <Badge
-                  colorScheme={importData?.actualFileName ? "green" : "gray"}
-                  fontSize="md"
-                  p={2}
+                <Box
+                  bg={importData?.actualFileName ? "green.50" : "gray.50"}
+                  border="1px solid"
+                  borderColor={importData?.actualFileName ? "green.200" : "gray.200"}
                   borderRadius="md"
+                  p={3}
                 >
-                  {importData?.actualFileName || "Nom non déterminé"}
-                </Badge>
+                  <Text
+                    fontFamily="mono"
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color={importData?.actualFileName ? "green.800" : "gray.600"}
+                    wordBreak="break-all"
+                  >
+                    {importData?.actualFileName || "Nom non déterminé"}
+                  </Text>
+                  {importData?.actualFileName && (
+                    <Badge colorScheme="green" size="sm" mt={2} variant="subtle">
+                      ✓ Récupéré depuis les logs
+                    </Badge>
+                  )}
+                </Box>
               </Box>
 
               {importData?.lastDateTag && (
