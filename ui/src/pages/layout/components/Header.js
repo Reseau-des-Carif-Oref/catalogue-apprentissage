@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Container, Flex, Heading } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Link } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 import { Logo } from "./Logo";
 import AlertMessage from "./AlertMessage";
 
