@@ -1,9 +1,40 @@
 import React from "react";
-import { Box, Container, Flex, Link, List, ListItem, Text } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Link,
+  List,
+  ListItem,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
+import { NavLink, useHistory } from "react-router-dom";
 import { Logo } from "./Logo";
+import useAuth from "../../../common/hooks/useAuth";
+import { isUserAdmin, hasAccessTo } from "../../../common/utils/rolesUtils";
+import { _get } from "../../../common/httpClient";
+import { LockFill } from "../../../theme/components/icons/LockFill";
+import { AccountFill, DownloadLine, InfoCircle } from "../../../theme/components/icons";
 
 const Footer = () => {
+  const [auth, setAuth] = useAuth();
+  const history = useHistory();
+
+  let logout = async () => {
+    const anonymous = await _get("/api/v1/auth/logout");
+    if (anonymous) {
+      setAuth(anonymous);
+      history.push("/");
+    }
+  };
+
   return (
     <Box borderTop="1px solid" borderColor="bluefrance" color="#1E1E1E" fontSize="zeta" w="full">
       <Container maxW="xl">
@@ -111,9 +142,62 @@ const Footer = () => {
                 </Link>
               </ListItem>
             </List>
-            <Text textStyle="xs" mt={[2, 2, 0]}>
-              © République française 2021
-            </Text>
+            <Flex alignItems="center" mt={[2, 2, 0]} gap={4}>
+              {/* User Menu */}
+              {auth?.sub === "anonymous" && (
+                <Box>
+                  <Link as={NavLink} to="/login" variant="pill" fontSize="xs">
+                    <LockFill boxSize={3} mb={1} mr={2} />
+                    Connexion
+                  </Link>
+                </Box>
+              )}
+              {auth?.sub !== "anonymous" && (
+                <Menu placement="top">
+                  <MenuButton as={Button} variant="pill" size="sm" aria-label={`compte de ${auth.sub}`}>
+                    <Flex alignItems="center">
+                      <AccountFill color={"bluefrance"} boxSize={3} />
+                      <Box display={["none", "none", "block"]} ml={2}>
+                        <Text color="bluefrance" textStyle="xs">
+                          {auth.sub}{" "}
+                          <Text color="grey.600" as="span">
+                            ({isUserAdmin(auth) ? "admin" : "Utilisateur"})
+                          </Text>
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuGroup title="Administration">
+                      {hasAccessTo(auth, "page_gestion_utilisateurs") && (
+                        <MenuItem as={NavLink} to="/admin/users" icon={<AccountFill boxSize={4} />}>
+                          Gestion des utilisateurs
+                        </MenuItem>
+                      )}
+                      {hasAccessTo(auth, "page_gestion_roles") && (
+                        <MenuItem as={NavLink} to="/admin/roles" icon={<AccountFill boxSize={4} />}>
+                          Gestion des rôles
+                        </MenuItem>
+                      )}
+                      {hasAccessTo(auth, "page_upload") && (
+                        <MenuItem as={NavLink} to="/admin/upload" icon={<DownloadLine boxSize={4} />}>
+                          Upload de fichiers
+                        </MenuItem>
+                      )}
+                      {hasAccessTo(auth, "page_message_maintenance") && (
+                        <MenuItem as={NavLink} to="/admin/alert" icon={<InfoCircle boxSize={4} />}>
+                          Message de maintenance
+                        </MenuItem>
+                      )}
+                    </MenuGroup>
+
+                    <MenuDivider />
+                    <MenuItem onClick={logout}>Déconnexion</MenuItem>
+                  </MenuList>
+                </Menu>
+              )}
+              <Text textStyle="xs">© République française 2021</Text>
+            </Flex>
           </Flex>
         </Container>
       </Box>
