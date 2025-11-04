@@ -349,10 +349,10 @@ const ImportStatus = () => {
             <Box>
               <AlertTitle>Information!</AlertTitle>
               <AlertDescription>
-                Le nom du fichier est récupéré directement depuis les logs système (/var/log/) en utilisant 
-                la même commande grep que celle utilisée en ligne de commande. En cas d'échec, le système 
-                utilise les logs MongoDB puis reconstitue le nom à partir des tags. La date d'import correspond 
-                au moment où les données ont été insérées dans la base MongoDB.
+                Le nom du fichier est récupéré directement depuis les logs système (/var/log/) en utilisant la même
+                commande grep que celle utilisée en ligne de commande. En cas d'échec, le système utilise les logs
+                MongoDB puis reconstitue le nom à partir des tags. La date d'import correspond au moment où les données
+                ont été insérées dans la base MongoDB.
               </AlertDescription>
             </Box>
           </Alert>
