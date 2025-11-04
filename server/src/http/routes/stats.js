@@ -177,18 +177,51 @@ module.exports = () => {
           const { promisify } = require('util');
           const execAsync = promisify(exec);
           
-          // Exécuter la même commande grep que celle qui fonctionne
-          const { stdout } = await execAsync('grep -r "Fichier dans l\'archive:" /var/log/ | tail -1 | sed \'s/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/\'');
+          // D'abord, vérifier si /var/log/ est accessible
+          try {
+            const { stdout: lsResult } = await execAsync('ls -la /var/log/');
+            console.log("Contenu de /var/log/:", lsResult);
+          } catch (lsError) {
+            console.log("Impossible d'accéder à /var/log/:", lsError.message);
+          }
           
-          if (stdout && stdout.trim()) {
-            actualFileName = stdout.trim();
-            
-            // Essayer d'extraire une date du nom de fichier
-            const dateMatch = actualFileName.match(/(\d{8})/); // YYYYMMDD ou DDMMYYYY
-            if (dateMatch) {
-              extractedDate = dateMatch[1];
+          const logPaths = [
+            '/var/log/',
+            '/app/logs/',
+            '/logs/',
+            './logs/',
+            process.cwd() + '/logs/'
+          ];
+          
+          let grepSuccess = false;
+          
+          for (const logPath of logPaths) {
+            try {
+              console.log(`Tentative avec le chemin: ${logPath}`);
+              const { stdout, stderr } = await execAsync(`grep -r "Fichier dans l'archive:" ${logPath} 2>/dev/null | tail -1 | sed 's/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/'`);
+              
+              if (stdout && stdout.trim()) {
+                actualFileName = stdout.trim();
+                console.log(`Nom de fichier trouvé dans ${logPath}:`, actualFileName);
+                grepSuccess = true;
+                
+                // Essayer d'extraire une date du nom de fichier
+                const dateMatch = actualFileName.match(/(\d{8})/);
+                if (dateMatch) {
+                  extractedDate = dateMatch[1];
+                  console.log("Date extraite:", extractedDate);
+                }
+                break;
+              }
+            } catch (pathError) {
+              console.log(`Erreur avec le chemin ${logPath}:`, pathError.message);
             }
           }
+          
+          if (!grepSuccess) {
+            console.log("Aucun fichier trouvé dans tous les chemins testés");
+          }
+          
         } catch (logError) {
           console.error("Erreur lors de la récupération du nom de fichier depuis les logs système:", logError);
           
@@ -270,7 +303,9 @@ module.exports = () => {
                 allTagsSample: allTagsAggregation,
                 dateTagsFound: tagsAggregation,
                 extractedDate,
-                lastDateTag
+                lastDateTag,
+                grepResult: actualFileName,
+                grepExtractedDate: extractedDate
               }
             }
           }
