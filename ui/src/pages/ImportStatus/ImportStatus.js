@@ -156,12 +156,12 @@ const ImportStatus = () => {
                   Nom du fichier:
                 </Text>
                 <Badge
-                  colorScheme={importData?.probableFileName ? "green" : "gray"}
+                  colorScheme={importData?.actualFileName ? "green" : "gray"}
                   fontSize="md"
                   p={2}
                   borderRadius="md"
                 >
-                  {importData?.probableFileName || "Nom non déterminé"}
+                  {importData?.actualFileName || "Nom non déterminé"}
                 </Badge>
               </Box>
 
@@ -335,8 +335,9 @@ const ImportStatus = () => {
             <Box>
               <AlertTitle>Information!</AlertTitle>
               <AlertDescription>
-                Le nom du fichier est reconstitué à partir des tags présents dans les données importées. La date
-                d'import correspond au moment où les données ont été insérées dans la base MongoDB.
+                Le nom du fichier est récupéré depuis les logs d'import du système. Si aucun log n'est trouvé, il est
+                reconstitué à partir des tags présents dans les données. La date d'import correspond au moment où les
+                données ont été insérées dans la base MongoDB.
               </AlertDescription>
             </Box>
           </Alert>

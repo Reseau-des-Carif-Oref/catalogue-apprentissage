@@ -1,7 +1,7 @@
 const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const permissionsMiddleware = require("../middlewares/permissionsMiddleware");
-const { Statistique, DualControlFormation, DualControlReport } = require("../../common/model");
+const { Statistique, DualControlFormation, DualControlReport, Log } = require("../../common/model");
 const { sanitize } = require("../../common/utils/sanitizeUtils");
 
 module.exports = () => {
@@ -168,31 +168,58 @@ module.exports = () => {
           systemStatus = { text: "Attention", color: "yellow" };
         }
         
-        // Construire le nom du fichier probable
-        let probableFileName = null;
+        // Récupérer le nom du fichier depuis les logs
+        let actualFileName = null;
         let extractedDate = null;
 
-        if (lastDateTag) {
-          // Essayer d'extraire une date du tag
-          const dateMatch = lastDateTag.match(/20\d{6}/); // YYYYMMDD
-          if (dateMatch) {
-            extractedDate = dateMatch[0];
-            probableFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
-          } else {
-            // Si le tag contient une date mais pas au format YYYYMMDD
-            probableFileName = `_catalogue_mna_2022__${lastDateTag}.zip`;
+        try {
+          // Chercher dans les logs le message qui contient le nom du fichier
+          const fileNameLog = await Log.findOne(
+            { 
+              msg: { $regex: /Fichier dans l'archive:/ },
+              time: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Dans les 7 derniers jours
+            },
+            {},
+            { sort: { time: -1 } }
+          );
+
+          if (fileNameLog && fileNameLog.msg) {
+            // Extraire le nom du fichier du message de log
+            // Format: "Fichier dans l'archive: nom_du_fichier.json (XX.XX Mo)"
+            const fileNameMatch = fileNameLog.msg.match(/Fichier dans l'archive:\s*([^\s]+)/);
+            if (fileNameMatch) {
+              actualFileName = fileNameMatch[1];
+              
+              // Essayer d'extraire une date du nom de fichier
+              const dateMatch = actualFileName.match(/(\d{8})/); // YYYYMMDD ou DDMMYYYY
+              if (dateMatch) {
+                extractedDate = dateMatch[1];
+              }
+            }
           }
-        } else {
-          // Si aucun tag de date n'est trouvé, utiliser la date du dernier import
-          if (lastImportTimestamp) {
+        } catch (logError) {
+          console.error("Erreur lors de la récupération du nom de fichier depuis les logs:", logError);
+        }
+
+        // Fallback: si on n'a pas trouvé le nom dans les logs, utiliser l'ancienne méthode
+        if (!actualFileName) {
+          if (lastDateTag) {
+            const dateMatch = lastDateTag.match(/20\d{6}/); // YYYYMMDD
+            if (dateMatch) {
+              extractedDate = dateMatch[0];
+              actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
+            } else {
+              actualFileName = `_catalogue_mna_2022__${lastDateTag}.zip`;
+            }
+          } else if (lastImportTimestamp) {
             const importDate = new Date(lastImportTimestamp);
             const year = importDate.getFullYear();
             const month = String(importDate.getMonth() + 1).padStart(2, '0');
             const day = String(importDate.getDate()).padStart(2, '0');
             extractedDate = `${year}${month}${day}`;
-            probableFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
+            actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
           } else {
-            probableFileName = "_catalogue_mna_2022__date_inconnue.zip";
+            actualFileName = "_catalogue_mna_2022__date_inconnue.zip";
           }
         }
         
@@ -203,7 +230,7 @@ module.exports = () => {
             lastReportDate: lastReport?.date || null,
             totalFormations,
             totalDualControlFormations: lastReport?.totalDualControlFormation || totalFormations,
-            probableFileName,
+            actualFileName,
             lastDateTag,
             lastFormationId: lastFormation?._id || null,
             // Nouveaux indicateurs
