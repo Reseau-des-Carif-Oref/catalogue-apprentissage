@@ -44,14 +44,11 @@ const ImportStatus = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log("Fetching import status...");
 
       const response = await _get("/api/v1/stats/last-mna-import");
-      console.log("API Response:", response);
 
       if (response && response.success) {
         setImportData(response.data);
-        console.log("Import data set:", response.data);
       } else {
         const errorMsg = response?.error || "Erreur lors de la récupération des données";
         console.error("API Error:", errorMsg);
@@ -284,10 +281,6 @@ const ImportStatus = () => {
               <Heading size="md">Historique des imports</Heading>
             </HStack>
             <VStack align="start" spacing={3}>
-              <HStack justify="space-between" w="full">
-                <Text fontWeight="bold">Fréquence d'import:</Text>
-                <Badge colorScheme="blue">{importData?.importFrequency || "Non déterminée"}</Badge>
-              </HStack>
               <HStack justify="space-between" w="full">
                 <Text fontWeight="bold">Dernier import réussi:</Text>
                 <Text>{formatDate(importData?.lastSuccessfulImport)}</Text>

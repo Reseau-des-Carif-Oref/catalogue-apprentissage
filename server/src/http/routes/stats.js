@@ -53,8 +53,6 @@ module.exports = () => {
           { $limit: 10 },
         ]);
 
-        console.log("Tags disponibles:", allTagsAggregation);
-
         // Analyser les tags pour trouver des patterns de date (plusieurs formats possibles)
         const tagsAggregation = await DualControlFormation.aggregate([
           { $unwind: "$tags" },
@@ -74,8 +72,6 @@ module.exports = () => {
           { $sort: { _id: -1 } },
           { $limit: 5 },
         ]);
-
-        console.log("Tags avec patterns de date:", tagsAggregation);
 
         const lastDateTag = tagsAggregation.length > 0 ? tagsAggregation[0]._id : null;
 
@@ -150,11 +146,34 @@ module.exports = () => {
           else importFrequency = "Irrégulière";
         }
 
-        // Compter les imports de ce mois
+        // Compter les imports de ce mois de façon plus simple
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const importsThisMonth = await DualControlReport.countDocuments({
+        
+        // Méthode 1: Compter les rapports d'import de ce mois
+        const reportsThisMonth = await DualControlReport.countDocuments({
           date: { $gte: startOfMonth },
         });
+        
+        // Méthode 2: Compter les jours uniques d'import ce mois (plus précis)
+        const { ObjectId } = require('mongodb');
+        const startOfMonthObjectId = ObjectId.createFromTime(Math.floor(startOfMonth.getTime() / 1000));
+        
+        const uniqueImportDays = await DualControlFormation.aggregate([
+          { $match: { _id: { $gte: startOfMonthObjectId } } },
+          { 
+            $group: { 
+              _id: { 
+                $dateToString: { 
+                  format: "%Y-%m-%d", 
+                  date: { $toDate: "$_id" } 
+                } 
+              } 
+            } 
+          },
+          { $count: "uniqueDays" }
+        ]);
+        
+        const importsThisMonth = uniqueImportDays.length > 0 ? uniqueImportDays[0].uniqueDays : 0;
 
         // Extraire la date du timestamp de l'_id
         const lastImportTimestamp = lastFormation ? lastFormation._id.getTimestamp() : null;
@@ -179,28 +198,19 @@ module.exports = () => {
           // Utiliser exactement la commande qui fonctionne
           const command =
             "grep -r \"Fichier dans l'archive:\" /var/log/ | tail -1 | sed 's/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/'";
-          console.log("Exécution de la commande:", command);
 
           const { stdout, stderr } = await execAsync(command);
 
-          console.log("Résultat stdout:", JSON.stringify(stdout));
-          console.log("Résultat stderr:", JSON.stringify(stderr));
-
           if (stdout && stdout.trim()) {
             actualFileName = stdout.trim();
-            console.log("Nom de fichier récupéré:", actualFileName);
 
             // Essayer d'extraire une date du nom de fichier
             const dateMatch = actualFileName.match(/(\d{8})/);
             if (dateMatch) {
               extractedDate = dateMatch[1];
-              console.log("Date extraite du nom de fichier:", extractedDate);
-            } else {
-              console.log("Aucune date trouvée dans le nom:", actualFileName);
             }
-          } else {
-            console.log("Aucun résultat de la commande grep");
           }
+
         } catch (logError) {
           console.error("Erreur lors de la récupération du nom de fichier depuis les logs système:", logError);
 
@@ -276,19 +286,20 @@ module.exports = () => {
             lastFormationTags: lastFormation?.tags || [],
             reportDiscriminator: lastReport?.discriminator || null,
             // Informations de debug
-            debug: {
-              allTagsSample: allTagsAggregation,
-              dateTagsFound: tagsAggregation,
-              extractedDate,
-              lastDateTag,
-              grepResult: actualFileName,
-              grepExtractedDate: extractedDate,
-            },
+              debug: {
+                allTagsSample: allTagsAggregation,
+                dateTagsFound: tagsAggregation,
+                extractedDate,
+                lastDateTag,
+                grepResult: actualFileName,
+                grepExtractedDate: extractedDate,
+                startOfMonth: startOfMonth.toISOString(),
+                reportsThisMonth,
+                uniqueImportDaysResult: uniqueImportDays,
+                finalImportsThisMonth: importsThisMonth,
+              },
           },
         };
-
-        console.log("Données de réponse - actualFileName:", responseData.actualFileName);
-        console.log("Données de réponse complètes:", JSON.stringify(responseData, null, 2));
 
         return res.json({
           success: true,
