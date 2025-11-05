@@ -276,7 +276,7 @@ const ImportStatus = () => {
           </Box>
 
           {/* Statistiques principales */}
-          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6}>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
             <Box bg={statBg} p={4} borderRadius="md">
               <Stat>
                 <StatLabel>Total formations importées</StatLabel>
@@ -290,17 +290,12 @@ const ImportStatus = () => {
 
             <Box bg={statBg} p={4} borderRadius="md">
               <Stat>
-                <StatLabel>Formations dans le rapport</StatLabel>
-                <StatNumber>{importData?.totalDualControlFormations?.toLocaleString("fr-FR") || 0}</StatNumber>
-                <StatHelpText>Dernier rapport d'import</StatHelpText>
-              </Stat>
-            </Box>
-
-            <Box bg={statBg} p={4} borderRadius="md">
-              <Stat>
-                <StatLabel>Taille du fichier</StatLabel>
-                <StatNumber fontSize="lg">{importData?.fileSize || "N/A"}</StatNumber>
-                <StatHelpText>Estimation basée sur le nombre d'entrées</StatHelpText>
+                <StatLabel>Total établissements importés</StatLabel>
+                <StatNumber>{importData?.totalEtablissements?.toLocaleString("fr-FR") || 0}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  Établissements dans DualControl
+                </StatHelpText>
               </Stat>
             </Box>
 
@@ -314,6 +309,70 @@ const ImportStatus = () => {
               </Stat>
             </Box>
           </SimpleGrid>
+
+          {/* Tailles des fichiers */}
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Taille du fichier formation</StatLabel>
+                <StatNumber fontSize="lg">{importData?.fileSize || "N/A"}</StatNumber>
+                <StatHelpText>Estimation basée sur le nombre d'entrées</StatHelpText>
+              </Stat>
+            </Box>
+
+            <Box bg={statBg} p={4} borderRadius="md">
+              <Stat>
+                <StatLabel>Taille du fichier établissement</StatLabel>
+                <StatNumber fontSize="lg">{importData?.etablissementFileSize || "N/A"}</StatNumber>
+                <StatHelpText>Estimation basée sur le nombre d'entrées</StatHelpText>
+              </Stat>
+            </Box>
+          </SimpleGrid>
+
+          {/* Répartition des formations */}
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={InfoIcon} color="blue.500" />
+              <Heading size="md">Répartition des formations</Heading>
+            </HStack>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="red.500">
+                  {importData?.formationsNonEligibles?.toLocaleString("fr-FR") || 0}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Formations non éligibles
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  catalogue_published=False + published=True
+                </Text>
+              </Box>
+
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="green.500">
+                  {importData?.formationsEligibles?.toLocaleString("fr-FR") || 0}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Formations éligibles
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  catalogue_published=True + published=True
+                </Text>
+              </Box>
+
+              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                <Text fontSize="2xl" fontWeight="bold" color="blue.500">
+                  {importData?.totalFormationsPubliees?.toLocaleString("fr-FR") || 0}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Total formations publiées
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  published=True
+                </Text>
+              </Box>
+            </SimpleGrid>
+          </Box>
 
           {/* Historique des imports */}
           <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>

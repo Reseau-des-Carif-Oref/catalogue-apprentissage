@@ -56,6 +56,20 @@ module.exports = () => {
         const totalFormations = await DualControlFormation.countDocuments();
         const totalEtablissements = await DualControlEtablissement.countDocuments();
 
+        const formationsNonEligibles = await DualControlFormation.countDocuments({
+          catalogue_published: false,
+          published: true,
+        });
+
+        const formationsEligibles = await DualControlFormation.countDocuments({
+          catalogue_published: true,
+          published: true,
+        });
+
+        const totalFormationsPubliees = await DualControlFormation.countDocuments({
+          published: true,
+        });
+
         // Analyser tous les tags disponibles pour comprendre leur structure
         const allTagsAggregation = await DualControlFormation.aggregate([
           { $unwind: "$tags" },
@@ -141,9 +155,13 @@ module.exports = () => {
           }
         }
 
-        // Estimer la taille du fichier
-        const estimatedSizeMB = Math.round((totalFormations * 2) / 1000); // Estimation: 2KB par formation
-        const fileSize = estimatedSizeMB > 0 ? `~${estimatedSizeMB} MB` : "< 1 MB";
+        // Estimer la taille des fichiers
+        const estimatedFormationSizeMB = Math.round((totalFormations * 2) / 1000); // Estimation: 2KB par formation
+        const fileSize = estimatedFormationSizeMB > 0 ? `~${estimatedFormationSizeMB} MB` : "< 1 MB";
+
+        const estimatedEtablissementSizeMB = Math.round((totalEtablissements * 1.5) / 1000); // Estimation: 1.5KB par établissement
+        const etablissementFileSize =
+          estimatedEtablissementSizeMB > 0 ? `~${estimatedEtablissementSizeMB} MB` : "< 1 MB";
 
         // Calculer la fréquence d'import (basée sur les rapports)
         const recentReports = await DualControlReport.find({}).sort({ date: -1 }).limit(5);
@@ -325,6 +343,11 @@ module.exports = () => {
           lastFormationId: lastFormation?._id || null,
           importsThisMonth,
 
+          // Compteurs spécifiques formations
+          formationsNonEligibles,
+          formationsEligibles,
+          totalFormationsPubliees,
+
           // Données établissements
           totalEtablissements,
           lastEtablissementImportDate: lastEtablissementImportTimestamp,
@@ -334,6 +357,7 @@ module.exports = () => {
 
           // Indicateurs généraux
           fileSize,
+          etablissementFileSize,
           dataAge,
           dataQuality: {
             completeness: qualityData.completeness || 0,
