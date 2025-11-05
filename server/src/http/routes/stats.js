@@ -354,10 +354,9 @@ module.exports = () => {
               lastDateTag,
               grepResult: actualFileName,
               grepExtractedDate: extractedDate,
-              startOfMonth: startOfMonth.toISOString(),
-              reportsThisMonth,
-              uniqueImportDaysResult: uniqueImportDays,
-              finalImportsThisMonth: importsThisMonth,
+              currentMonth: new Date().toISOString().slice(0, 7), // YYYY-MM
+              formationImportsThisMonth: importsThisMonth,
+              etablissementImportsThisMonth: etablissementImportsThisMonth,
             },
           },
         };
