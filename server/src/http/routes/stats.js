@@ -217,8 +217,9 @@ module.exports = () => {
           systemStatus = { text: "Attention", color: "yellow" };
         }
 
-        // Récupérer le nom du fichier depuis les logs système (comme la commande grep)
+        // Récupérer les noms des fichiers depuis les logs système (formations et établissements)
         let actualFileName = null;
+        let actualEtablissementFileName = null;
         let extractedDate = null;
 
         try {
@@ -226,23 +227,57 @@ module.exports = () => {
           const { promisify } = require("util");
           const execAsync = promisify(exec);
 
-          // Utiliser exactement la commande qui fonctionne
-          const command =
-            "grep -r \"Fichier dans l'archive:\" /var/log/ | tail -1 | sed 's/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/'";
+          // Commande pour les formations (fichiers JSON)
+          const formationCommand =
+            "grep -r \"Fichier dans l'archive:\" /var/log/ | grep '\\.json' | tail -1 | sed 's/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/'";
 
-          const { stdout, stderr } = await execAsync(command);
+          // Commande pour les établissements (fichiers catalogue_etablissement_apprentissage)
+          const etablissementCommand =
+            "grep -r \"catalogue_etablissement_apprentissage_.*\\.json\" /var/log/ 2>/dev/null | tail -1 | sed -E 's/.*catalogue_etablissement_apprentissage_([0-9]+\\.json).*/catalogue_etablissement_apprentissage_\\1/'";
 
-          if (stdout && stdout.trim()) {
-            actualFileName = stdout.trim();
+          // Récupérer le fichier des formations
+          try {
+            const { stdout: formationStdout } = await execAsync(formationCommand);
+            if (formationStdout && formationStdout.trim()) {
+              actualFileName = formationStdout.trim();
 
-            // Essayer d'extraire une date du nom de fichier
-            const dateMatch = actualFileName.match(/(\d{8})/);
-            if (dateMatch) {
-              extractedDate = dateMatch[1];
+              // Essayer d'extraire une date du nom de fichier
+              const dateMatch = actualFileName.match(/(\d{8})/);
+              if (dateMatch) {
+                extractedDate = dateMatch[1];
+              }
+            }
+          } catch (formationError) {
+            console.error("Erreur récupération fichier formations:", formationError.message);
+          }
+
+          // Récupérer le fichier des établissements
+          try {
+            const { stdout: etablissementStdout } = await execAsync(etablissementCommand);
+            if (etablissementStdout && etablissementStdout.trim()) {
+              actualEtablissementFileName = etablissementStdout.trim();
+            }
+          } catch (etablissementError) {
+            console.error("Erreur récupération fichier établissements:", etablissementError.message);
+          }
+
+          // Si aucun fichier spécifique trouvé, utiliser la commande générale
+          if (!actualFileName && !actualEtablissementFileName) {
+            const generalCommand =
+              "grep -r \"Fichier dans l'archive:\" /var/log/ | tail -1 | sed 's/.*Fichier dans l.archive: \\([^ ]*\\).*/\\1/'";
+
+            const { stdout } = await execAsync(generalCommand);
+            if (stdout && stdout.trim()) {
+              const fileName = stdout.trim();
+              if (fileName.includes(".json")) {
+                actualFileName = fileName;
+              } else {
+                actualEtablissementFileName = fileName;
+              }
             }
           }
         } catch (logError) {
-          console.error("Erreur lors de la récupération du nom de fichier depuis les logs système:", logError);
+          console.error("Erreur lors de la récupération des noms de fichiers depuis les logs système:", logError);
 
           // Fallback: essayer avec les logs MongoDB
           try {
@@ -308,6 +343,7 @@ module.exports = () => {
           lastEtablissementImportDate: lastEtablissementImportTimestamp,
           lastEtablissementId: lastEtablissement?._id || null,
           etablissementImportsThisMonth,
+          actualEtablissementFileName,
 
           // Indicateurs généraux
           fileSize,

@@ -200,6 +200,82 @@ const ImportStatus = () => {
             </VStack>
           </Box>
 
+          {/* Catalogue Formations */}
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={InfoIcon} color="green.500" />
+              <Heading size="md">Catalogue des formations</Heading>
+            </HStack>
+            <VStack align="start" spacing={4}>
+              <Box>
+                <Text fontWeight="bold" mb={3}>
+                  Nom du fichier indexé:
+                </Text>
+                <Box
+                  bg={importData?.actualFileName ? "green.50" : "gray.50"}
+                  border="1px solid"
+                  borderColor={importData?.actualFileName ? "green.200" : "gray.200"}
+                  borderRadius="md"
+                  p={3}
+                >
+                  <Text
+                    fontFamily="mono"
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color={importData?.actualFileName ? "green.800" : "gray.600"}
+                    wordBreak="break-all"
+                  >
+                    {importData?.actualFileName || "Nom non déterminé"}
+                  </Text>
+                  {importData?.actualFileName && (
+                    <Badge colorScheme="green" size="sm" mt={2} variant="subtle">
+                      ✓ Récupéré depuis les logs système
+                    </Badge>
+                  )}
+                </Box>
+              </Box>
+
+              <Box>
+                <Text fontWeight="bold" mb={2}>
+                  Date d'import dans le système:
+                </Text>
+                <HStack>
+                  <Icon as={CalendarIcon} color="green.500" />
+                  <Text fontSize="lg">{formatDate(importData?.lastImportDate)}</Text>
+                </HStack>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} w="full">
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="2xl" fontWeight="bold" color="green.500">
+                    {importData?.totalFormations?.toLocaleString("fr-FR") || 0}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Total formations
+                  </Text>
+                </Box>
+
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="2xl" fontWeight="bold" color="orange.500">
+                    {importData?.importsThisMonth || 0}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Imports ce mois
+                  </Text>
+                </Box>
+
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="sm" fontWeight="bold" color="gray.600" fontFamily="mono">
+                    {importData?.lastFormationId ? `${importData.lastFormationId.toString().slice(-8)}...` : "N/A"}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    ID de la dernière formation
+                  </Text>
+                </Box>
+              </SimpleGrid>
+            </VStack>
+          </Box>
+
           {/* Catalogue Établissements */}
           <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
             <HStack mb={4}>
@@ -207,6 +283,34 @@ const ImportStatus = () => {
               <Heading size="md">Catalogue des établissements</Heading>
             </HStack>
             <VStack align="start" spacing={4}>
+              <Box>
+                <Text fontWeight="bold" mb={3}>
+                  Nom du fichier indexé:
+                </Text>
+                <Box
+                  bg={importData?.actualEtablissementFileName ? "purple.50" : "gray.50"}
+                  border="1px solid"
+                  borderColor={importData?.actualEtablissementFileName ? "purple.200" : "gray.200"}
+                  borderRadius="md"
+                  p={3}
+                >
+                  <Text
+                    fontFamily="mono"
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color={importData?.actualEtablissementFileName ? "purple.800" : "gray.600"}
+                    wordBreak="break-all"
+                  >
+                    {importData?.actualEtablissementFileName || "Nom non déterminé"}
+                  </Text>
+                  {importData?.actualEtablissementFileName && (
+                    <Badge colorScheme="purple" size="sm" mt={2} variant="subtle">
+                      ✓ Récupéré depuis les logs système
+                    </Badge>
+                  )}
+                </Box>
+              </Box>
+
               <Box>
                 <Text fontWeight="bold" mb={2}>
                   Date d'import dans le système:
@@ -289,40 +393,6 @@ const ImportStatus = () => {
               </Stat>
             </Box>
           </SimpleGrid>
-
-          {/* Indicateurs de qualité des données */}
-          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
-            <HStack mb={4}>
-              <Icon as={InfoIcon} color="green.500" />
-              <Heading size="md">Qualité des données</Heading>
-            </HStack>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
-                <Text fontSize="2xl" fontWeight="bold" color="green.500">
-                  {importData?.dataQuality?.completeness || "N/A"}%
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  Complétude des données
-                </Text>
-              </Box>
-              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
-                <Text fontSize="2xl" fontWeight="bold" color="blue.500">
-                  {importData?.dataQuality?.uniqueEstablishments || "N/A"}
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  Établissements uniques
-                </Text>
-              </Box>
-              <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
-                <Text fontSize="2xl" fontWeight="bold" color="purple.500">
-                  {importData?.dataQuality?.averageFormationsPerEstablishment || "N/A"}
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  Formations/établissement (moy.)
-                </Text>
-              </Box>
-            </SimpleGrid>
-          </Box>
 
           {/* Historique des imports */}
           <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
