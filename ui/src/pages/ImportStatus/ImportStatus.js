@@ -200,6 +200,56 @@ const ImportStatus = () => {
             </VStack>
           </Box>
 
+          {/* Catalogue Établissements */}
+          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
+            <HStack mb={4}>
+              <Icon as={InfoIcon} color="purple.500" />
+              <Heading size="md">Catalogue des établissements</Heading>
+            </HStack>
+            <VStack align="start" spacing={4}>
+              <Box>
+                <Text fontWeight="bold" mb={2}>
+                  Date d'import dans le système:
+                </Text>
+                <HStack>
+                  <Icon as={CalendarIcon} color="purple.500" />
+                  <Text fontSize="lg">{formatDate(importData?.lastEtablissementImportDate)}</Text>
+                </HStack>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} w="full">
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="2xl" fontWeight="bold" color="purple.500">
+                    {importData?.totalEtablissements?.toLocaleString("fr-FR") || 0}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Total établissements
+                  </Text>
+                </Box>
+
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="2xl" fontWeight="bold" color="orange.500">
+                    {importData?.etablissementImportsThisMonth || 0}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Imports ce mois
+                  </Text>
+                </Box>
+
+                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
+                  <Text fontSize="sm" fontWeight="bold" color="gray.600" fontFamily="mono">
+                    {importData?.lastEtablissementId
+                      ? `${importData.lastEtablissementId.toString().slice(-8)}...`
+                      : "N/A"}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    ID du dernier établissement
+                  </Text>
+                </Box>
+              </SimpleGrid>
+            </VStack>
+          </Box>
+
           {/* Statistiques principales */}
           <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6}>
             <Box bg={statBg} p={4} borderRadius="md">
@@ -286,8 +336,12 @@ const ImportStatus = () => {
                 <Text>{formatDate(importData?.lastSuccessfulImport)}</Text>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text fontWeight="bold">Nombre d'imports ce mois:</Text>
+                <Text fontWeight="bold">Imports formations ce mois:</Text>
                 <Badge colorScheme="green">{importData?.importsThisMonth || 0}</Badge>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text fontWeight="bold">Imports établissements ce mois:</Text>
+                <Badge colorScheme="purple">{importData?.etablissementImportsThisMonth || 0}</Badge>
               </HStack>
               <HStack justify="space-between" w="full">
                 <Text fontWeight="bold">Statut du système:</Text>
@@ -309,6 +363,13 @@ const ImportStatus = () => {
                 <Text fontWeight="bold">ID de la dernière formation:</Text>
                 <Text fontFamily="mono" fontSize="sm" color="gray.600">
                   {importData?.lastFormationId || "Non disponible"}
+                </Text>
+              </Box>
+
+              <Box>
+                <Text fontWeight="bold">ID du dernier établissement:</Text>
+                <Text fontFamily="mono" fontSize="sm" color="gray.600">
+                  {importData?.lastEtablissementId || "Non disponible"}
                 </Text>
               </Box>
 

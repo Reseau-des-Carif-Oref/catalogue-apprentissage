@@ -1,7 +1,14 @@
 const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const permissionsMiddleware = require("../middlewares/permissionsMiddleware");
-const { Statistique, DualControlFormation, DualControlReport, Log } = require("../../common/model");
+const {
+  Statistique,
+  DualControlFormation,
+  DualControlReport,
+  DualControlEtablissement,
+  Log,
+} = require("../../common/model");
+
 const { sanitize } = require("../../common/utils/sanitizeUtils");
 
 module.exports = () => {
@@ -39,11 +46,15 @@ module.exports = () => {
         // Récupérer la formation la plus récente (basée sur _id qui contient timestamp)
         const lastFormation = await DualControlFormation.findOne({}, {}, { sort: { _id: -1 } });
 
+        // Récupérer l'établissement le plus récent
+        const lastEtablissement = await DualControlEtablissement.findOne({}, {}, { sort: { _id: -1 } });
+
         // Récupérer le dernier rapport d'import
         const lastReport = await DualControlReport.findOne({}, {}, { sort: { date: -1 } });
 
-        // Compter le total des formations
+        // Compter le total des formations et établissements
         const totalFormations = await DualControlFormation.countDocuments();
+        const totalEtablissements = await DualControlEtablissement.countDocuments();
 
         // Analyser tous les tags disponibles pour comprendre leur structure
         const allTagsAggregation = await DualControlFormation.aggregate([
@@ -148,35 +159,55 @@ module.exports = () => {
 
         // Compter les imports de ce mois de façon plus simple
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        
+
         // Méthode 1: Compter les rapports d'import de ce mois
         const reportsThisMonth = await DualControlReport.countDocuments({
           date: { $gte: startOfMonth },
         });
-        
+
         // Méthode 2: Compter les jours uniques d'import ce mois (plus précis)
-        const { ObjectId } = require('mongodb');
+        const { ObjectId } = require("mongodb");
         const startOfMonthObjectId = ObjectId.createFromTime(Math.floor(startOfMonth.getTime() / 1000));
-        
+
         const uniqueImportDays = await DualControlFormation.aggregate([
           { $match: { _id: { $gte: startOfMonthObjectId } } },
-          { 
-            $group: { 
-              _id: { 
-                $dateToString: { 
-                  format: "%Y-%m-%d", 
-                  date: { $toDate: "$_id" } 
-                } 
-              } 
-            } 
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: { $toDate: "$_id" },
+                },
+              },
+            },
           },
-          { $count: "uniqueDays" }
+          { $count: "uniqueDays" },
         ]);
-        
+
         const importsThisMonth = uniqueImportDays.length > 0 ? uniqueImportDays[0].uniqueDays : 0;
 
-        // Extraire la date du timestamp de l'_id
+        // Même calcul pour les établissements
+        const uniqueEtablissementImportDays = await DualControlEtablissement.aggregate([
+          { $match: { _id: { $gte: startOfMonthObjectId } } },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: { $toDate: "$_id" },
+                },
+              },
+            },
+          },
+          { $count: "uniqueDays" },
+        ]);
+
+        const etablissementImportsThisMonth =
+          uniqueEtablissementImportDays.length > 0 ? uniqueEtablissementImportDays[0].uniqueDays : 0;
+
+        // Extraire les dates du timestamp de l'_id
         const lastImportTimestamp = lastFormation ? lastFormation._id.getTimestamp() : null;
+        const lastEtablissementImportTimestamp = lastEtablissement ? lastEtablissement._id.getTimestamp() : null;
 
         // Déterminer le statut du système
         let systemStatus = { text: "Opérationnel", color: "green" };
@@ -210,7 +241,6 @@ module.exports = () => {
               extractedDate = dateMatch[1];
             }
           }
-
         } catch (logError) {
           console.error("Erreur lors de la récupération du nom de fichier depuis les logs système:", logError);
 
@@ -263,6 +293,7 @@ module.exports = () => {
         }
 
         const responseData = {
+          // Données formations
           lastImportDate: lastImportTimestamp,
           lastReportDate: lastReport?.date || null,
           totalFormations,
@@ -270,7 +301,15 @@ module.exports = () => {
           actualFileName,
           lastDateTag,
           lastFormationId: lastFormation?._id || null,
-          // Nouveaux indicateurs
+          importsThisMonth,
+
+          // Données établissements
+          totalEtablissements,
+          lastEtablissementImportDate: lastEtablissementImportTimestamp,
+          lastEtablissementId: lastEtablissement?._id || null,
+          etablissementImportsThisMonth,
+
+          // Indicateurs généraux
           fileSize,
           dataAge,
           dataQuality: {
@@ -280,24 +319,23 @@ module.exports = () => {
           },
           importFrequency,
           lastSuccessfulImport: lastImportTimestamp,
-          importsThisMonth,
           systemStatus,
           metadata: {
             lastFormationTags: lastFormation?.tags || [],
             reportDiscriminator: lastReport?.discriminator || null,
             // Informations de debug
-              debug: {
-                allTagsSample: allTagsAggregation,
-                dateTagsFound: tagsAggregation,
-                extractedDate,
-                lastDateTag,
-                grepResult: actualFileName,
-                grepExtractedDate: extractedDate,
-                startOfMonth: startOfMonth.toISOString(),
-                reportsThisMonth,
-                uniqueImportDaysResult: uniqueImportDays,
-                finalImportsThisMonth: importsThisMonth,
-              },
+            debug: {
+              allTagsSample: allTagsAggregation,
+              dateTagsFound: tagsAggregation,
+              extractedDate,
+              lastDateTag,
+              grepResult: actualFileName,
+              grepExtractedDate: extractedDate,
+              startOfMonth: startOfMonth.toISOString(),
+              reportsThisMonth,
+              uniqueImportDaysResult: uniqueImportDays,
+              finalImportsThisMonth: importsThisMonth,
+            },
           },
         };
 
