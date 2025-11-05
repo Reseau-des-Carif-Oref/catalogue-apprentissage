@@ -246,9 +246,9 @@ module.exports = () => {
             const month = String(importDate.getMonth() + 1).padStart(2, "0");
             const day = String(importDate.getDate()).padStart(2, "0");
             extractedDate = `${year}${month}${day}`;
-            actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
+            actualFileName = `Introuvable`;
           } else {
-            actualFileName = "_catalogue_mna_2022__date_inconnue.zip";
+            actualFileName = "Introuvable";
           }
         }
 
