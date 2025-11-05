@@ -141,65 +141,6 @@ const ImportStatus = () => {
             </Text>
           </Box>
 
-          {/* Fichier principal */}
-          <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
-            <HStack mb={4}>
-              <Icon as={DownloadIcon} color="blue.500" />
-              <Heading size="md">Dernier fichier importé</Heading>
-            </HStack>
-            <VStack align="start" spacing={4}>
-              <Box>
-                <Text fontWeight="bold" mb={3}>
-                  Nom du fichier indexé:
-                </Text>
-                <Box
-                  bg={importData?.actualFileName ? "green.50" : "gray.50"}
-                  border="1px solid"
-                  borderColor={importData?.actualFileName ? "green.200" : "gray.200"}
-                  borderRadius="md"
-                  p={3}
-                >
-                  <Text
-                    fontFamily="mono"
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color={importData?.actualFileName ? "green.800" : "gray.600"}
-                    wordBreak="break-all"
-                  >
-                    {importData?.actualFileName || "Nom non déterminé"}
-                  </Text>
-                  {importData?.actualFileName && (
-                    <Badge colorScheme="green" size="sm" mt={2} variant="subtle">
-                      ✓ Récupéré depuis les logs système
-                    </Badge>
-                  )}
-                </Box>
-              </Box>
-
-              {importData?.lastDateTag && (
-                <Box>
-                  <Text fontWeight="bold" mb={2}>
-                    Date du fichier (extraite du nom):
-                  </Text>
-                  <HStack>
-                    <Icon as={CalendarIcon} color="blue.500" />
-                    <Text fontSize="lg">{formatDateTag(importData.lastDateTag)}</Text>
-                  </HStack>
-                </Box>
-              )}
-
-              <Box>
-                <Text fontWeight="bold" mb={2}>
-                  Date d'import dans le système:
-                </Text>
-                <HStack>
-                  <Icon as={CalendarIcon} color="green.500" />
-                  <Text fontSize="lg">{formatDate(importData?.lastImportDate)}</Text>
-                </HStack>
-              </Box>
-            </VStack>
-          </Box>
-
           {/* Catalogue Formations */}
           <Box bg={cardBg} shadow="md" borderRadius="md" p={6}>
             <HStack mb={4}>
