@@ -204,15 +204,6 @@ const ImportStatus = () => {
                     Imports ce mois
                   </Text>
                 </Box>
-
-                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
-                  <Text fontSize="sm" fontWeight="bold" color="gray.600" fontFamily="mono">
-                    {importData?.lastFormationId ? `${importData.lastFormationId.toString().slice(-8)}...` : "N/A"}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600">
-                    ID de la dernière formation
-                  </Text>
-                </Box>
               </SimpleGrid>
             </VStack>
           </Box>
@@ -278,17 +269,6 @@ const ImportStatus = () => {
                   </Text>
                   <Text fontSize="sm" color="gray.600">
                     Imports ce mois
-                  </Text>
-                </Box>
-
-                <Box textAlign="center" p={4} bg={statBg} borderRadius="md">
-                  <Text fontSize="sm" fontWeight="bold" color="gray.600" fontFamily="mono">
-                    {importData?.lastEtablissementId
-                      ? `${importData.lastEtablissementId.toString().slice(-8)}...`
-                      : "N/A"}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600">
-                    ID du dernier établissement
                   </Text>
                 </Box>
               </SimpleGrid>
