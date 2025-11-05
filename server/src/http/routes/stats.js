@@ -236,9 +236,9 @@ module.exports = () => {
             const dateMatch = lastDateTag.match(/20\d{6}/); // YYYYMMDD
             if (dateMatch) {
               extractedDate = dateMatch[0];
-              actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
+              actualFileName = `Introuvable`;
             } else {
-              actualFileName = `_catalogue_mna_2022__${lastDateTag}.zip`;
+              actualFileName = `Introuvable`;
             }
           } else if (lastImportTimestamp) {
             const importDate = new Date(lastImportTimestamp);
