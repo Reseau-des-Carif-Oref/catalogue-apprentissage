@@ -157,53 +157,40 @@ module.exports = () => {
           else importFrequency = "Irrégulière";
         }
 
-        // Compter les imports de ce mois de façon plus simple
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        // Compter les imports de ce mois avec les commandes grep spécifiques
+        let importsThisMonth = 0;
+        let etablissementImportsThisMonth = 0;
 
-        // Méthode 1: Compter les rapports d'import de ce mois
-        const reportsThisMonth = await DualControlReport.countDocuments({
-          date: { $gte: startOfMonth },
-        });
+        try {
+          const { exec } = require("child_process");
+          const { promisify } = require("util");
+          const execAsync = promisify(exec);
 
-        // Méthode 2: Compter les jours uniques d'import ce mois (plus précis)
-        const { ObjectId } = require("mongodb");
-        const startOfMonthObjectId = ObjectId.createFromTime(Math.floor(startOfMonth.getTime() / 1000));
+          // Commande pour compter les imports de formations ce mois
+          const formationCountCommand = 'grep -r "_catalogue_mna_2022__$(date +%Y%m)" /var/log/ 2>/dev/null | wc -l';
 
-        const uniqueImportDays = await DualControlFormation.aggregate([
-          { $match: { _id: { $gte: startOfMonthObjectId } } },
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: "%Y-%m-%d",
-                  date: { $toDate: "$_id" },
-                },
-              },
-            },
-          },
-          { $count: "uniqueDays" },
-        ]);
+          // Commande pour compter les imports d'établissements ce mois
+          const etablissementCountCommand =
+            'grep -r "catalogue_etablissement_apprentissage_$(date +%Y%m)" /var/log/ 2>/dev/null | wc -l';
 
-        const importsThisMonth = uniqueImportDays.length > 0 ? uniqueImportDays[0].uniqueDays : 0;
+          // Exécuter la commande pour les formations
+          try {
+            const { stdout: formationCount } = await execAsync(formationCountCommand);
+            importsThisMonth = parseInt(formationCount.trim()) || 0;
+          } catch (formationCountError) {
+            console.error("Erreur comptage formations:", formationCountError.message);
+          }
 
-        // Même calcul pour les établissements
-        const uniqueEtablissementImportDays = await DualControlEtablissement.aggregate([
-          { $match: { _id: { $gte: startOfMonthObjectId } } },
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: "%Y-%m-%d",
-                  date: { $toDate: "$_id" },
-                },
-              },
-            },
-          },
-          { $count: "uniqueDays" },
-        ]);
-
-        const etablissementImportsThisMonth =
-          uniqueEtablissementImportDays.length > 0 ? uniqueEtablissementImportDays[0].uniqueDays : 0;
+          // Exécuter la commande pour les établissements
+          try {
+            const { stdout: etablissementCount } = await execAsync(etablissementCountCommand);
+            etablissementImportsThisMonth = parseInt(etablissementCount.trim()) || 0;
+          } catch (etablissementCountError) {
+            console.error("Erreur comptage établissements:", etablissementCountError.message);
+          }
+        } catch (countError) {
+          console.error("Erreur lors du comptage des imports depuis les logs:", countError);
+        }
 
         // Extraire les dates du timestamp de l'_id
         const lastImportTimestamp = lastFormation ? lastFormation._id.getTimestamp() : null;
