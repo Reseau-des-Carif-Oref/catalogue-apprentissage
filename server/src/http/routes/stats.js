@@ -236,9 +236,9 @@ module.exports = () => {
             const dateMatch = lastDateTag.match(/20\d{6}/); // YYYYMMDD
             if (dateMatch) {
               extractedDate = dateMatch[0];
-              actualFileName = `Introuvable`;
+              actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
             } else {
-              actualFileName = `Introuvable`;
+              actualFileName = `_catalogue_mna_2022__${lastDateTag}.zip`;
             }
           } else if (lastImportTimestamp) {
             const importDate = new Date(lastImportTimestamp);
@@ -246,9 +246,9 @@ module.exports = () => {
             const month = String(importDate.getMonth() + 1).padStart(2, "0");
             const day = String(importDate.getDate()).padStart(2, "0");
             extractedDate = `${year}${month}${day}`;
-            actualFileName = `Introuvable`;
+            actualFileName = `_catalogue_mna_2022__${extractedDate}.zip`;
           } else {
-            actualFileName = "Introuvable";
+            actualFileName = "_catalogue_mna_2022__date_inconnue.zip";
           }
         }
 

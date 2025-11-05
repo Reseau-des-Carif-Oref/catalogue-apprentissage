@@ -40,6 +40,8 @@ services:
       - catalogue_apprentissage_network
     depends_on:
       - mongodb
+    volumes:
+      - /var/log:/var/log:ro
     environment:
       - CATALOGUE_APPRENTISSAGE_MONGODB_URI=mongodb://mongodb:27017/catalogue-apprentissage?retryWrites=true&w=majority
       - CATALOGUE_APPRENTISSAGE_ELASTICSEARCH_NODE=http://elasticsearch:9200
