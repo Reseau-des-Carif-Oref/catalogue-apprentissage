@@ -563,33 +563,6 @@ const formationSchema = {
     description: "Conditions spécifiques d'accès à la formation",
   },
 
-  effectif_minimal: {
-    type: "array",
-    items: {
-      type: "string",
-    },
-    default: [],
-    description: "Effectif minimal",
-  },
-
-  capacite_simultanee: {
-    type: "array",
-    items: {
-      type: "string",
-    },
-    default: [],
-    description: "Capacité simultanée",
-  },
-
-  capacite_cumulee: {
-    type: "array",
-    items: {
-      type: "string",
-    },
-    default: [],
-    description: "Capacité cumulée",
-  },
-
   reference_handicap: {
     type: String,
     default: null,

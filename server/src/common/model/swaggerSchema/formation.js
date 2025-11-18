@@ -585,30 +585,6 @@ module.exports = {
         maxLength: 3000,
         description: "Conditions spécifiques d'accès à la formation",
       },
-      effectif_minimal: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-        default: [],
-        description: "Effectif minimal requis pour la formation",
-      },
-      capacite_simultanee: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-        default: [],
-        description: "Capacité d'accueil simultanée",
-      },
-      capacite_cumulee: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-        default: [],
-        description: "Capacité d'accueil cumulée",
-      },
       referent_handicap: {
         type: "string",
         default: "null",
