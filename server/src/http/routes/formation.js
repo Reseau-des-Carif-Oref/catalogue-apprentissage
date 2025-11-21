@@ -18,6 +18,15 @@ module.exports = () => {
     published: true,
   };
 
+  const hiddenFields = ["effectif_minimal", "capacite_simultanee", "capacite_cumulee"];
+  const defaultSelect = hiddenFields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field]: 0,
+    }),
+    { __v: 0 }
+  );
+
   const getFormations = tryCatch(async (req, res) => {
     const qs = req.query;
 
@@ -35,12 +44,7 @@ module.exports = () => {
     const page = qs && qs.page ? qs.page : 1;
     const limit = qs && qs.limit ? parseInt(qs.limit, 10) : 10;
     const sort = qs && qs.sort ? JSON.parse(qs.sort) : {};
-    const select =
-      qs && qs.select
-        ? JSON.parse(qs.select)
-        : {
-            __v: 0,
-          };
+    const select = qs && qs.select ? JSON.parse(qs.select) : { ...defaultSelect };
 
     let queryAsRegex = qs?.queryAsRegex ? JSON.parse(qs.queryAsRegex) : {};
     queryAsRegex = sanitize(queryAsRegex, { allowSafeOperators: true });
@@ -84,9 +88,7 @@ module.exports = () => {
       query: Joi.optional().default({}),
       page: Joi.number().default(1),
       limit: Joi.number().max(1000).default(10),
-      select: Joi.optional().default({
-        __v: 0,
-      }),
+      select: Joi.optional().default({ ...defaultSelect }),
       queryAsRegex: Joi.optional().default({}),
       sort: Joi.optional().default({}),
     }).validateAsync(sanitizedQuery, { abortEarly: false });
@@ -151,12 +153,7 @@ module.exports = () => {
     let query = qs && qs.query ? JSON.parse(qs.query) : {};
     query = sanitize(query, { allowSafeOperators: true });
 
-    const select =
-      qs && qs.select
-        ? JSON.parse(qs.select)
-        : {
-            __v: 0,
-          };
+    const select = qs && qs.select ? JSON.parse(qs.select) : { ...defaultSelect };
     const retrievedData = await Formation.findOne(query, select).lean();
     if (retrievedData) {
       return res.json(retrievedData);
@@ -169,12 +166,7 @@ module.exports = () => {
     const sanitizedParams = sanitize(req.params);
 
     const itemId = sanitizedParams.id;
-    const select =
-      qs && qs.select
-        ? JSON.parse(qs.select)
-        : {
-            __v: 0,
-          };
+    const select = qs && qs.select ? JSON.parse(qs.select) : { ...defaultSelect };
 
     const retrievedDataByCleME = await Formation.findOne({ cle_ministere_educatif: itemId }, select).lean();
     if (retrievedDataByCleME) {
@@ -191,7 +183,7 @@ module.exports = () => {
   const streamFormations = tryCatch(async (req, res) => {
     let { query, select, limit } = await Joi.object({
       query: Joi.string().default("{}"),
-      select: Joi.string().default('{"__v":0}'),
+      select: Joi.string().default('{"__v":0,"effectif_minimal":0,"capacite_simultanee":0,"capacite_cumulee":0}'),
       limit: Joi.number().default(10),
     }).validateAsync(req.query, { abortEarly: false });
 
