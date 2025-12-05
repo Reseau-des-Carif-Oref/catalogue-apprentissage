@@ -46,6 +46,18 @@ La collecte de l'offre de formation en apprentissage est une mission confiée pa
 L'API est composée de deux catalogues :<br />
 &#x2014; celui des formations;<br />
 &#x2014; celui des établissements de formation en apprentissage ayant déclaré une formation en apprentissage auprès d'un Carif-Oref.<br /><br />
+
+<strong>En utilisant l'API, vous acceptez les conditions suivantes :</strong><br />
+<ul>
+<li>L'accès est fourni gratuitement.</li>
+<li>Les identifiants d'accès et les données ne doivent pas être transmis à des tiers.</li>
+<li>En cas de publication ou d'affichage de données issues de l'API, le logo RCO doit impérativement figurer sur les supports.</li>
+<li>Toute anomalie constatée doit être signalée à RCO afin d'améliorer le service.</li>
+<li>La commercialisation des données est strictement interdite.</li>
+</ul>
+En cas de non-respect de ces conditions, RCO se réserve le droit de suspendre l'accès à l'API.<br /><br />
+RCO peut faire évoluer les conditions d'utilisation en tant que besoin.<br /><br />
+
 La documentation de chaque appel est disponible en bas de la page dans la partie « Schéma ».<br />
 
       Contact:
