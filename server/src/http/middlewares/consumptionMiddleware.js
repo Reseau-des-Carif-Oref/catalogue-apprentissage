@@ -12,10 +12,16 @@ module.exports = async (req) => {
     const path = req.route ? `${req.baseUrl}${req.route?.path}` : req.url.split("?")[0];
     const method = req.method;
     const date = new Date().setUTCHours(0, 0, 0, 0);
+    const userEmail = req.user?.email || null;
+
+    // Ne logger que les routes /entity
+    if (!path.includes("/entity")) {
+      return;
+    }
 
     try {
       await Consumption.findOneAndUpdate(
-        { path, method, "consumers.caller": caller, "consumers.date": date },
+        { path, method, "consumers.caller": caller, "consumers.userEmail": userEmail, "consumers.date": date },
         {
           $inc: { globalCallCount: 1, "consumers.$.callCount": 1 },
         },
@@ -32,7 +38,7 @@ module.exports = async (req) => {
         },
         {
           $inc: { globalCallCount: 1 },
-          $push: { consumers: { caller, date, callCount: 1 } },
+          $push: { consumers: { caller, userEmail, date, callCount: 1 } },
         },
         {
           upsert: true,
