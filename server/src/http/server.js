@@ -156,7 +156,7 @@ module.exports = async (components, verbose = true) => {
 
     ["/es/search", elasticLimiter, esSearch()],
     ["/search", elasticLimiter, esMultiSearchNoIndex()],
-    ["/entity", apiLimiter, formation()],
+    ["/entity", apiLimiter, authMiddleware, formation()],
     ["/entity", apiLimiter, report()],
     ["/entity", apiLimiter, etablissement(components)],
     ["/entity", apiLimiter, alert()],
