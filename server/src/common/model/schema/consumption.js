@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const consumerSchema = new mongoose.Schema(
   {
     caller: String,
+    userEmail: String,
     callCount: Number,
     date: Date,
   },

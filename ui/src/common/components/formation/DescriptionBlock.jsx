@@ -335,8 +335,8 @@ export const DescriptionBlock = ({ formation }) => {
                       >
                         <Text mb={2}>Aucune habilitation sur la fiche pour ce SIRET.</Text>
                         <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"}>
-                          Le Siret du formateur ne figure pas dans le liste des partenaires habilités enregistrés auprès
-                          de France compétences. S’il s’agit d’une erreur, inviter le certificateur à faire modifier les
+                          Les Siret de l'OF responsable et de l'OF formateur ne figurent pas dans la liste des partenaires habilités enregistrés auprès de France compétences. Au moins l'un des deux doit y figurer.
+                          Si il s’agit d’une erreur, inviter le certificateur à faire modifier les
                           enregistrements auprès de France compétences. La modification prendra effet sur le catalogue à
                           J+1.
                         </Text>
