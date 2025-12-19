@@ -337,8 +337,7 @@ export const DescriptionBlock = ({ formation }) => {
                         <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"}>
                           Les Siret de l'OF responsable et de l'OF formateur ne figurent pas dans la liste des
                           partenaires habilités enregistrés auprès de France compétences. Au moins l'un des deux doit y
-                          figurer.
-                          Si il s'agit d'une erreur, inviter le certificateur à faire modifier les
+                          figurer. Si il s'agit d'une erreur, inviter le certificateur à faire modifier les
                           enregistrements auprès de France compétences. La modification prendra effet sur le catalogue à
                           J+1.
                         </Text>
