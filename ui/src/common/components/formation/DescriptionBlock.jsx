@@ -337,7 +337,7 @@ export const DescriptionBlock = ({ formation }) => {
                         <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"}>
                           Ni le Siret de l'organisme de formation responsable, ni celui du formateur ne figurent dans la
                           liste des partenaires habilités enregistrés auprès de France compétences. Au moins l'un des
-                          deux doit y figurer.
+                          deux SIRET doit y figurer.
                         </Text>
                         <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} mt={2}>
                           Si cette absence est due à une erreur, invitez le certificateur à mettre à jour les
