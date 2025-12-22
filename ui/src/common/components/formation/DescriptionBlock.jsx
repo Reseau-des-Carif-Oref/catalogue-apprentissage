@@ -333,13 +333,18 @@ export const DescriptionBlock = ({ formation }) => {
                         borderColor={"orangesoft.500"}
                         w={"full"}
                       >
-                        <Text mb={2}>Aucune habilitation sur la fiche pour ce SIRET.</Text>
+                        <Text mb={2}>Organismes non habilités à mettre en œuvre cette certification.</Text>
                         <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"}>
-                          Les Siret de l'OF responsable et de l'OF formateur ne figurent pas dans la liste des
-                          partenaires habilités enregistrés auprès de France compétences. Au moins l'un des deux doit y
-                          figurer. Si il s'agit d'une erreur, inviter le certificateur à faire modifier les
-                          enregistrements auprès de France compétences. La modification prendra effet sur le catalogue à
-                          J+1.
+                          Ni le Siret de l'organisme de formation responsable, ni celui du formateur ne figurent dans la
+                          liste des partenaires habilités enregistrés auprès de France compétences. Au moins l'un des deux
+                          doit y figurer.
+                        </Text>
+                        <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} mt={2}>
+                          Si cette absence est due à une erreur, invitez le certificateur à mettre à jour les
+                          enregistrements auprès de France Compétences.
+                        </Text>
+                        <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} mt={2}>
+                          La modification prendra effet sur le catalogue à J+2 après publication par France compétences.
                         </Text>
                       </Box>
                     )}
