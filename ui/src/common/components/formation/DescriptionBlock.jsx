@@ -334,16 +334,16 @@ export const DescriptionBlock = ({ formation }) => {
                         w={"full"}
                       >
                         <Text mb={2}>Organismes non habilités à mettre en œuvre cette certification.</Text>
-                        <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"}>
+                        <Text variant={"unstyled"} fontSize={"zeta"}>
                           Ni le Siret de l'organisme de formation responsable, ni celui du formateur ne figurent dans la
                           liste des partenaires habilités enregistrés auprès de France compétences. Au moins l'un des
                           deux SIRET doit y figurer.
                         </Text>
-                        <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} mt={2}>
+                        <Text variant={"unstyled"} fontSize={"zeta"} mt={2}>
                           Si cette absence est due à une erreur, invitez le certificateur à mettre à jour les
                           enregistrements auprès de France Compétences.
                         </Text>
-                        <Text variant={"unstyled"} fontSize={"zeta"} fontStyle={"italic"} mt={2}>
+                        <Text variant={"unstyled"} fontSize={"zeta"} mt={2}>
                           La modification prendra effet sur le catalogue à J+2 après publication par France compétences.
                         </Text>
                       </Box>
