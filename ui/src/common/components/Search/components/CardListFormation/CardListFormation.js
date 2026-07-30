@@ -42,7 +42,7 @@ export const CardListFormation = ({ data, context }) => {
                   <HabiliteBadge value={data.etablissement_reference_habilite_rncp} mt={2} mr={[0, 2]} />
                   <ActifBadge value={data.siret_actif} mt={2} mr={[0, 2]} />
                   <LiquidationBadge
-                    value={data.SIRET_LJ ?? data.SIRET_Oresp_LJ ?? data.SIRET_OForm_LJ}
+                    value={data.Siret_LJ === true || data.SIRET_Oresp_LJ === true || data.SIRET_OForm_LJ === true}
                     mt={2}
                     mr={[0, 2]}
                   />

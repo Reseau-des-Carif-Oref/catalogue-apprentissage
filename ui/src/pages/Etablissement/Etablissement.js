@@ -70,7 +70,11 @@ const Etablissement = ({ etablissement, countFormations }) => {
   }
 
   const actifLabel = hasFermetureDate ? "Non" : "Oui";
-  const isLj = etablissement?.SIRET_LJ === 1 || etablissement?.SIRET_LJ === "1" || etablissement?.SIRET_LJ === true;
+  const isLj =
+    etablissement?.Siret_LJ === true ||
+    etablissement?.Siret_LJ === "true" ||
+    etablissement?.SIRET_Oresp_LJ === true ||
+    etablissement?.SIRET_OForm_LJ === true;
   const liquidationLabel = isLj ? "Oui" : "Non";
 
   const UaiContainer = etablissement.uai_valide

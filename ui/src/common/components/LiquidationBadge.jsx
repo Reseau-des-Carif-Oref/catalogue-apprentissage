@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge, Flex, Text } from "@chakra-ui/react";
 
-const isLiquidation = (value) => value === 1 || value === "1" || value === true;
+const isLiquidation = (value) => value === true || value === "true";
 
 export const LiquidationBadge = ({ value, ...props }) => {
   if (!isLiquidation(value)) {

@@ -497,24 +497,24 @@ export const columnsDefinition = [
   },
   {
     Header: "Paramètre réglementaire: Liquidation judiciaire",
-    accessor: "SIRET_LJ",
+    accessor: "Siret_LJ",
     width: 200,
     exportable: true,
-    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+    formatter: (value) => (value === true || value === "true" ? "Oui" : "Non"),
   },
   {
     Header: "Paramètre réglementaire: Liquidation judiciaire responsable",
     accessor: "SIRET_Oresp_LJ",
     width: 200,
     exportable: true,
-    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+    formatter: (value) => (value === true || value === "true" ? "Oui" : "Non"),
   },
   {
     Header: "Paramètre réglementaire: Liquidation judiciaire formateur",
     accessor: "SIRET_OForm_LJ",
     width: 200,
     exportable: true,
-    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+    formatter: (value) => (value === true || value === "true" ? "Oui" : "Non"),
   },
   {
     Header: "Paramètre réglementaire: Siret responsable actif",
@@ -719,7 +719,7 @@ const facetDefinition = () => [
   },
   {
     componentId: "liquidation_judiciaire",
-    dataField: "SIRET_LJ",
+    dataField: "Siret_LJ",
     title: "Liquidation judiciaire",
     filterLabel: "Liquidation judiciaire",
     sortBy: "asc",
@@ -727,8 +727,8 @@ const facetDefinition = () => [
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
     selectAllLabel: "Toutes",
     transformData: (data) => {
-      const isOuiKey = (key) => key === 1 || key === "1" || key === true || key === "true";
-      const isNonKey = (key) => key === 0 || key === "0" || key === false || key === "false";
+      const isOuiKey = (key) => key === true || key === "true";
+      const isNonKey = (key) => key === false || key === "false";
       const oui = data?.filter((d) => isOuiKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
       const non = data?.filter((d) => isNonKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
 
@@ -743,9 +743,9 @@ const facetDefinition = () => [
       const ljOuiClause = {
         bool: {
           should: [
-            { terms: { SIRET_LJ: [1, "1"] } },
-            { terms: { SIRET_Oresp_LJ: [1, "1"] } },
-            { terms: { SIRET_OForm_LJ: [1, "1"] } },
+            { term: { Siret_LJ: true } },
+            { term: { SIRET_Oresp_LJ: true } },
+            { term: { SIRET_OForm_LJ: true } },
           ],
           minimum_should_match: 1,
         },

@@ -24,7 +24,11 @@ const CardListEtablissements = ({ data, withoutLink }) => {
     }
   }
 
-  const isLj = data?.SIRET_LJ === 1 || data?.SIRET_LJ === "1" || data?.SIRET_LJ === true;
+  const isLj =
+    data?.Siret_LJ === true ||
+    data?.Siret_LJ === "true" ||
+    data?.SIRET_Oresp_LJ === true ||
+    data?.SIRET_OForm_LJ === true;
   const liquidationLabel = isLj ? "Oui" : "Non";
 
   const RenderCard = ({ withoutLink }) => {

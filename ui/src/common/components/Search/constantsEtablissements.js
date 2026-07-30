@@ -15,7 +15,7 @@ const formatFrenchDate = (dateValue) => {
 
 const formatActif = (_value, obj) => (hasFermetureDate(obj?.date_fermeture) ? "Non" : "Oui");
 
-const formatLiquidation = (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non");
+const formatLiquidation = (value) => (value === true || value === "true" ? "Oui" : "Non");
 
 const FILTERS = () => [`QUERYBUILDER`, `SEARCH`, `num_departement`, `nom_academie`, `tags`, "published", "qualite"];
 
@@ -99,7 +99,7 @@ const columnsDefinition = [
   },
   {
     Header: "Liquidation judiciaire",
-    accessor: "SIRET_LJ",
+    accessor: "Siret_LJ",
     width: 220,
     exportable: true,
     formatter: formatLiquidation,
