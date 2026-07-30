@@ -521,6 +521,24 @@ const formationSchema = {
     description: "Badge siret actif/inactif",
   },
 
+  Siret_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire (établissement)",
+  },
+
+  SIRET_Oresp_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire organisme responsable",
+  },
+
+  SIRET_OForm_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire organisme formateur",
+  },
+
   num_tel: {
     type: String,
     default: null,

@@ -152,6 +152,21 @@ const etablissementSchema = {
     default: false,
     description: "A cessé son activité",
   },
+  Siret_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire",
+  },
+  SIRET_Oresp_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire organisme responsable",
+  },
+  SIRET_OForm_LJ: {
+    type: Boolean,
+    default: false,
+    description: "Liquidation judiciaire organisme formateur",
+  },
   region_implantation_code: {
     type: String,
     default: null,
