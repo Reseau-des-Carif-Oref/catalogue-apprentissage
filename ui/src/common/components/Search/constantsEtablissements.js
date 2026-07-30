@@ -2,6 +2,29 @@ import { escapeDiacritics } from "../../utils/downloadUtils";
 import helpText from "../../../locales/helpText.json";
 import { departements } from "../../../constants/departements";
 
+const hasFermetureDate = (dateValue) =>
+  !!(dateValue && !String(dateValue).startsWith("1970-01-01"));
+
+const formatFrenchDate = (dateValue) => {
+  if (!hasFermetureDate(dateValue)) return "";
+  try {
+    return new Date(dateValue).toLocaleDateString("fr-FR");
+  } catch (e) {
+    return "";
+  }
+};
+
+const formatActif = (_value, obj) => (hasFermetureDate(obj?.date_fermeture) ? "non" : "oui");
+
+const formatLiquidation = (_value, obj) => {
+  const l_j = obj?.entreprise_procedure_collective === true;
+  const maintained = l_j && !hasFermetureDate(obj?.date_fermeture);
+
+  if (!l_j) return "non";
+  if (maintained) return "oui avec maintien en fonction";
+  return "oui";
+};
+
 const FILTERS = () => [`QUERYBUILDER`, `SEARCH`, `num_departement`, `nom_academie`, `tags`, "published", "qualite"];
 
 const columnsDefinition = [
@@ -67,6 +90,27 @@ const columnsDefinition = [
     accessor: "certifie_qualite",
     width: 200,
     exportable: true,
+  },
+  {
+    Header: "Actif",
+    accessor: "date_fermeture",
+    width: 120,
+    exportable: true,
+    formatter: formatActif,
+  },
+  {
+    Header: "Date de fermeture",
+    accessor: "date_fermeture",
+    width: 160,
+    exportable: true,
+    formatter: (value) => formatFrenchDate(value),
+  },
+  {
+    Header: "Liquidation judiciaire",
+    accessor: "entreprise_procedure_collective",
+    width: 220,
+    exportable: true,
+    formatter: formatLiquidation,
   },
   {
     Header: "Est le siege de l'entreprise",

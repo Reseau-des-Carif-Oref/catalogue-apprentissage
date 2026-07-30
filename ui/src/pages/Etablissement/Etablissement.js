@@ -57,6 +57,26 @@ const Etablissement = ({ etablissement, countFormations }) => {
     console.error("can't display creation date ", etablissement.date_creation);
   }
 
+  const hasFermetureDate = !!(
+    etablissement?.date_fermeture && !String(etablissement.date_fermeture).startsWith("1970-01-01")
+  );
+  let fermetureDate = "";
+  if (hasFermetureDate) {
+    try {
+      fermetureDate = new Date(etablissement.date_fermeture).toLocaleDateString("fr-FR");
+    } catch (e) {
+      console.error("can't display fermeture date ", etablissement.date_fermeture);
+    }
+  }
+
+  const actifLabel = hasFermetureDate ? "non" : "oui";
+  const liquidationLabel =
+    etablissement?.entreprise_procedure_collective === true
+      ? hasFermetureDate
+        ? "oui"
+        : "oui avec maintien en fonction"
+      : "non";
+
   const UaiContainer = etablissement.uai_valide
     ? React.Fragment
     : (args) => (
@@ -80,16 +100,19 @@ const Etablissement = ({ etablissement, countFormations }) => {
             <Heading textStyle="h4" color="grey.800">
               Caractéristiques de l’organisme
             </Heading>
-            {etablissement.onisep_url !== "" && etablissement.onisep_url !== null && (
+            {etablissement?.siret && (
               <Box mt={2} mb={4} ml={-3}>
                 <Link
-                  href={`https://${etablissement.onisep_url}`}
+                  href={`https://www.intercariforef.org/rco_search/quiforme/etablissement/?rech=${encodeURIComponent(
+                    etablissement.siret
+                  )}`}
                   mt={3}
                   variant={"pill"}
                   textStyle="rf-text"
                   isExternal
                 >
-                  voir la fiche descriptive Onisep <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
+                  Plus d’information sur l’établissement sur QuiForme{" "}
+                  <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
                 </Link>
               </Box>
             )}
@@ -135,12 +158,32 @@ const Etablissement = ({ etablissement, countFormations }) => {
                 <InfoTooltip description={helpText.etablissement.naf_libelle} />
               </Text>
               <Text mb={4}>
+                Actif :{" "}
+                <Text as="span" variant="highlight">
+                  {actifLabel}
+                </Text>
+              </Text>
+              <Text mb={4}>
                 Date de création :{" "}
                 <Text as="span" variant="highlight">
                   {" "}
                   {creationDate}{" "}
                 </Text>{" "}
                 <InfoTooltip description={helpText.etablissement.date_creation} />
+              </Text>
+              <Text mb={4}>
+                Date de fermeture :{" "}
+                <Text as="span" variant="highlight">
+                  {" "}
+                  {fermetureDate || "N/A"}{" "}
+                </Text>
+              </Text>
+              <Text mb={4}>
+                Liquidation judiciaire :{" "}
+                <Text as="span" variant="highlight">
+                  {" "}
+                  {liquidationLabel}{" "}
+                </Text>
               </Text>
               <Text mb={4}>
                 Adresse :{" "}
@@ -288,6 +331,20 @@ const Etablissement = ({ etablissement, countFormations }) => {
           <Button variant={"pill"} textStyle="rf-text" onClick={onOpen} whiteSpace="normal">
             <ArrowRightLine w="9px" h="9px" mr={2} /> Demander des corrections sur les données sur votre organisme
           </Button>
+        </Box>
+      )}
+      {etablissement.onisep_url !== "" && etablissement.onisep_url !== null && (
+        <Box mt={4} mb={16} ml={-3}>
+          <Link
+            href={`https://${etablissement.onisep_url}`}
+            mt={3}
+            variant={"pill"}
+            textStyle="rf-text"
+            isExternal
+          >
+            voir la fiche descriptive de l&apos;Onisep{" "}
+            <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
+          </Link>
         </Box>
       )}
 

@@ -11,6 +11,7 @@ const FILTERS = () => [
   "formation_distance",
   "etablissement_formateur_siret",
   "etablissement_gestionnaire_siret",
+  "liquidation_judiciaire",
   "num_academie",
   "niveau",
   "etablissement_gestionnaire_siren",
@@ -694,6 +695,97 @@ const facetDefinition = () => [
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
     selectAllLabel: "Tous les statuts",
     sortBy: "asc",
+  },
+  {
+    componentId: "liquidation_judiciaire",
+    dataField: "etablissement_gestionnaire_entreprise_procedure_collective",
+    title: "Liquidation judiciaire",
+    filterLabel: "Liquidation judiciaire",
+    sortBy: "asc",
+    showSearch: false,
+    displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
+    selectAllLabel: "Toutes",
+    transformData: (data) => {
+      const non = data?.find((d) => d.key === false || d.key === "false")?.doc_count ?? 0;
+      const oui = data?.find((d) => d.key === true || d.key === "true")?.doc_count ?? 0;
+
+      return [
+        { key: "non", doc_count: non },
+        { key: "oui", doc_count: oui },
+        { key: "oui avec maintien en fonction", doc_count: oui },
+      ];
+    },
+    customQuery: (values) => {
+      if (values?.length !== 1) return {};
+      const selected = values[0];
+
+      switch (selected) {
+        case "non":
+          return {
+            query: {
+              bool: {
+                should: [
+                  {
+                    match: {
+                      etablissement_gestionnaire_entreprise_procedure_collective: false,
+                    },
+                  },
+                  {
+                    bool: {
+                      must_not: {
+                        exists: {
+                          field: "etablissement_gestionnaire_entreprise_procedure_collective",
+                        },
+                      },
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+          };
+        case "oui":
+          return {
+            query: {
+              bool: {
+                must: [
+                  {
+                    match: {
+                      etablissement_gestionnaire_entreprise_procedure_collective: true,
+                    },
+                  },
+                  {
+                    match: {
+                      etablissement_gestionnaire_actif: "inactif",
+                    },
+                  },
+                ],
+              },
+            },
+          };
+        case "oui avec maintien en fonction":
+          return {
+            query: {
+              bool: {
+                must: [
+                  {
+                    match: {
+                      etablissement_gestionnaire_entreprise_procedure_collective: true,
+                    },
+                  },
+                  {
+                    match: {
+                      etablissement_gestionnaire_actif: "actif",
+                    },
+                  },
+                ],
+              },
+            },
+          };
+      }
+
+      return {};
+    },
   },
   {
     componentId: "annee",
