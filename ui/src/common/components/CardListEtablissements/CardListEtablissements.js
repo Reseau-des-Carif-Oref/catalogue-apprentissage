@@ -6,7 +6,7 @@ import { QualiteBadge } from "../QualiteBadge";
 
 const CardListEtablissements = ({ data, withoutLink }) => {
   const hasFermetureDate = !!(data?.date_fermeture && !String(data.date_fermeture).startsWith("1970-01-01"));
-  const actifLabel = hasFermetureDate ? "non" : "oui";
+  const actifLabel = hasFermetureDate ? "Non" : "Oui";
 
   let creationDate = "";
   try {
@@ -24,12 +24,8 @@ const CardListEtablissements = ({ data, withoutLink }) => {
     }
   }
 
-  const liquidationLabel =
-    data?.entreprise_procedure_collective === true
-      ? hasFermetureDate
-        ? "oui"
-        : "oui avec maintien en fonction"
-      : "non";
+  const isLj = data?.SIRET_LJ === 1 || data?.SIRET_LJ === "1" || data?.SIRET_LJ === true;
+  const liquidationLabel = isLj ? "Oui" : "Non";
 
   const RenderCard = ({ withoutLink }) => {
     return (

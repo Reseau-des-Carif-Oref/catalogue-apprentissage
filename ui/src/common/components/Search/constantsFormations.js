@@ -496,6 +496,27 @@ export const columnsDefinition = [
     exportable: true,
   },
   {
+    Header: "Paramètre réglementaire: Liquidation judiciaire",
+    accessor: "SIRET_LJ",
+    width: 200,
+    exportable: true,
+    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+  },
+  {
+    Header: "Paramètre réglementaire: Liquidation judiciaire responsable",
+    accessor: "SIRET_Oresp_LJ",
+    width: 200,
+    exportable: true,
+    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+  },
+  {
+    Header: "Paramètre réglementaire: Liquidation judiciaire formateur",
+    accessor: "SIRET_OForm_LJ",
+    width: 200,
+    exportable: true,
+    formatter: (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non"),
+  },
+  {
     Header: "Paramètre réglementaire: Siret responsable actif",
     accessor: "etablissement_gestionnaire_actif",
     width: 200,
@@ -698,7 +719,7 @@ const facetDefinition = () => [
   },
   {
     componentId: "liquidation_judiciaire",
-    dataField: "etablissement_gestionnaire_entreprise_procedure_collective",
+    dataField: "SIRET_LJ",
     title: "Liquidation judiciaire",
     filterLabel: "Liquidation judiciaire",
     sortBy: "asc",
@@ -706,82 +727,42 @@ const facetDefinition = () => [
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
     selectAllLabel: "Toutes",
     transformData: (data) => {
-      const non = data?.find((d) => d.key === false || d.key === "false")?.doc_count ?? 0;
-      const oui = data?.find((d) => d.key === true || d.key === "true")?.doc_count ?? 0;
+      const isOuiKey = (key) => key === 1 || key === "1" || key === true || key === "true";
+      const isNonKey = (key) => key === 0 || key === "0" || key === false || key === "false";
+      const oui = data?.filter((d) => isOuiKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
+      const non = data?.filter((d) => isNonKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
 
       return [
-        { key: "non", doc_count: non },
-        { key: "oui", doc_count: oui },
-        { key: "oui avec maintien en fonction", doc_count: oui },
+        { key: "Oui", doc_count: oui },
+        { key: "Non", doc_count: non },
       ];
     },
     customQuery: (values) => {
       if (values?.length !== 1) return {};
-      const selected = values[0];
 
-      switch (selected) {
-        case "non":
-          return {
-            query: {
-              bool: {
-                should: [
-                  {
-                    match: {
-                      etablissement_gestionnaire_entreprise_procedure_collective: false,
-                    },
-                  },
-                  {
-                    bool: {
-                      must_not: {
-                        exists: {
-                          field: "etablissement_gestionnaire_entreprise_procedure_collective",
-                        },
-                      },
-                    },
-                  },
-                ],
-                minimum_should_match: 1,
-              },
+      const ljOuiClause = {
+        bool: {
+          should: [
+            { terms: { SIRET_LJ: [1, "1"] } },
+            { terms: { SIRET_Oresp_LJ: [1, "1"] } },
+            { terms: { SIRET_OForm_LJ: [1, "1"] } },
+          ],
+          minimum_should_match: 1,
+        },
+      };
+
+      if (values[0] === "Oui") {
+        return { query: ljOuiClause };
+      }
+
+      if (values[0] === "Non") {
+        return {
+          query: {
+            bool: {
+              must_not: [ljOuiClause],
             },
-          };
-        case "oui":
-          return {
-            query: {
-              bool: {
-                must: [
-                  {
-                    match: {
-                      etablissement_gestionnaire_entreprise_procedure_collective: true,
-                    },
-                  },
-                  {
-                    match: {
-                      etablissement_gestionnaire_actif: "inactif",
-                    },
-                  },
-                ],
-              },
-            },
-          };
-        case "oui avec maintien en fonction":
-          return {
-            query: {
-              bool: {
-                must: [
-                  {
-                    match: {
-                      etablissement_gestionnaire_entreprise_procedure_collective: true,
-                    },
-                  },
-                  {
-                    match: {
-                      etablissement_gestionnaire_actif: "actif",
-                    },
-                  },
-                ],
-              },
-            },
-          };
+          },
+        };
       }
 
       return {};

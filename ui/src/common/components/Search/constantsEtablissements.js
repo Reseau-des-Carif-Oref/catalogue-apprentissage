@@ -13,16 +13,9 @@ const formatFrenchDate = (dateValue) => {
   }
 };
 
-const formatActif = (_value, obj) => (hasFermetureDate(obj?.date_fermeture) ? "non" : "oui");
+const formatActif = (_value, obj) => (hasFermetureDate(obj?.date_fermeture) ? "Non" : "Oui");
 
-const formatLiquidation = (_value, obj) => {
-  const l_j = obj?.entreprise_procedure_collective === true;
-  const maintained = l_j && !hasFermetureDate(obj?.date_fermeture);
-
-  if (!l_j) return "non";
-  if (maintained) return "oui avec maintien en fonction";
-  return "oui";
-};
+const formatLiquidation = (value) => (value === 1 || value === "1" || value === true ? "Oui" : "Non");
 
 const FILTERS = () => [`QUERYBUILDER`, `SEARCH`, `num_departement`, `nom_academie`, `tags`, "published", "qualite"];
 
@@ -106,7 +99,7 @@ const columnsDefinition = [
   },
   {
     Header: "Liquidation judiciaire",
-    accessor: "entreprise_procedure_collective",
+    accessor: "SIRET_LJ",
     width: 220,
     exportable: true,
     formatter: formatLiquidation,
