@@ -2,8 +2,7 @@ import { escapeDiacritics } from "../../utils/downloadUtils";
 import helpText from "../../../locales/helpText.json";
 import { departements } from "../../../constants/departements";
 
-const hasFermetureDate = (dateValue) =>
-  !!(dateValue && !String(dateValue).startsWith("1970-01-01"));
+const hasFermetureDate = (dateValue) => !!(dateValue && !String(dateValue).startsWith("1970-01-01"));
 
 const formatFrenchDate = (dateValue) => {
   if (!hasFermetureDate(dateValue)) return "";

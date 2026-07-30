@@ -335,15 +335,8 @@ const Etablissement = ({ etablissement, countFormations }) => {
       )}
       {etablissement.onisep_url !== "" && etablissement.onisep_url !== null && (
         <Box mt={4} mb={16} ml={-3}>
-          <Link
-            href={`https://${etablissement.onisep_url}`}
-            mt={3}
-            variant={"pill"}
-            textStyle="rf-text"
-            isExternal
-          >
-            voir la fiche descriptive de l&apos;Onisep{" "}
-            <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
+          <Link href={`https://${etablissement.onisep_url}`} mt={3} variant={"pill"} textStyle="rf-text" isExternal>
+            voir la fiche descriptive de l&apos;Onisep <ExternalLinkLine w={"0.75rem"} h={"0.75rem"} mb={"0.125rem"} />
           </Link>
         </Box>
       )}
