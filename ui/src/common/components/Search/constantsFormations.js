@@ -4,6 +4,13 @@ import { CONTEXT } from "../../../constants/context";
 import { departements } from "../../../constants/departements";
 import { annees } from "../../../constants/annees";
 import { sortDescending } from "../../utils/historyUtils";
+import React from "react";
+
+const toOuiNonLabel = (label) => {
+  if (label === true || label === 1 || label === "1" || label === "true" || label === "Oui") return "Oui";
+  if (label === false || label === 0 || label === "0" || label === "false" || label === "Non") return "Non";
+  return label;
+};
 
 const FILTERS = () => [
   "QUERYBUILDER",
@@ -725,20 +732,25 @@ const facetDefinition = () => [
     sortBy: "asc",
     showSearch: false,
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
-    transformData: (data) =>
-      data.map((d) => ({
-        ...d,
-        key: d.key === true || d.key === 1 || d.key === "1" || d.key === "true" ? "Oui" : "Non",
-      })),
+    // Garder les clés ES 0/1 ; afficher Oui/Non via renderItem + badge SelectedFilters
+    renderItem: (label, count) => (
+      <span style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+        <span>{toOuiNonLabel(label)}</span>
+        <span style={{ color: "#666" }}>{count}</span>
+      </span>
+    ),
     customQuery: (values) => {
       if (!values || values.length !== 1) {
         return {};
       }
 
+      const selected = values[0];
+      const isOui = toOuiNonLabel(selected) === "Oui";
+
       return {
         query: {
           match: {
-            Siret_LJ: values[0] === "Oui",
+            Siret_LJ: isOui,
           },
         },
       };

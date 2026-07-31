@@ -144,6 +144,7 @@ export default React.memo(({ location, searchState, context, extraButtons = null
                         transformData={fd.transformData}
                         customQuery={fd.customQuery}
                         showSearch={fd.showSearch}
+                        renderItem={fd.renderItem}
                       />
                     );
                   })}
@@ -215,7 +216,52 @@ export default React.memo(({ location, searchState, context, extraButtons = null
               </Box>
               <Box className="search-results" px={[0, 0, 4]}>
                 <Box pt={2}>
-                  <SelectedFilters showClearAll={false} innerClass={{ button: "selected-filters-button" }} />
+                  <SelectedFilters
+                    showClearAll={false}
+                    innerClass={{ button: "selected-filters-button" }}
+                    render={({ selectedValues, setValue }) => {
+                      const formatFilterValue = (componentId, value) => {
+                        const toOuiNon = (v) => {
+                          if (v === true || v === 1 || v === "1" || v === "true" || v === "Oui") return "Oui";
+                          if (v === false || v === 0 || v === "0" || v === "false" || v === "Non") return "Non";
+                          return v;
+                        };
+
+                        if (componentId === "liquidation_judiciaire") {
+                          return Array.isArray(value) ? value.map(toOuiNon).join(", ") : toOuiNon(value);
+                        }
+
+                        return Array.isArray(value) ? value.join(", ") : `${value}`;
+                      };
+
+                      return Object.keys(selectedValues)
+                        .filter((componentId) => {
+                          const current = selectedValues[componentId];
+                          if (!current || current.showFilter === false) return false;
+                          const { value } = current;
+                          if (value === null || value === undefined || value === "") return false;
+                          if (Array.isArray(value) && value.length === 0) return false;
+                          return true;
+                        })
+                        .map((componentId) => {
+                          const { label, value } = selectedValues[componentId];
+                          return (
+                            <button
+                              type="button"
+                              key={componentId}
+                              className="selected-filters-button"
+                              onClick={() => setValue(componentId, null)}
+                              style={{ marginRight: 8, marginBottom: 8 }}
+                            >
+                              <span>
+                                {label}: {formatFilterValue(componentId, value)}
+                              </span>
+                              <span> ×</span>
+                            </button>
+                          );
+                        });
+                    }}
+                  />
                 </Box>
                 <Box className={`result-view`}>
                   <ReactiveList
