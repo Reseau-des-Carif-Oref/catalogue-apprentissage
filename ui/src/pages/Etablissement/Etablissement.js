@@ -27,6 +27,7 @@ import { HowToFixModal } from "../../common/components/organisme/HowToFixModal";
 import { Breadcrumb } from "../../common/components/Breadcrumb";
 import { setTitle } from "../../common/utils/pageUtils";
 import { QualiteBadge } from "../../common/components/QualiteBadge";
+import { LiquidationBadge, isLiquidation } from "../../common/components/LiquidationBadge";
 
 const Etablissement = ({ etablissement, countFormations }) => {
   const [user] = useAuth();
@@ -71,10 +72,9 @@ const Etablissement = ({ etablissement, countFormations }) => {
 
   const actifLabel = hasFermetureDate ? "Non" : "Oui";
   const isLj =
-    etablissement?.Siret_LJ === true ||
-    etablissement?.Siret_LJ === "true" ||
-    etablissement?.SIRET_Oresp_LJ === true ||
-    etablissement?.SIRET_OForm_LJ === true;
+    isLiquidation(etablissement?.Siret_LJ) ||
+    isLiquidation(etablissement?.SIRET_Oresp_LJ) ||
+    isLiquidation(etablissement?.SIRET_OForm_LJ);
   const liquidationLabel = isLj ? "Oui" : "Non";
 
   const UaiContainer = etablissement.uai_valide
@@ -418,7 +418,18 @@ export default ({ match }) => {
             {!loading && !!etablissement && (
               <>
                 <Box mt={6} mb={2}>
-                  <QualiteBadge value={etablissement.certifie_qualite} my={0} mx={0} />
+                  <Flex flexWrap="wrap">
+                    <QualiteBadge value={etablissement.certifie_qualite} my={0} mx={0} mr={[0, 2]} />
+                    <LiquidationBadge
+                      value={
+                        isLiquidation(etablissement.Siret_LJ) ||
+                        isLiquidation(etablissement.SIRET_Oresp_LJ) ||
+                        isLiquidation(etablissement.SIRET_OForm_LJ)
+                      }
+                      my={0}
+                      mx={0}
+                    />
+                  </Flex>
                   <Heading textStyle="h2" color="grey.800" my={2}>
                     {title} <InfoTooltip description={helpText.etablissement.raison_sociale} />
                   </Heading>

@@ -6,6 +6,7 @@ import { getOrganisme } from "../../api/organisme";
 import { QualiteBadge } from "../QualiteBadge";
 import { HabiliteBadge } from "../HabiliteBadge";
 import { ActifBadge } from "../ActifBadge";
+import { LiquidationBadge } from "../LiquidationBadge";
 
 export const OrganismesBlock = ({ formation }) => {
   const oneEstablishment = formation.etablissement_gestionnaire_siret === formation.etablissement_formateur_siret;
@@ -57,6 +58,7 @@ export const OrganismesBlock = ({ formation }) => {
                     <HabiliteBadge value={formation.etablissement_gestionnaire_habilite_rncp} m="0" mr={[0, 2]} />
                   )}
                 <ActifBadge value={formation.etablissement_gestionnaire_actif} m="0" mr={[0, 2]} />
+                <LiquidationBadge value={formation.SIRET_Oresp_LJ} m="0" mr={[0, 2]} />
               </Flex>
             </Box>
             <Heading textStyle="h6" color="grey.800" my={1}>
@@ -110,6 +112,15 @@ export const OrganismesBlock = ({ formation }) => {
                 <HabiliteBadge value={formation.etablissement_formateur_habilite_rncp} m="0" mr={[0, 2]} />
               )}
               <ActifBadge value={formation.etablissement_formateur_actif} m="0" mr={[0, 2]} />
+              <LiquidationBadge
+                value={
+                  oneEstablishment
+                    ? formation.Siret_LJ || formation.SIRET_Oresp_LJ || formation.SIRET_OForm_LJ
+                    : formation.SIRET_OForm_LJ
+                }
+                m="0"
+                mr={[0, 2]}
+              />
             </Flex>
           </Box>
           <Heading textStyle="h6" color="grey.800" my={1}>

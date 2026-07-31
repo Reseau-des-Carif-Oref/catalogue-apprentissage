@@ -3,33 +3,11 @@ import { NavLink } from "react-router-dom";
 import { Badge, Text, Flex, Box, Heading, Link } from "@chakra-ui/react";
 import { ArrowRightLine } from "../../../theme/components/icons";
 import { QualiteBadge } from "../QualiteBadge";
+import { LiquidationBadge, isLiquidation } from "../LiquidationBadge";
 
 const CardListEtablissements = ({ data, withoutLink }) => {
-  const hasFermetureDate = !!(data?.date_fermeture && !String(data.date_fermeture).startsWith("1970-01-01"));
-  const actifLabel = hasFermetureDate ? "Non" : "Oui";
-
-  let creationDate = "";
-  try {
-    creationDate = data?.date_creation ? new Date(data.date_creation).toLocaleDateString("fr-FR") : "";
-  } catch (e) {
-    creationDate = "";
-  }
-
-  let fermetureDate = "";
-  if (hasFermetureDate) {
-    try {
-      fermetureDate = new Date(data.date_fermeture).toLocaleDateString("fr-FR");
-    } catch (e) {
-      fermetureDate = "";
-    }
-  }
-
   const isLj =
-    data?.Siret_LJ === true ||
-    data?.Siret_LJ === "true" ||
-    data?.SIRET_Oresp_LJ === true ||
-    data?.SIRET_OForm_LJ === true;
-  const liquidationLabel = isLj ? "Oui" : "Non";
+    isLiquidation(data?.Siret_LJ) || isLiquidation(data?.SIRET_Oresp_LJ) || isLiquidation(data?.SIRET_OForm_LJ);
 
   const RenderCard = ({ withoutLink }) => {
     return (
@@ -38,7 +16,10 @@ const CardListEtablissements = ({ data, withoutLink }) => {
           <Text>Siret : {data.siret}</Text>
           <Text>Code UAI: {data.uai}</Text>
         </Flex>
-        <QualiteBadge value={data.certifie_qualite} mt={2} ml={0} />
+        <Flex mt={2} flexWrap="wrap">
+          <QualiteBadge value={data.certifie_qualite} mt={0} ml={0} mr={[0, 2]} />
+          <LiquidationBadge value={isLj} mt={0} mr={[0, 2]} />
+        </Flex>
         <Flex w={"100%"} justifyContent="space-between" mb={2}>
           <Heading textStyle="h6" color="grey.800" mt={2} w={"100%"}>
             {data.entreprise_raison_sociale}
@@ -48,10 +29,6 @@ const CardListEtablissements = ({ data, withoutLink }) => {
         <Box>
           <Text textStyle="sm">{data.adresse}</Text>
           <Text textStyle="sm">Académie : {data.nom_academie}</Text>
-          <Text textStyle="sm">Actif : {actifLabel}</Text>
-          <Text textStyle="sm">Date de création : {creationDate || "N/A"}</Text>
-          <Text textStyle="sm">Date de fermeture : {fermetureDate || "N/A"}</Text>
-          <Text textStyle="sm">Liquidation judiciaire : {liquidationLabel}</Text>
           <Box>
             <Flex justifyContent="space-between">
               <Flex flexWrap={"wrap"}>

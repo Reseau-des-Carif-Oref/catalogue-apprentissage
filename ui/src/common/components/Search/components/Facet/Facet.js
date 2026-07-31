@@ -23,7 +23,6 @@ const Facet = ({
   customQuery,
   size,
   showSearch = true,
-  renderItem: customRenderItem,
 }) => {
   let [auth] = useAuth();
   let defaultValue = null;
@@ -103,7 +102,7 @@ const Facet = ({
                 transformData={transformData}
                 customQuery={customQuery}
                 sortBy={sortBy}
-                renderItem={customRenderItem || (helpTextSection ? renderItem : null)}
+                renderItem={helpTextSection ? renderItem : null}
               />
             </AccordionPanel>
           </>

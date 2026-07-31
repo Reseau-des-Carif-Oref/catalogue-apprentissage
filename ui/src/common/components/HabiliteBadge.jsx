@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge, Flex, Text } from "@chakra-ui/react";
-import { CheckLine, Question } from "../../theme/components/icons";
+import { CheckLine } from "../../theme/components/icons";
 
 export const HabiliteBadge = ({ value, ...props }) => {
   let text;
@@ -21,10 +21,7 @@ export const HabiliteBadge = ({ value, ...props }) => {
       break;
 
     default:
-      text = "Habilitation RNCP non concernée";
-      variant = "default";
-      Icon = Question;
-      break;
+      return null;
   }
 
   return (

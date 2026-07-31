@@ -99,8 +99,10 @@ const Badge = {
     },
     notOk: {
       ...commonStatusBadgeStyle,
-      bg: "#EEEEEE",
-      color: "#161616",
+      bg: "orangemedium.300",
+      color: "grey.800",
+      border: "1px solid",
+      borderColor: "orangemedium.300",
     },
     default: {
       ...commonStatusBadgeStyle,

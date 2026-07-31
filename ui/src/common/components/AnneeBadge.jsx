@@ -8,7 +8,7 @@ export const AnneeBadge = ({ value, ...props }) => {
   }
 
   const text = "Année non renseignée";
-  const variant = "ok";
+  const variant = "notOk";
   const Icon = null;
 
   return (

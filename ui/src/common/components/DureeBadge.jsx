@@ -8,7 +8,7 @@ export const DureeBadge = ({ value, ...props }) => {
   }
 
   const text = "Durée non renseignée";
-  const variant = "ok";
+  const variant = "notOk";
   const Icon = null;
 
   return (
