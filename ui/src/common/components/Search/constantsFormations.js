@@ -726,32 +726,20 @@ const facetDefinition = () => [
     showSearch: false,
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
     selectAllLabel: "Toutes",
-    transformData: (data) => {
-      // ES indexe souvent les booléens en 0/1 dans les aggregations terms
-      const isOuiKey = (key) => key === true || key === "true" || key === 1 || key === "1";
-      const isNonKey = (key) => key === false || key === "false" || key === 0 || key === "0";
-      const oui = data?.filter((d) => isOuiKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
-      const non = data?.filter((d) => isNonKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
-
-      return [
-        { key: "Oui", doc_count: oui },
-        { key: "Non", doc_count: non },
-      ];
-    },
+    transformData: (data) =>
+      data.map((d) => ({
+        ...d,
+        key: d.key === true || d.key === 1 || d.key === "1" || d.key === "true" ? "Oui" : "Non",
+      })),
     customQuery: (values) => {
       if (!values || values.length !== 1) {
         return {};
       }
 
-      const selected = values[0];
-      const isOui =
-        selected === "Oui" || selected === true || selected === 1 || selected === "1" || selected === "true";
-
-      // Même pattern que le filtre "qualite" (match booléen) — le terms mixte true/1/"true" casse la requête ES
       return {
         query: {
           match: {
-            Siret_LJ: isOui,
+            Siret_LJ: values[0] === "Oui",
           },
         },
       };
