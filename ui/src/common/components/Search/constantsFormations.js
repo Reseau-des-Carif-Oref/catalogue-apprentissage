@@ -725,7 +725,6 @@ const facetDefinition = () => [
     sortBy: "asc",
     showSearch: false,
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
-    selectAllLabel: "Toutes",
     transformData: (data) =>
       data.map((d) => ({
         ...d,
