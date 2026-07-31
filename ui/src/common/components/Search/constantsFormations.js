@@ -739,34 +739,22 @@ const facetDefinition = () => [
       ];
     },
     customQuery: (values) => {
-      if (values?.length !== 1) return {};
+      if (!values || values.length !== 1) {
+        return {};
+      }
 
-      const ljOuiClause = {
-        bool: {
-          should: [
-            { terms: { Siret_LJ: [true, 1, "true", "1"] } },
-            { terms: { SIRET_Oresp_LJ: [true, 1, "true", "1"] } },
-            { terms: { SIRET_OForm_LJ: [true, 1, "true", "1"] } },
-          ],
-          minimum_should_match: 1,
+      const selected = values[0];
+      const isOui =
+        selected === "Oui" || selected === true || selected === 1 || selected === "1" || selected === "true";
+
+      // Même pattern que le filtre "qualite" (match booléen) — le terms mixte true/1/"true" casse la requête ES
+      return {
+        query: {
+          match: {
+            Siret_LJ: isOui,
+          },
         },
       };
-
-      if (values[0] === "Oui") {
-        return { query: ljOuiClause };
-      }
-
-      if (values[0] === "Non") {
-        return {
-          query: {
-            bool: {
-              must_not: [ljOuiClause],
-            },
-          },
-        };
-      }
-
-      return {};
     },
   },
   {
