@@ -727,8 +727,9 @@ const facetDefinition = () => [
     displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
     selectAllLabel: "Toutes",
     transformData: (data) => {
-      const isOuiKey = (key) => key === true || key === "true";
-      const isNonKey = (key) => key === false || key === "false";
+      // ES indexe souvent les booléens en 0/1 dans les aggregations terms
+      const isOuiKey = (key) => key === true || key === "true" || key === 1 || key === "1";
+      const isNonKey = (key) => key === false || key === "false" || key === 0 || key === "0";
       const oui = data?.filter((d) => isOuiKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
       const non = data?.filter((d) => isNonKey(d.key)).reduce((acc, d) => acc + d.doc_count, 0) ?? 0;
 
@@ -743,9 +744,9 @@ const facetDefinition = () => [
       const ljOuiClause = {
         bool: {
           should: [
-            { term: { Siret_LJ: true } },
-            { term: { SIRET_Oresp_LJ: true } },
-            { term: { SIRET_OForm_LJ: true } },
+            { terms: { Siret_LJ: [true, 1, "true", "1"] } },
+            { terms: { SIRET_Oresp_LJ: [true, 1, "true", "1"] } },
+            { terms: { SIRET_OForm_LJ: [true, 1, "true", "1"] } },
           ],
           minimum_should_match: 1,
         },
