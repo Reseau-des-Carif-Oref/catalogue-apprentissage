@@ -51,14 +51,14 @@ export const OrganismesBlock = ({ formation }) => {
               <Text>UAI : {formation.etablissement_gestionnaire_uai}</Text>
             </Flex>
             <Box my={2}>
-              <Flex>
-                <QualiteBadge value={formation.etablissement_gestionnaire_certifie_qualite} m="0" mr={[0, 2]} />
+              <Flex flexWrap="wrap">
+                <QualiteBadge value={formation.etablissement_gestionnaire_certifie_qualite} mt={0} mr={[0, 2]} />
                 {!formation.catalogue_published &&
                   ["Titre", "TP"].includes(formation.rncp_details?.code_type_certif) && (
-                    <HabiliteBadge value={formation.etablissement_gestionnaire_habilite_rncp} m="0" mr={[0, 2]} />
+                    <HabiliteBadge value={formation.etablissement_gestionnaire_habilite_rncp} mt={0} mr={[0, 2]} />
                   )}
-                <ActifBadge value={formation.etablissement_gestionnaire_actif} m="0" mr={[0, 2]} />
-                <LiquidationBadge value={formation.SIRET_Oresp_LJ} m="0" mr={[0, 2]} />
+                <ActifBadge value={formation.etablissement_gestionnaire_actif} mt={0} mr={[0, 2]} />
+                <LiquidationBadge value={formation.SIRET_Oresp_LJ} mt={0} mr={[0, 2]} />
               </Flex>
             </Box>
             <Heading textStyle="h6" color="grey.800" my={1}>
@@ -68,7 +68,7 @@ export const OrganismesBlock = ({ formation }) => {
               <Text textStyle="sm">Académie : {formation.etablissement_gestionnaire_nom_academie}</Text>
               <Box>
                 <Flex justifyContent={"space-between"}>
-                  <Box>
+                  <Flex flexWrap="wrap">
                     {tagsGestionnaire &&
                       tagsGestionnaire
                         .sort((a, b) => a - b)
@@ -77,7 +77,7 @@ export const OrganismesBlock = ({ formation }) => {
                             {tag}
                           </Badge>
                         ))}
-                  </Box>
+                  </Flex>
                   <ArrowRightLine alignSelf="center" color="bluefrance" />
                 </Flex>
               </Box>
@@ -103,22 +103,22 @@ export const OrganismesBlock = ({ formation }) => {
             <Text>UAI: {formation.etablissement_formateur_uai}</Text>
           </Flex>
           <Box my={2}>
-            <Flex>
+            <Flex flexWrap="wrap">
               {!(
                 formation.etablissement_gestionnaire_certifie_qualite &&
                 !formation.etablissement_formateur_certifie_qualite
-              ) && <QualiteBadge value={formation.etablissement_formateur_certifie_qualite} m="0" mr={[0, 2]} />}
+              ) && <QualiteBadge value={formation.etablissement_formateur_certifie_qualite} mt={0} mr={[0, 2]} />}
               {!formation.catalogue_published && ["Titre", "TP"].includes(formation.rncp_details?.code_type_certif) && (
-                <HabiliteBadge value={formation.etablissement_formateur_habilite_rncp} m="0" mr={[0, 2]} />
+                <HabiliteBadge value={formation.etablissement_formateur_habilite_rncp} mt={0} mr={[0, 2]} />
               )}
-              <ActifBadge value={formation.etablissement_formateur_actif} m="0" mr={[0, 2]} />
+              <ActifBadge value={formation.etablissement_formateur_actif} mt={0} mr={[0, 2]} />
               <LiquidationBadge
                 value={
                   oneEstablishment
                     ? formation.Siret_LJ || formation.SIRET_Oresp_LJ || formation.SIRET_OForm_LJ
                     : formation.SIRET_OForm_LJ
                 }
-                m="0"
+                mt={0}
                 mr={[0, 2]}
               />
             </Flex>
@@ -130,16 +130,16 @@ export const OrganismesBlock = ({ formation }) => {
             <Text textStyle="sm">Académie : {formation.etablissement_formateur_nom_academie}</Text>
             <Box>
               <Flex justifyContent={"space-between"}>
-                <Box>
+                <Flex flexWrap="wrap">
                   {tagsFormateur &&
                     tagsFormateur
                       .sort((a, b) => a - b)
                       .map((tag, i) => (
-                        <Badge variant="year" mt={3} key={i}>
+                        <Badge variant="year" key={i}>
                           {tag}
                         </Badge>
                       ))}
-                </Box>
+                </Flex>
                 <ArrowRightLine alignSelf="center" color="bluefrance" />
               </Flex>
             </Box>
