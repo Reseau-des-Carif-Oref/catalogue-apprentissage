@@ -37,4 +37,12 @@ module.exports = {
   DualControlFormation: createModel("dualcontrolformation", schema.dualControlFormationSchema),
   DualControlReport: createModel("dualcontrolreport", schema.dualControlReportSchema),
   DualControlPerimeterReport: createModel("dualcontrolperimeterreport", schema.dualControlPerimeterReportSchema),
+  ApiStat: createModel("apistat", schema.apiStatSchema, {
+    collectionName: "apistats",
+    createMongoDBIndexes: (mongooseSchema) => {
+      mongooseSchema.index({ date_appel: 1 }, { expireAfterSeconds: 365 * 24 * 60 * 60 });
+      mongooseSchema.index({ endpoint: 1 });
+      mongooseSchema.index({ consommateur: 1 });
+    },
+  }),
 };

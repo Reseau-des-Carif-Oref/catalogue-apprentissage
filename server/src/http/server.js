@@ -12,6 +12,7 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const tryCatch = require("./middlewares/tryCatchMiddleware");
 const corsMiddleware = require("./middlewares/corsMiddleware");
 const permissionsMiddleware = require("./middlewares/permissionsMiddleware");
+const statsMiddleware = require("./middlewares/statsMiddleware");
 const packageJson = require("../../package.json");
 const formation = require("./routes/formation");
 const report = require("./routes/report");
@@ -122,6 +123,8 @@ module.exports = async (components, verbose = true) => {
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  app.use(statsMiddleware());
 
   const apiLimiter = rateLimit({
     windowMs: 1000, // 1 second
