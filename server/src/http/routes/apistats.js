@@ -2,7 +2,6 @@ const express = require("express");
 const Joi = require("joi");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const { ApiStat } = require("../../common/model");
-const { paginate } = require("../../common/utils/mongooseUtils");
 const { sanitize } = require("../../common/utils/sanitizeUtils");
 
 module.exports = () => {
@@ -10,9 +9,10 @@ module.exports = () => {
 
   /**
    * Liste paginée des appels API (collection apistats)
+   * Monté sur /admin/apistats — ne passe pas par les ACL "gestion utilisateurs"
    */
   router.get(
-    "/apistats",
+    "/",
     tryCatch(async (req, res) => {
       const sanitizedQuery = sanitize(req.query);
 
@@ -40,15 +40,21 @@ module.exports = () => {
         filter.code_http = code_http;
       }
 
-      const { find, pagination } = await paginate(ApiStat, filter, {
-        page,
-        limit,
-        sort: { date_appel: -1 },
+      const skip = (page - 1) * limit;
+      const [total, apistats] = await Promise.all([
+        ApiStat.countDocuments(filter),
+        ApiStat.find(filter).sort({ date_appel: -1 }).skip(skip).limit(limit).lean(),
+      ]);
+
+      return res.json({
+        apistats,
+        pagination: {
+          page,
+          resultats_par_page: limit,
+          nombre_de_page: Math.ceil(total / limit) || 1,
+          total,
+        },
       });
-
-      const apistats = await find;
-
-      return res.json({ apistats, pagination });
     })
   );
 

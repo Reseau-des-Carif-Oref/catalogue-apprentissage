@@ -28,6 +28,7 @@ const etablissement = require("./routes/etablissement");
 const upload = require("./routes/upload");
 const alert = require("./routes/alert");
 const apistats = require("./routes/apistats");
+const aclMiddleware = require("./middlewares/aclMiddleware");
 const swaggerSchema = require("../common/model/swaggerSchema");
 const rateLimit = require("express-rate-limit");
 const authMiddleware = require("./middlewares/authMiddleware");
@@ -168,6 +169,14 @@ module.exports = async (components, verbose = true) => {
   ];
 
   const securedRoutes = [
+    // Route dédiée AVANT les mounts /admin génériques (sinon ACL gestion_utilisateurs bloque)
+    [
+      "/admin/apistats",
+      apiLimiter,
+      authMiddleware,
+      aclMiddleware(["page_apistats"]),
+      apistats(),
+    ],
     [
       "/admin",
       apiLimiter,
@@ -183,13 +192,6 @@ module.exports = async (components, verbose = true) => {
       role(components),
     ],
     ["/upload", apiLimiter, authMiddleware, permissionsMiddleware({ isAdmin: true }, ["page_upload"]), upload()],
-    [
-      "/admin",
-      apiLimiter,
-      authMiddleware,
-      permissionsMiddleware({ isAdmin: true }, ["page_apistats"]),
-      apistats(),
-    ],
   ];
 
   prefixes.map((prefix) => {

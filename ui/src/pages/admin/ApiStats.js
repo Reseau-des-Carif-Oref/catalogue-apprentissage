@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Badge,
   Box,
@@ -36,15 +36,21 @@ const statusColor = (code) => {
 
 const formatDate = (date) => {
   if (!date) return "—";
-  return new Date(date).toLocaleString("fr-FR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+  try {
+    return new Date(date).toLocaleString("fr-FR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  } catch (e) {
+    return "—";
+  }
 };
+
+const emptyFilters = { endpoint: "", consommateur: "", methode: "", code_http: "" };
 
 const ApiStats = () => {
   const [rows, setRows] = useState([]);
@@ -52,51 +58,61 @@ const ApiStats = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState({
-    endpoint: "",
-    consommateur: "",
-    methode: "",
-    code_http: "",
-  });
-  const [appliedFilters, setAppliedFilters] = useState(filters);
+  const [filters, setFilters] = useState(emptyFilters);
+  const [appliedFilters, setAppliedFilters] = useState(emptyFilters);
+
+  const title = "Statistiques API";
 
   useEffect(() => {
-    setTitle("Statistiques API");
+    setTitle(title);
   }, []);
 
-  const fetchStats = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const params = new URLSearchParams({
-        page: String(page),
-        limit: "50",
-      });
-
-      if (appliedFilters.endpoint) params.set("endpoint", appliedFilters.endpoint);
-      if (appliedFilters.consommateur) params.set("consommateur", appliedFilters.consommateur);
-      if (appliedFilters.methode) params.set("methode", appliedFilters.methode);
-      if (appliedFilters.code_http) params.set("code_http", appliedFilters.code_http);
-
-      const response = await _get(`/api/v1/admin/apistats?${params.toString()}`);
-      setRows(response.apistats || []);
-      setPagination(response.pagination || { page: 1, nombre_de_page: 1, total: 0, resultats_par_page: 50 });
-    } catch (err) {
-      console.error(err);
-      if (err.statusCode === 401 || err.response?.status === 401) {
-        setError("Accès non autorisé. Permissions administrateur ou ACL « page_apistats » requises.");
-      } else {
-        setError(`Impossible de charger les statistiques API : ${err.message || err}`);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [page, appliedFilters]);
-
   useEffect(() => {
+    let cancelled = false;
+
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: "50",
+        });
+
+        if (appliedFilters.endpoint) params.set("endpoint", appliedFilters.endpoint);
+        if (appliedFilters.consommateur) params.set("consommateur", appliedFilters.consommateur);
+        if (appliedFilters.methode) params.set("methode", appliedFilters.methode);
+        if (appliedFilters.code_http) params.set("code_http", appliedFilters.code_http);
+
+        const response = await _get(`/api/v1/admin/apistats?${params.toString()}`);
+        if (cancelled) return;
+
+        setRows(Array.isArray(response?.apistats) ? response.apistats : []);
+        setPagination(
+          response?.pagination || { page: 1, nombre_de_page: 1, total: 0, resultats_par_page: 50 }
+        );
+      } catch (err) {
+        if (cancelled) return;
+        console.error(err);
+        if (err.statusCode === 401) {
+          setError("Session expirée ou non authentifié. Reconnectez-vous.");
+        } else if (err.statusCode === 403) {
+          setError("Accès interdit. Permissions administrateur ou ACL « page_apistats » requises.");
+        } else {
+          setError(`Impossible de charger les statistiques API : ${err.message || err}`);
+        }
+        setRows([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
     fetchStats();
-  }, [fetchStats]);
+    return () => {
+      cancelled = true;
+    };
+  }, [page, appliedFilters]);
 
   const applyFilters = () => {
     setPage(1);
@@ -104,13 +120,10 @@ const ApiStats = () => {
   };
 
   const resetFilters = () => {
-    const empty = { endpoint: "", consommateur: "", methode: "", code_http: "" };
-    setFilters(empty);
-    setAppliedFilters(empty);
+    setFilters(emptyFilters);
+    setAppliedFilters(emptyFilters);
     setPage(1);
   };
-
-  const title = "Statistiques API";
 
   return (
     <Layout>
@@ -121,7 +134,7 @@ const ApiStats = () => {
             {title}
           </Heading>
           <Text color="grey.600" mb={6}>
-            Journal des appels HTTP (collection <code>apistats</code>) — tri du plus récent au plus ancien.
+            Journal des appels HTTP (collection apistats) — tri du plus récent au plus ancien.
           </Text>
 
           <Flex wrap="wrap" mb={4} align="flex-end">
@@ -200,7 +213,7 @@ const ApiStats = () => {
           {loading ? (
             <VStack py={10}>
               <Spinner size="xl" />
-              <Text>Chargement des statistiques…</Text>
+              <Text>Chargement des statistiques...</Text>
             </VStack>
           ) : (
             <>
@@ -233,8 +246,8 @@ const ApiStats = () => {
                         </Td>
                       </Tr>
                     ) : (
-                      rows.map((row) => (
-                        <Tr key={row._id}>
+                      rows.map((row, index) => (
+                        <Tr key={row._id || `row-${index}`}>
                           <Td whiteSpace="nowrap">{formatDate(row.date_appel)}</Td>
                           <Td>
                             <Badge>{row.methode}</Badge>
