@@ -248,7 +248,13 @@ const ApiStats = () => {
                             <Badge colorScheme={statusColor(row.code_http)}>{row.code_http}</Badge>
                           </Td>
                           <Td isNumeric>{row.duree_ms}</Td>
-                          <Td>{row.consommateur || <Text as="span" color="grey.500">public</Text>}</Td>
+                          <Td>
+                            {row.consommateur || (
+                              <Text as="span" color="grey.500">
+                                public
+                              </Text>
+                            )}
+                          </Td>
                           <Td whiteSpace="nowrap">{row.ip_client || "—"}</Td>
                           <Td maxW="200px" title={row.user_agent || ""}>
                             <Text fontSize="xs" isTruncated>
@@ -269,11 +275,7 @@ const ApiStats = () => {
                 <Text fontSize="sm">
                   Page {pagination.page} / {pagination.nombre_de_page}
                 </Text>
-                <Button
-                  size="sm"
-                  isDisabled={page >= pagination.nombre_de_page}
-                  onClick={() => setPage((p) => p + 1)}
-                >
+                <Button size="sm" isDisabled={page >= pagination.nombre_de_page} onClick={() => setPage((p) => p + 1)}>
                   Suivant
                 </Button>
               </Flex>
