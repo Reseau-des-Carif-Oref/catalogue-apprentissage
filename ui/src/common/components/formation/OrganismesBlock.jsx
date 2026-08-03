@@ -52,13 +52,13 @@ export const OrganismesBlock = ({ formation }) => {
             </Flex>
             <Box my={2}>
               <Flex flexWrap="wrap">
-                <QualiteBadge value={formation.etablissement_gestionnaire_certifie_qualite} mt={0} mr={[0, 2]} />
+                <QualiteBadge value={formation.etablissement_gestionnaire_certifie_qualite} mt={2} mr={[0, 2]} />
                 {!formation.catalogue_published &&
                   ["Titre", "TP"].includes(formation.rncp_details?.code_type_certif) && (
-                    <HabiliteBadge value={formation.etablissement_gestionnaire_habilite_rncp} mt={0} mr={[0, 2]} />
+                    <HabiliteBadge value={formation.etablissement_gestionnaire_habilite_rncp} mt={2} mr={[0, 2]} />
                   )}
-                <ActifBadge value={formation.etablissement_gestionnaire_actif} mt={0} mr={[0, 2]} />
-                <LiquidationBadge value={formation.SIRET_Oresp_LJ} mt={0} mr={[0, 2]} />
+                <ActifBadge value={formation.etablissement_gestionnaire_actif} mt={2} mr={[0, 2]} />
+                <LiquidationBadge value={formation.SIRET_Oresp_LJ} mt={2} mr={[0, 2]} />
               </Flex>
             </Box>
             <Heading textStyle="h6" color="grey.800" my={1}>
@@ -107,18 +107,18 @@ export const OrganismesBlock = ({ formation }) => {
               {!(
                 formation.etablissement_gestionnaire_certifie_qualite &&
                 !formation.etablissement_formateur_certifie_qualite
-              ) && <QualiteBadge value={formation.etablissement_formateur_certifie_qualite} mt={0} mr={[0, 2]} />}
+              ) && <QualiteBadge value={formation.etablissement_formateur_certifie_qualite} mt={2} mr={[0, 2]} />}
               {!formation.catalogue_published && ["Titre", "TP"].includes(formation.rncp_details?.code_type_certif) && (
-                <HabiliteBadge value={formation.etablissement_formateur_habilite_rncp} mt={0} mr={[0, 2]} />
+                <HabiliteBadge value={formation.etablissement_formateur_habilite_rncp} mt={2} mr={[0, 2]} />
               )}
-              <ActifBadge value={formation.etablissement_formateur_actif} mt={0} mr={[0, 2]} />
+              <ActifBadge value={formation.etablissement_formateur_actif} mt={2} mr={[0, 2]} />
               <LiquidationBadge
                 value={
                   oneEstablishment
                     ? formation.Siret_LJ || formation.SIRET_Oresp_LJ || formation.SIRET_OForm_LJ
                     : formation.SIRET_OForm_LJ
                 }
-                mt={0}
+                mt={2}
                 mr={[0, 2]}
               />
             </Flex>
