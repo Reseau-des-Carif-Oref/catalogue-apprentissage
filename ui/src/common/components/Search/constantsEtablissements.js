@@ -25,7 +25,6 @@ const FILTERS = () => [
   `tags`,
   "published",
   "qualite",
-  "liquidation_judiciaire",
 ];
 
 const columnsDefinition = [
@@ -282,31 +281,6 @@ const facetDefinition = () => [
           query: {
             match: {
               certifie_qualite: values[0] === "Oui",
-            },
-          },
-        };
-      }
-      return {};
-    },
-  },
-  {
-    componentId: `liquidation_judiciaire`,
-    dataField: "Siret_LJ",
-    title: "Liquidation judiciaire",
-    filterLabel: "Liquidation judiciaire",
-    sortBy: "asc",
-    showSearch: false,
-    transformData: (data) =>
-      data.map((d) => ({
-        ...d,
-        key: d.key === true || d.key === 1 || d.key === "1" || d.key === "true" || d.key === "Oui" ? "Oui" : "Non",
-      })),
-    customQuery: (values) => {
-      if (values.length === 1) {
-        return {
-          query: {
-            match: {
-              Siret_LJ: values[0] === "Oui",
             },
           },
         };
