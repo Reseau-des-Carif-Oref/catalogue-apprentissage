@@ -17,15 +17,7 @@ const formatActif = (_value, obj) => (hasFermetureDate(obj?.date_fermeture) ? "N
 
 const formatLiquidation = (value) => (value === true || value === "true" ? "Oui" : "Non");
 
-const FILTERS = () => [
-  `QUERYBUILDER`,
-  `SEARCH`,
-  `num_departement`,
-  `nom_academie`,
-  `tags`,
-  "published",
-  "qualite",
-];
+const FILTERS = () => [`QUERYBUILDER`, `SEARCH`, `num_departement`, `nom_academie`, `tags`, "published", "qualite"];
 
 const columnsDefinition = [
   {
