@@ -27,6 +27,7 @@ const esMultiSearchNoIndex = require("./routes/esMultiSearchNoIndex");
 const etablissement = require("./routes/etablissement");
 const upload = require("./routes/upload");
 const alert = require("./routes/alert");
+const apistats = require("./routes/apistats");
 const swaggerSchema = require("../common/model/swaggerSchema");
 const rateLimit = require("express-rate-limit");
 const authMiddleware = require("./middlewares/authMiddleware");
@@ -182,6 +183,13 @@ module.exports = async (components, verbose = true) => {
       role(components),
     ],
     ["/upload", apiLimiter, authMiddleware, permissionsMiddleware({ isAdmin: true }, ["page_upload"]), upload()],
+    [
+      "/admin",
+      apiLimiter,
+      authMiddleware,
+      permissionsMiddleware({ isAdmin: true }, ["page_apistats"]),
+      apistats(),
+    ],
   ];
 
   prefixes.map((prefix) => {

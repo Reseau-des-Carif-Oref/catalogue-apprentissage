@@ -189,6 +189,11 @@ const Footer = () => {
                           Message de maintenance
                         </MenuItem>
                       )}
+                      {hasAccessTo(auth, "page_apistats") && (
+                        <MenuItem as={NavLink} to="/admin/apistats" icon={<InfoCircle boxSize={4} />}>
+                          Statistiques API
+                        </MenuItem>
+                      )}
                     </MenuGroup>
 
                     <MenuDivider />
