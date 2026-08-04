@@ -204,23 +204,26 @@ const VueSimple = () => {
 
   if (!summary) return null;
 
-  const maxJour = Math.max.apply(
-    null,
-    (summary.par_jour || []).map((j) => j.total).concat([1])
-  );
-  const maxService = Math.max.apply(
-    null,
-    (summary.top_services || []).map((s) => s.total).concat([1])
-  );
-  const maxUser = Math.max.apply(
-    null,
-    (summary.top_utilisateurs || []).map((u) => u.total).concat([1])
-  );
+  const maxJour = Math.max.apply(null, (summary.par_jour || []).map((j) => j.total).concat([1]));
+  const maxService = Math.max.apply(null, (summary.top_services || []).map((s) => s.total).concat([1]));
+  const maxUser = Math.max.apply(null, (summary.top_utilisateurs || []).map((u) => u.total).concat([1]));
 
   const sante =
-    summary.taux_erreur < 2 ? "Très bon" : summary.taux_erreur < 5 ? "Correct" : summary.taux_erreur < 15 ? "À surveiller" : "Dégradé";
+    summary.taux_erreur < 2
+      ? "Très bon"
+      : summary.taux_erreur < 5
+      ? "Correct"
+      : summary.taux_erreur < 15
+      ? "À surveiller"
+      : "Dégradé";
   const santeColor =
-    summary.taux_erreur < 2 ? "green.600" : summary.taux_erreur < 5 ? "blue.600" : summary.taux_erreur < 15 ? "orange.500" : "red.500";
+    summary.taux_erreur < 2
+      ? "green.600"
+      : summary.taux_erreur < 5
+      ? "blue.600"
+      : summary.taux_erreur < 15
+      ? "orange.500"
+      : "red.500";
 
   return (
     <Box>
@@ -257,7 +260,12 @@ const VueSimple = () => {
           aide="Part des réponses sans erreur"
           color="green.600"
         />
-        <KpiCard titre="Santé du service" valeur={sante} aide={`${summary.taux_erreur} % d'erreurs`} color={santeColor} />
+        <KpiCard
+          titre="Santé du service"
+          valeur={sante}
+          aide={`${summary.taux_erreur} % d'erreurs`}
+          color={santeColor}
+        />
         <KpiCard
           titre="Temps de réponse moyen"
           valeur={`${summary.duree_moyenne_ms} ms`}
