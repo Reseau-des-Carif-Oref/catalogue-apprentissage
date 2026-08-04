@@ -207,6 +207,7 @@ const VueSimple = () => {
   const maxJour = Math.max.apply(null, (summary.par_jour || []).map((j) => j.total).concat([1]));
   const maxService = Math.max.apply(null, (summary.top_services || []).map((s) => s.total).concat([1]));
   const maxUser = Math.max.apply(null, (summary.top_utilisateurs || []).map((u) => u.total).concat([1]));
+  const maxSemaine = Math.max.apply(null, (summary.par_jour_semaine || []).map((j) => j.total).concat([1]));
 
   const sante =
     summary.taux_erreur < 2
@@ -225,6 +226,32 @@ const VueSimple = () => {
       ? "orange.500"
       : "red.500";
 
+  const evolution = summary.evolution_pct;
+  const evolutionTexte =
+    evolution === null
+      ? "Pas assez de données pour comparer"
+      : evolution > 0
+      ? `En hausse de ${evolution} %`
+      : evolution < 0
+      ? `En baisse de ${Math.abs(evolution)} %`
+      : "Stable par rapport à la période précédente";
+  const evolutionColor = evolution > 0 ? "green.600" : evolution < 0 ? "orange.500" : "grey.600";
+
+  const topCategorie = (summary.categories || [])[0];
+  const resumeMetier = topCategorie
+    ? `Sur les ${summary.periode_jours} derniers jours, l'activité porte surtout sur « ${topCategorie.label} » (${topCategorie.part_pct} % des consultations).`
+    : `Sur les ${summary.periode_jours} derniers jours, ${formatNombre(summary.total_appels)} consultations ont été enregistrées.`;
+
+  const formatJourLong = (jour) => {
+    if (!jour) return "-";
+    try {
+      const [y, m, d] = jour.split("-");
+      return `${d}/${m}/${y}`;
+    } catch (e) {
+      return jour;
+    }
+  };
+
   return (
     <Box>
       <Flex wrap="wrap" align="center" mb={4}>
@@ -238,52 +265,176 @@ const VueSimple = () => {
         </Select>
       </Flex>
 
-      <Text color="grey.600" mb={4}>
-        Voici l&apos;usage de l&apos;API du catalogue, expliqué simplement : combien de personnes ou services
-        l&apos;utilisent, si cela fonctionne bien, et quelles informations sont le plus consultées.
-      </Text>
+      <Box border="1px solid" borderColor="blue.100" bg="blue.50" borderRadius="md" p={4} mb={6}>
+        <Text fontWeight="600" color="grey.800" mb={1}>
+          En résumé
+        </Text>
+        <Text color="grey.700">{resumeMetier}</Text>
+        <Text color="grey.600" fontSize="sm" mt={2}>
+          {evolutionTexte} (comparé aux {summary.periode_jours} jours d&apos;avant). Le service est jugé « {sante} »,
+          avec une navigation {String(summary.fluidite || "").toLowerCase()}.
+        </Text>
+      </Box>
 
       <Flex wrap="wrap" mb={6} style={{ gap: "12px" }}>
         <KpiCard
-          titre="Consultations aujourd'hui"
+          titre="Aujourd'hui"
           valeur={formatNombre(summary.appels_aujourdhui)}
-          aide="Nombre d'appels depuis minuit"
+          aide="Consultations depuis minuit"
         />
         <KpiCard
-          titre={`Sur ${summary.periode_jours} jours`}
+          titre={`Total sur ${summary.periode_jours} jours`}
           valeur={formatNombre(summary.total_appels)}
-          aide="Volume total d'utilisation"
+          aide="Toutes les consultations confondues"
         />
         <KpiCard
-          titre="Taux de réussite"
-          valeur={`${summary.taux_succes} %`}
-          aide="Part des réponses sans erreur"
-          color="green.600"
+          titre="Moyenne par jour"
+          valeur={formatNombre(summary.moyenne_par_jour)}
+          aide="Rythme d'utilisation habituel"
         />
         <KpiCard
-          titre="Santé du service"
+          titre="Tendance"
+          valeur={evolution === null ? "-" : `${evolution > 0 ? "+" : ""}${evolution} %`}
+          aide={evolutionTexte}
+          color={evolutionColor}
+        />
+        <KpiCard
+          titre="Fiabilité"
           valeur={sante}
-          aide={`${summary.taux_erreur} % d'erreurs`}
+          aide={`${summary.taux_succes} % de réponses réussies`}
           color={santeColor}
         />
         <KpiCard
-          titre="Temps de réponse moyen"
-          valeur={`${summary.duree_moyenne_ms} ms`}
-          aide="Plus le chiffre est bas, plus c'est rapide"
+          titre="Fluidité"
+          valeur={summary.fluidite || "-"}
+          aide="Sensation de rapidité pour l'utilisateur"
         />
+      </Flex>
+
+      <Heading as="h3" size="sm" mb={3} color="grey.800">
+        Que consulte-t-on dans le catalogue ?
+      </Heading>
+      <Text fontSize="sm" color="grey.600" mb={3}>
+        Répartition des consultations par grand thème métier.
+      </Text>
+      <Flex wrap="wrap" mb={6} style={{ gap: "12px" }}>
+        {(summary.categories || []).map((cat) => (
+          <Box
+            key={cat.code}
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="md"
+            p={4}
+            bg="white"
+            minW="180px"
+            flex="1"
+          >
+            <Text fontSize="sm" color="grey.600" mb={1}>
+              {cat.label}
+            </Text>
+            <Text fontSize="xl" fontWeight="700" color="grey.800">
+              {formatNombre(cat.total)}
+            </Text>
+            <Text fontSize="xs" color="grey.500" mt={1}>
+              {cat.part_pct} % de l&apos;activité
+            </Text>
+            <Progress value={cat.part_pct} size="sm" colorScheme="blue" borderRadius="full" mt={2} />
+          </Box>
+        ))}
+        {(summary.categories || []).length === 0 && (
+          <Text color="grey.500">Aucune donnée de thème sur la période.</Text>
+        )}
       </Flex>
 
       <Flex wrap="wrap" mb={6} style={{ gap: "16px" }}>
         <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
           <Heading as="h3" size="sm" mb={2} color="grey.800">
-            Qualité des réponses
+            Accès public ou connecté ?
           </Heading>
           <Text fontSize="sm" color="grey.600" mb={3}>
-            Répartition simple du résultat des consultations.
+            Qui vient consulter le catalogue : grand public ou utilisateurs identifiés.
+          </Text>
+          <Box mb={3}>
+            <Flex justify="space-between" mb={1}>
+              <Text fontSize="sm">Accès public</Text>
+              <Text fontSize="sm">
+                {formatNombre(summary.acces?.public)} ({summary.acces?.part_public_pct || 0} %)
+              </Text>
+            </Flex>
+            <Progress value={summary.acces?.part_public_pct || 0} size="sm" colorScheme="teal" borderRadius="full" />
+          </Box>
+          <Box mb={3}>
+            <Flex justify="space-between" mb={1}>
+              <Text fontSize="sm">Utilisateurs connectés</Text>
+              <Text fontSize="sm">
+                {formatNombre(summary.acces?.connectes)} ({summary.acces?.part_connectes_pct || 0} %)
+              </Text>
+            </Flex>
+            <Progress value={summary.acces?.part_connectes_pct || 0} size="sm" colorScheme="blue" borderRadius="full" />
+          </Box>
+          <Text fontSize="sm" color="grey.600">
+            <Text as="span" fontWeight="600" color="grey.800">
+              {formatNombre(summary.acces?.utilisateurs_distincts)}
+            </Text>{" "}
+            compte(s) distinct(s) ont été actifs sur la période.
+          </Text>
+        </Box>
+
+        <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
+          <Heading as="h3" size="sm" mb={2} color="grey.800">
+            Les moments forts
+          </Heading>
+          <Text fontSize="sm" color="grey.600" mb={3}>
+            Jours où le catalogue a été le plus (et le moins) sollicité.
+          </Text>
+          <Box mb={3} p={3} bg="green.50" borderRadius="md">
+            <Text fontSize="xs" color="grey.600">
+              Jour le plus actif
+            </Text>
+            <Text fontWeight="600">
+              {summary.jour_le_plus_actif
+                ? `${formatJourLong(summary.jour_le_plus_actif.jour)} — ${formatNombre(
+                    summary.jour_le_plus_actif.total
+                  )} consultations`
+                : "Pas encore de donnée"}
+            </Text>
+          </Box>
+          <Box p={3} bg="gray.50" borderRadius="md">
+            <Text fontSize="xs" color="grey.600">
+              Jour le plus calme
+            </Text>
+            <Text fontWeight="600">
+              {summary.jour_le_moins_actif
+                ? `${formatJourLong(summary.jour_le_moins_actif.jour)} — ${formatNombre(
+                    summary.jour_le_moins_actif.total
+                  )} consultations`
+                : "Pas encore de donnée"}
+            </Text>
+          </Box>
+        </Box>
+      </Flex>
+
+      <Flex wrap="wrap" mb={6} style={{ gap: "16px" }}>
+        <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
+          <Heading as="h3" size="sm" mb={2} color="grey.800">
+            Activité selon le jour de la semaine
+          </Heading>
+          <Text fontSize="sm" color="grey.600" mb={3}>
+            Pour voir si l&apos;usage se concentre en semaine ou le week-end.
+          </Text>
+          <BarList items={summary.par_jour_semaine || []} max={maxSemaine} labelKey="jour" valueKey="total" />
+        </Box>
+
+        <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
+          <Heading as="h3" size="sm" mb={2} color="grey.800">
+            Est-ce que ça fonctionne bien ?
+          </Heading>
+          <Text fontSize="sm" color="grey.600" mb={3}>
+            Lecture simple de la qualité de service perçue.
           </Text>
           <Box mb={2}>
             <Flex justify="space-between" mb={1}>
-              <Text fontSize="sm">Tout s&apos;est bien passé</Text>
+              <Text fontSize="sm">Réponses réussies</Text>
               <Text fontSize="sm">{formatNombre(summary.repartition.succes)}</Text>
             </Flex>
             <Progress
@@ -295,7 +446,7 @@ const VueSimple = () => {
           </Box>
           <Box mb={2}>
             <Flex justify="space-between" mb={1}>
-              <Text fontSize="sm">Demande incorrecte ou refusée</Text>
+              <Text fontSize="sm">Demandes non abouties</Text>
               <Text fontSize="sm">{formatNombre(summary.repartition.erreurs_client)}</Text>
             </Flex>
             <Progress
@@ -307,7 +458,7 @@ const VueSimple = () => {
           </Box>
           <Box>
             <Flex justify="space-between" mb={1}>
-              <Text fontSize="sm">Incident technique</Text>
+              <Text fontSize="sm">Incidents de service</Text>
               <Text fontSize="sm">{formatNombre(summary.repartition.erreurs_serveur)}</Text>
             </Flex>
             <Progress
@@ -318,13 +469,15 @@ const VueSimple = () => {
             />
           </Box>
         </Box>
+      </Flex>
 
+      <Flex wrap="wrap" mb={6} style={{ gap: "16px" }}>
         <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
           <Heading as="h3" size="sm" mb={2} color="grey.800">
-            Activité jour par jour
+            Activité jour après jour
           </Heading>
           <Text fontSize="sm" color="grey.600" mb={3}>
-            Volume de consultations sur la période.
+            Volume quotidien de consultations.
           </Text>
           <BarList
             items={summary.par_jour || []}
@@ -334,15 +487,13 @@ const VueSimple = () => {
             renderLabel={(item) => formatJour(item.jour)}
           />
         </Box>
-      </Flex>
 
-      <Flex wrap="wrap" style={{ gap: "16px" }}>
         <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
           <Heading as="h3" size="sm" mb={2} color="grey.800">
-            Services les plus utilisés
+            Thèmes les plus demandés
           </Heading>
           <Text fontSize="sm" color="grey.600" mb={3}>
-            Ce que les utilisateurs consultent le plus.
+            Détail des consultations les plus fréquentes, en langage métier.
           </Text>
           <BarList
             items={summary.top_services || []}
@@ -352,17 +503,17 @@ const VueSimple = () => {
             renderLabel={(item) => labelService(item.endpoint)}
           />
         </Box>
-
-        <Box flex="1" minW="280px" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white">
-          <Heading as="h3" size="sm" mb={2} color="grey.800">
-            Qui utilise l&apos;API ?
-          </Heading>
-          <Text fontSize="sm" color="grey.600" mb={3}>
-            Utilisateurs connectés ou accès public.
-          </Text>
-          <BarList items={summary.top_utilisateurs || []} max={maxUser} labelKey="consommateur" valueKey="total" />
-        </Box>
       </Flex>
+
+      <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg="white" mb={2}>
+        <Heading as="h3" size="sm" mb={2} color="grey.800">
+          Qui utilise le catalogue ?
+        </Heading>
+        <Text fontSize="sm" color="grey.600" mb={3}>
+          Comptes les plus actifs, ou accès public.
+        </Text>
+        <BarList items={summary.top_utilisateurs || []} max={maxUser} labelKey="consommateur" valueKey="total" />
+      </Box>
     </Box>
   );
 };
