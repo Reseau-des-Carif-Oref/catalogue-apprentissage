@@ -6,18 +6,10 @@ import {
   Container,
   Flex,
   Heading,
-  HStack,
   Input,
   Select,
   Spinner,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
-  VStack,
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
@@ -35,7 +27,7 @@ const statusColor = (code) => {
 };
 
 const formatDate = (date) => {
-  if (!date) return "—";
+  if (!date) return "-";
   try {
     return new Date(date).toLocaleString("fr-FR", {
       year: "numeric",
@@ -46,11 +38,24 @@ const formatDate = (date) => {
       second: "2-digit",
     });
   } catch (e) {
-    return "—";
+    return "-";
   }
 };
 
-const emptyFilters = { endpoint: "", consommateur: "", methode: "", code_http: "" };
+const thStyle = {
+  padding: "8px",
+  textAlign: "left",
+  borderBottom: "1px solid #E2E8F0",
+  background: "#F7FAFC",
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+};
+
+const tdStyle = {
+  padding: "8px",
+  borderBottom: "1px solid #EDF2F7",
+  verticalAlign: "top",
+};
 
 const ApiStats = () => {
   const [rows, setRows] = useState([]);
@@ -58,8 +63,13 @@ const ApiStats = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState(emptyFilters);
-  const [appliedFilters, setAppliedFilters] = useState(emptyFilters);
+  const [filters, setFilters] = useState({ endpoint: "", consommateur: "", methode: "", code_http: "" });
+  const [appliedFilters, setAppliedFilters] = useState({
+    endpoint: "",
+    consommateur: "",
+    methode: "",
+    code_http: "",
+  });
 
   const title = "Statistiques API";
 
@@ -88,9 +98,9 @@ const ApiStats = () => {
         const response = await _get(`/api/v1/admin/apistats?${params.toString()}`);
         if (cancelled) return;
 
-        setRows(Array.isArray(response?.apistats) ? response.apistats : []);
+        setRows(Array.isArray(response && response.apistats) ? response.apistats : []);
         setPagination(
-          response?.pagination || { page: 1, nombre_de_page: 1, total: 0, resultats_par_page: 50 }
+          (response && response.pagination) || { page: 1, nombre_de_page: 1, total: 0, resultats_par_page: 50 }
         );
       } catch (err) {
         if (cancelled) return;
@@ -98,9 +108,9 @@ const ApiStats = () => {
         if (err.statusCode === 401) {
           setError("Session expirée ou non authentifié. Reconnectez-vous.");
         } else if (err.statusCode === 403) {
-          setError("Accès interdit. Permissions administrateur ou ACL « page_apistats » requises.");
+          setError("Accès interdit. Permissions administrateur ou ACL page_apistats requises.");
         } else {
-          setError(`Impossible de charger les statistiques API : ${err.message || err}`);
+          setError("Impossible de charger les statistiques API : " + (err.message || err));
         }
         setRows([]);
       } finally {
@@ -120,8 +130,9 @@ const ApiStats = () => {
   };
 
   const resetFilters = () => {
-    setFilters(emptyFilters);
-    setAppliedFilters(emptyFilters);
+    const empty = { endpoint: "", consommateur: "", methode: "", code_http: "" };
+    setFilters(empty);
+    setAppliedFilters(empty);
     setPage(1);
   };
 
@@ -129,12 +140,12 @@ const ApiStats = () => {
     <Layout>
       <Box w="100%" pt={[4, 8]} px={[1, 1, 12, 24]}>
         <Container maxW="xl">
-          <Breadcrumb pages={[{ title: "Accueil", to: "/" }, { title }]} />
+          <Breadcrumb pages={[{ title: "Accueil", to: "/" }, { title: title }]} />
           <Heading textStyle="h2" color="grey.800" mt={5} mb={4}>
             {title}
           </Heading>
           <Text color="grey.600" mb={6}>
-            Journal des appels HTTP (collection apistats) — tri du plus récent au plus ancien.
+            Journal des appels HTTP (collection apistats), tri du plus récent au plus ancien.
           </Text>
 
           <Flex wrap="wrap" mb={4} align="flex-end">
@@ -193,14 +204,14 @@ const ApiStats = () => {
                 onChange={(e) => setFilters((f) => ({ ...f, code_http: e.target.value }))}
               />
             </Box>
-            <HStack mb={2}>
-              <Button size="sm" colorScheme="blue" onClick={applyFilters}>
+            <Flex mb={2}>
+              <Button size="sm" colorScheme="blue" mr={2} onClick={applyFilters}>
                 Filtrer
               </Button>
               <Button size="sm" variant="outline" onClick={resetFilters}>
                 Réinitialiser
               </Button>
-            </HStack>
+            </Flex>
           </Flex>
 
           {error && (
@@ -211,74 +222,89 @@ const ApiStats = () => {
           )}
 
           {loading ? (
-            <VStack py={10}>
-              <Spinner size="xl" />
+            <Flex direction="column" align="center" py={10}>
+              <Spinner size="xl" mb={4} />
               <Text>Chargement des statistiques...</Text>
-            </VStack>
+            </Flex>
           ) : (
-            <>
+            <Box>
               <Text fontSize="sm" color="grey.600" mb={2}>
-                {pagination.total} résultat{pagination.total > 1 ? "s" : ""} — page {pagination.page} /{" "}
+                {pagination.total} résultat{pagination.total > 1 ? "s" : ""} - page {pagination.page} /{" "}
                 {pagination.nombre_de_page}
               </Text>
 
               <Box overflowX="auto" border="1px solid" borderColor="gray.200" borderRadius="md">
-                <Table size="sm" variant="simple">
-                  <Thead bg="gray.50">
-                    <Tr>
-                      <Th>Date</Th>
-                      <Th>Méthode</Th>
-                      <Th>Endpoint</Th>
-                      <Th>Code</Th>
-                      <Th isNumeric>Durée (ms)</Th>
-                      <Th>Consommateur</Th>
-                      <Th>IP</Th>
-                      <Th>User-Agent</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                  <thead>
+                    <tr>
+                      <th style={thStyle}>Date</th>
+                      <th style={thStyle}>Méthode</th>
+                      <th style={thStyle}>Endpoint</th>
+                      <th style={thStyle}>Code</th>
+                      <th style={{ ...thStyle, textAlign: "right" }}>Durée (ms)</th>
+                      <th style={thStyle}>Consommateur</th>
+                      <th style={thStyle}>IP</th>
+                      <th style={thStyle}>User-Agent</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {rows.length === 0 ? (
-                      <Tr>
-                        <Td colSpan={8}>
-                          <Text py={4} textAlign="center" color="grey.600">
-                            Aucun appel enregistré pour ces critères.
-                          </Text>
-                        </Td>
-                      </Tr>
+                      <tr>
+                        <td colSpan={8} style={{ ...tdStyle, textAlign: "center", color: "#718096", padding: "16px" }}>
+                          Aucun appel enregistré pour ces critères.
+                        </td>
+                      </tr>
                     ) : (
                       rows.map((row, index) => (
-                        <Tr key={row._id || `row-${index}`}>
-                          <Td whiteSpace="nowrap">{formatDate(row.date_appel)}</Td>
-                          <Td>
+                        <tr key={row._id || "row-" + index}>
+                          <td style={{ ...tdStyle, whiteSpace: "nowrap" }}>{formatDate(row.date_appel)}</td>
+                          <td style={tdStyle}>
                             <Badge>{row.methode}</Badge>
-                          </Td>
-                          <Td maxW="320px" title={row.endpoint}>
-                            <Text fontSize="sm" isTruncated>
-                              {row.endpoint}
-                            </Text>
-                          </Td>
-                          <Td>
+                          </td>
+                          <td
+                            style={{
+                              ...tdStyle,
+                              maxWidth: "320px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                            title={row.endpoint}
+                          >
+                            {row.endpoint}
+                          </td>
+                          <td style={tdStyle}>
                             <Badge colorScheme={statusColor(row.code_http)}>{row.code_http}</Badge>
-                          </Td>
-                          <Td isNumeric>{row.duree_ms}</Td>
-                          <Td>
-                            {row.consommateur || (
+                          </td>
+                          <td style={{ ...tdStyle, textAlign: "right" }}>{row.duree_ms}</td>
+                          <td style={tdStyle}>
+                            {row.consommateur ? (
+                              row.consommateur
+                            ) : (
                               <Text as="span" color="grey.500">
                                 public
                               </Text>
                             )}
-                          </Td>
-                          <Td whiteSpace="nowrap">{row.ip_client || "—"}</Td>
-                          <Td maxW="200px" title={row.user_agent || ""}>
-                            <Text fontSize="xs" isTruncated>
-                              {row.user_agent || "—"}
-                            </Text>
-                          </Td>
-                        </Tr>
+                          </td>
+                          <td style={{ ...tdStyle, whiteSpace: "nowrap" }}>{row.ip_client || "-"}</td>
+                          <td
+                            style={{
+                              ...tdStyle,
+                              maxWidth: "200px",
+                              fontSize: "12px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                            title={row.user_agent || ""}
+                          >
+                            {row.user_agent || "-"}
+                          </td>
+                        </tr>
                       ))
                     )}
-                  </Tbody>
-                </Table>
+                  </tbody>
+                </table>
               </Box>
 
               <Flex justify="space-between" align="center" mt={4}>
@@ -292,7 +318,7 @@ const ApiStats = () => {
                   Suivant
                 </Button>
               </Flex>
-            </>
+            </Box>
           )}
         </Container>
       </Box>
