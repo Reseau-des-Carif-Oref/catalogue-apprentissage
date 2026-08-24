@@ -5,11 +5,12 @@ import { departements } from "../../../constants/departements";
 import { annees } from "../../../constants/annees";
 import { sortDescending } from "../../utils/historyUtils";
 
-const toOuiNonLabel = (label) => {
-  if (label === true || label === 1 || label === "1" || label === "true" || label === "Oui") return "Oui";
-  if (label === false || label === 0 || label === "0" || label === "false" || label === "Non") return "Non";
-  return label;
-};
+// Filtre liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+// const toOuiNonLabel = (label) => {
+//   if (label === true || label === 1 || label === "1" || label === "true" || label === "Oui") return "Oui";
+//   if (label === false || label === 0 || label === "0" || label === "false" || label === "Non") return "Non";
+//   return label;
+// };
 
 const FILTERS = () => [
   "QUERYBUILDER",
@@ -17,7 +18,7 @@ const FILTERS = () => [
   "formation_distance",
   "etablissement_formateur_siret",
   "etablissement_gestionnaire_siret",
-  "liquidation_judiciaire",
+  // "liquidation_judiciaire", // temporairement désactivé — à réactiver plus tard
   "num_academie",
   "niveau",
   "etablissement_gestionnaire_siren",
@@ -723,28 +724,29 @@ const facetDefinition = () => [
     selectAllLabel: "Tous les statuts",
     sortBy: "asc",
   },
-  {
-    componentId: "liquidation_judiciaire",
-    dataField: "Siret_LJ",
-    title: "Liquidation judiciaire",
-    filterLabel: "Liquidation judiciaire",
-    sortBy: "asc",
-    showSearch: false,
-    displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
-    transformData: (data) => data.map((d) => ({ ...d, key: toOuiNonLabel(d.key) })),
-    customQuery: (values) => {
-      if (values.length === 1) {
-        return {
-          query: {
-            match: {
-              Siret_LJ: values[0] === "Oui",
-            },
-          },
-        };
-      }
-      return {};
-    },
-  },
+  // Filtre liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+  // {
+  //   componentId: "liquidation_judiciaire",
+  //   dataField: "Siret_LJ",
+  //   title: "Liquidation judiciaire",
+  //   filterLabel: "Liquidation judiciaire",
+  //   sortBy: "asc",
+  //   showSearch: false,
+  //   displayInContext: [CONTEXT.CATALOGUE_NON_ELIGIBLE],
+  //   transformData: (data) => data.map((d) => ({ ...d, key: toOuiNonLabel(d.key) })),
+  //   customQuery: (values) => {
+  //     if (values.length === 1) {
+  //       return {
+  //         query: {
+  //           match: {
+  //             Siret_LJ: values[0] === "Oui",
+  //           },
+  //         },
+  //       };
+  //     }
+  //     return {};
+  //   },
+  // },
   {
     componentId: "annee",
     dataField: "annee.keyword",
