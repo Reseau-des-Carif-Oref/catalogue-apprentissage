@@ -221,15 +221,16 @@ export default React.memo(({ location, searchState, context, extraButtons = null
                     innerClass={{ button: "selected-filters-button" }}
                     render={({ selectedValues, setValue }) => {
                       const formatFilterValue = (componentId, value) => {
-                        const toOuiNon = (v) => {
-                          if (v === true || v === 1 || v === "1" || v === "true" || v === "Oui") return "Oui";
-                          if (v === false || v === 0 || v === "0" || v === "false" || v === "Non") return "Non";
-                          return v;
-                        };
-
-                        if (componentId === "liquidation_judiciaire") {
-                          return Array.isArray(value) ? value.map(toOuiNon).join(", ") : toOuiNon(value);
-                        }
+                        // Filtre liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+                        // const toOuiNon = (v) => {
+                        //   if (v === true || v === 1 || v === "1" || v === "true" || v === "Oui") return "Oui";
+                        //   if (v === false || v === 0 || v === "0" || v === "false" || v === "Non") return "Non";
+                        //   return v;
+                        // };
+                        //
+                        // if (componentId === "liquidation_judiciaire") {
+                        //   return Array.isArray(value) ? value.map(toOuiNon).join(", ") : toOuiNon(value);
+                        // }
 
                         return Array.isArray(value) ? value.join(", ") : `${value}`;
                       };
