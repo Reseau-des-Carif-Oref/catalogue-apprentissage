@@ -3,11 +3,12 @@ import { NavLink } from "react-router-dom";
 import { Badge, Text, Flex, Box, Heading, Link } from "@chakra-ui/react";
 import { ArrowRightLine } from "../../../theme/components/icons";
 import { QualiteBadge } from "../QualiteBadge";
-import { LiquidationBadge, isLiquidation } from "../LiquidationBadge";
+// Badge liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+// import { LiquidationBadge, isLiquidation } from "../LiquidationBadge";
 
 const CardListEtablissements = ({ data, withoutLink }) => {
-  const isLj =
-    isLiquidation(data?.Siret_LJ) || isLiquidation(data?.SIRET_Oresp_LJ) || isLiquidation(data?.SIRET_OForm_LJ);
+  // const isLj =
+  //   isLiquidation(data?.Siret_LJ) || isLiquidation(data?.SIRET_Oresp_LJ) || isLiquidation(data?.SIRET_OForm_LJ);
 
   const RenderCard = ({ withoutLink }) => {
     return (
@@ -18,7 +19,7 @@ const CardListEtablissements = ({ data, withoutLink }) => {
         </Flex>
         <Flex mt={2} flexWrap="wrap">
           <QualiteBadge value={data.certifie_qualite} mt={0} ml={0} mr={[0, 2]} />
-          <LiquidationBadge value={isLj} mt={0} mr={[0, 2]} />
+          {/* <LiquidationBadge value={isLj} mt={0} mr={[0, 2]} /> */}
         </Flex>
         <Flex w={"100%"} justifyContent="space-between" mb={2}>
           <Heading textStyle="h6" color="grey.800" mt={2} w={"100%"}>

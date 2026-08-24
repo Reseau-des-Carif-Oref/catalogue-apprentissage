@@ -8,7 +8,8 @@ import { ActifBadge } from "../../../ActifBadge";
 import { HabiliteBadge } from "../../../HabiliteBadge";
 import { DureeBadge } from "../../../DureeBadge";
 import { AnneeBadge } from "../../../AnneeBadge";
-import { LiquidationBadge } from "../../../LiquidationBadge";
+// Badge liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+// import { LiquidationBadge } from "../../../LiquidationBadge";
 
 export const CardListFormation = ({ data, context }) => {
   let [auth] = useAuth();
@@ -41,11 +42,11 @@ export const CardListFormation = ({ data, context }) => {
                   <QualiteBadge value={data.etablissement_gestionnaire_certifie_qualite} mt={2} mr={[0, 2]} />
                   <HabiliteBadge value={data.etablissement_reference_habilite_rncp} mt={2} mr={[0, 2]} />
                   <ActifBadge value={data.siret_actif} mt={2} mr={[0, 2]} />
-                  <LiquidationBadge
+                  {/* <LiquidationBadge
                     value={data.Siret_LJ || data.SIRET_Oresp_LJ || data.SIRET_OForm_LJ}
                     mt={2}
                     mr={[0, 2]}
-                  />
+                  /> */}
                   <DureeBadge value={data.duree} mt={2} mr={[0, 2]} />
                   <AnneeBadge value={data.annee} mt={2} mr={[0, 2]} />
                 </>

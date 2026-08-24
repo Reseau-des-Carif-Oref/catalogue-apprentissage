@@ -27,7 +27,9 @@ import { HowToFixModal } from "../../common/components/organisme/HowToFixModal";
 import { Breadcrumb } from "../../common/components/Breadcrumb";
 import { setTitle } from "../../common/utils/pageUtils";
 import { QualiteBadge } from "../../common/components/QualiteBadge";
-import { LiquidationBadge, isLiquidation } from "../../common/components/LiquidationBadge";
+import { isLiquidation } from "../../common/components/LiquidationBadge";
+// Badge liquidation judiciaire temporairement désactivé (à réactiver plus tard)
+// import { LiquidationBadge, isLiquidation } from "../../common/components/LiquidationBadge";
 
 const Etablissement = ({ etablissement, countFormations }) => {
   const [user] = useAuth();
@@ -420,6 +422,7 @@ export default ({ match }) => {
                 <Box mt={6} mb={2}>
                   <Flex flexWrap="wrap">
                     <QualiteBadge value={etablissement.certifie_qualite} my={0} mx={0} mr={[0, 2]} />
+                    {/* Badge liquidation judiciaire temporairement désactivé (à réactiver plus tard)
                     <LiquidationBadge
                       value={
                         isLiquidation(etablissement.Siret_LJ) ||
@@ -428,7 +431,7 @@ export default ({ match }) => {
                       }
                       my={0}
                       mx={0}
-                    />
+                    /> */}
                   </Flex>
                   <Heading textStyle="h2" color="grey.800" my={2}>
                     {title} <InfoTooltip description={helpText.etablissement.raison_sociale} />
