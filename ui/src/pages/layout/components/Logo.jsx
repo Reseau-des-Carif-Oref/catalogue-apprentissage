@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
-import logo from "../../../theme/assets/Logo_RCO_png.png";
+import logo from "../../../theme/assets/Logo_RCO_arbre.png";
 
 export const Logo = ({ size = "sm" }) => {
   return (
