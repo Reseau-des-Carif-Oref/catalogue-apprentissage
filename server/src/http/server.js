@@ -42,7 +42,7 @@ const options = {
       title: "Catalogue apprentissage",
       version: "1.0.1",
       description: `Vous trouverez ici la définition de l'api catalogue apprentissage<br/><br/>
-      <img src="https://www.intercariforef.org/sites/default/files/logo-rco.png" />
+      <img src="${config.publicUrl}/Logo_RCO_arbre.png" width="200px" />
       <h3><strong>${config.publicUrl}/api/v1</strong></h3><br/>
       Bienvenue sur l'API du <strong>Catalogue national des offres de formation en apprentissage</strong>, géré par le <a href="https://www.intercariforef.org/">Réseau des Carif-Oref</a>.<br />
 La collecte de l'offre de formation en apprentissage est une mission confiée par décret au <a href="https://www.intercariforef.org/referencer-son-offre-de-formation">Carif-Oref</a> de chaque territoire. La présente API met à disposition l'ensemble des offres collectées en France métropolitaine et dans les Outre-Mer.<br />
