@@ -5,7 +5,7 @@ import logo from "../../../theme/assets/Logo_RCO_arbre.png";
 export const Logo = ({ size = "sm" }) => {
   return (
     <Box p={[0, 0, 4]}>
-      <img src={logo} width="50%" />
+      <img src={logo} width="35%" />
     </Box>
   );
 };
