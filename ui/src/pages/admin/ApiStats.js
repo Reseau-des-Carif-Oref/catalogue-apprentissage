@@ -240,7 +240,9 @@ const VueSimple = () => {
   const topCategorie = (summary.categories || [])[0];
   const resumeMetier = topCategorie
     ? `Sur les ${summary.periode_jours} derniers jours, l'activité porte surtout sur « ${topCategorie.label} » (${topCategorie.part_pct} % des consultations).`
-    : `Sur les ${summary.periode_jours} derniers jours, ${formatNombre(summary.total_appels)} consultations ont été enregistrées.`;
+    : `Sur les ${summary.periode_jours} derniers jours, ${formatNombre(
+        summary.total_appels
+      )} consultations ont été enregistrées.`;
 
   const formatJourLong = (jour) => {
     if (!jour) return "-";
@@ -304,11 +306,7 @@ const VueSimple = () => {
           aide={`${summary.taux_succes} % de réponses réussies`}
           color={santeColor}
         />
-        <KpiCard
-          titre="Fluidité"
-          valeur={summary.fluidite || "-"}
-          aide="Sensation de rapidité pour l'utilisateur"
-        />
+        <KpiCard titre="Fluidité" valeur={summary.fluidite || "-"} aide="Sensation de rapidité pour l'utilisateur" />
       </Flex>
 
       <Heading as="h3" size="sm" mb={3} color="grey.800">
