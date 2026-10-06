@@ -23,6 +23,7 @@ const Etablissement = lazy(() => import("./pages/Etablissement"));
 const Journal = lazy(() => import("./pages/Journal/Journal"));
 const UploadFiles = lazy(() => import("./pages/admin/UploadFiles"));
 const Alert = lazy(() => import("./pages/admin/Alert"));
+const ApiStats = lazy(() => import("./pages/admin/ApiStats"));
 const ImportStatus = lazy(() => import("./pages/ImportStatus"));
 const Contact = lazy(() => import("./pages/legal/Contact"));
 const Cookies = lazy(() => import("./pages/legal/Cookies"));
@@ -110,6 +111,9 @@ export default () => {
                 )}
                 {auth && hasAccessTo(auth, "page_import_status") && (
                   <PrivateRoute exact path="/import-status" component={ImportStatus} />
+                )}
+                {auth && hasAccessTo(auth, "page_apistats") && (
+                  <PrivateRoute exact path="/admin/apistats" component={ApiStats} />
                 )}
 
                 <Route exact path="/" component={HomePage} />

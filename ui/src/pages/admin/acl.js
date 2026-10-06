@@ -87,4 +87,8 @@ export default [
     feature: "Statut des imports MNA",
     ref: "page_import_status",
   },
+  {
+    feature: "Statistiques API",
+    ref: "page_apistats",
+  },
 ];

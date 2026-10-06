@@ -9,9 +9,9 @@ export const LiquidationBadge = ({ value, ...props }) => {
   }
 
   return (
-    <Badge variant="notOk" {...props}>
+    <Badge variant="notOk" pr={2} {...props}>
       <Flex alignItems="center">
-        <Text mx={1} as={"span"}>
+        <Text ml={1} as={"span"}>
           Liquidation judiciaire
         </Text>
       </Flex>

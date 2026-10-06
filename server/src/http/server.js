@@ -12,6 +12,7 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const tryCatch = require("./middlewares/tryCatchMiddleware");
 const corsMiddleware = require("./middlewares/corsMiddleware");
 const permissionsMiddleware = require("./middlewares/permissionsMiddleware");
+const statsMiddleware = require("./middlewares/statsMiddleware");
 const packageJson = require("../../package.json");
 const formation = require("./routes/formation");
 const report = require("./routes/report");
@@ -26,6 +27,8 @@ const esMultiSearchNoIndex = require("./routes/esMultiSearchNoIndex");
 const etablissement = require("./routes/etablissement");
 const upload = require("./routes/upload");
 const alert = require("./routes/alert");
+const apistats = require("./routes/apistats");
+const aclMiddleware = require("./middlewares/aclMiddleware");
 const swaggerSchema = require("../common/model/swaggerSchema");
 const rateLimit = require("express-rate-limit");
 const authMiddleware = require("./middlewares/authMiddleware");
@@ -123,6 +126,8 @@ module.exports = async (components, verbose = true) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.use(statsMiddleware());
+
   const apiLimiter = rateLimit({
     windowMs: 1000, // 1 second
     max: 25, // 25 calls per IP per second
@@ -164,6 +169,14 @@ module.exports = async (components, verbose = true) => {
   ];
 
   const securedRoutes = [
+    // Route dédiée AVANT les mounts /admin génériques (sinon ACL gestion_utilisateurs bloque)
+    [
+      "/admin/apistats",
+      apiLimiter,
+      authMiddleware,
+      aclMiddleware(["page_apistats"]),
+      apistats(),
+    ],
     [
       "/admin",
       apiLimiter,
