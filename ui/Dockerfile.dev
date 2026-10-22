@@ -1,4 +1,4 @@
-FROM node:16-stretch
+FROM node:22.23.4-bookworm
 
 ARG REACT_APP_ENV
 ARG REACT_APP_BASE_URL

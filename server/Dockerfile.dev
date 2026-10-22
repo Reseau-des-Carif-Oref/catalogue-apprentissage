@@ -1,4 +1,4 @@
-FROM node:16-stretch
+FROM node:22.23.4-bookworm
 
 # handle .npmrc : copy local one for dev, create one using NPM_TOKEN arg for production & recette
 ARG NPM_TOKEN
