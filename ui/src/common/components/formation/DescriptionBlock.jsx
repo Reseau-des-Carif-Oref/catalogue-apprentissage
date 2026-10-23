@@ -113,13 +113,6 @@ export const DescriptionBlock = ({ formation }) => {
             </Text>{" "}
             <InfoTooltip description={helpText.formation.diplome} />
           </Text>
-          <Text mb={4}>
-            Niveau de la formation :{" "}
-            <Text as="span" variant="highlight">
-              {formation.niveau}
-            </Text>{" "}
-            <InfoTooltip description={helpText.formation.niveau} />
-          </Text>
           <CfdContainer>
             <Text mb={!isTitreRNCP && isCfdExpired ? 0 : 4}>
               Code diplôme (Éducation Nationale) :{" "}

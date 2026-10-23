@@ -5,7 +5,6 @@
     "intitule_long": "La donnée “Intitulé long de la formation” est extraite de la BCN (Base Centrale des Nomenclatures), table V_FORMATION_DIPLOME",
     "intitule_court": "La donnée “Intitulé court de la formation” est déduite du Code formation diplôme",
     "diplome": "La donnée “Diplôme ou titre visé” est déduite du Code formation diplôme",
-    "niveau": "La donnée “Niveau de la formation” est déduite du Code formation diplôme",
     "cfd": "La donnée “Code formation diplôme” provient de la Base Centrale des Nomenclatures (BCN). Si cette information est erronée, merci de leur signaler.",
     "mef": "La donnée “MEF” est déduite du Code formation diplôme",
     "periode": "La donnée “période d’inscription” provient des bases “Carif-Oref”. Si cette information est erronée, merci de le signaler au Carif-Oref de votre région.",
