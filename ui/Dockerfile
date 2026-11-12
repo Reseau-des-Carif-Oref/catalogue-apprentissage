@@ -1,4 +1,4 @@
-FROM node:22.23.4-bookworm
+FROM node:24.22.3-bookworm
 
 ARG REACT_APP_ENV
 ARG REACT_APP_BASE_URL
