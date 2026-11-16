@@ -1,4 +1,4 @@
-FROM node:24.22.3-bookworm
+FROM node:26.13.1-bookworm
 
 # handle .npmrc : copy local one for dev, create one using NPM_TOKEN arg for production & recette
 ARG NPM_TOKEN
